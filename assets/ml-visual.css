@@ -368,3 +368,5 @@ a.tag { min-height: 24px; }
 .cab-oscura .brand-tag::before { content: ""; width: 5px; height: 5px; }
 /* Acceso y aviso legal: la cabecera, igual de ancha que en el resto de páginas. */
 @media (min-width: 1101px) { .site-header.cab-oscura .wrap { max-width: 2200px; } }
+/* Dato pendiente de rellenar por el cliente (correo, WhatsApp, razón social). */
+.pend { font-family: var(--mono); font-size: var(--fs-xs); background: var(--wood-tint); color: #8A5E2E; padding: 1px 5px; border-radius: var(--r1); white-space: nowrap; }

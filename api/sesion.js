@@ -16,7 +16,7 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { db, init, registra } = require('./_esquema');
-const { identidad, leeCookie, COOKIE } = require('./auth');
+const { identidad, leeCookie, COOKIE, puertaCerrada } = require('./auth');
 
 const DIAS_SESION = 30;
 
@@ -86,6 +86,13 @@ async function entra(req, res) {
     fallo(llave);
     await registra({ accion: 'sesion.fallo', datos: { email }, ip });
     res.status(401).json({ error: 'Email o contraseña incorrectos.' });
+    return;
+  }
+
+  const cierre = await puertaCerrada(filas[0].id, email);
+  if (cierre) {
+    await registra({ user_id: filas[0].id, accion: 'sesion.no_autorizada', ip });
+    res.status(403).json({ error: cierre, codigo: 'no_autorizada' });
     return;
   }
 

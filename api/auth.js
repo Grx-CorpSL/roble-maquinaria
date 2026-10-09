@@ -22,6 +22,19 @@ const ADMINS = new Set(
   String(process.env.ROBLE_ADMIN_EMAILS || '').toLowerCase().split(',').map(s => s.trim()).filter(Boolean));
 const esAdmin = email => ADMINS.has(String(email || '').toLowerCase().trim());
 
+/* Nadie entra hasta que administración lo autoriza: la ficha de su empresa tiene que estar en
+   activa o borrador (se autoriza desde Moderación). Administración entra siempre. */
+const SIN_PASO = {
+  pendiente: 'Tu cuenta está pendiente de autorización por el equipo de ROBLE. Te avisaremos por correo.',
+  rechazada: 'Esta cuenta no ha sido autorizada.',
+  suspendida: 'Esta cuenta está suspendida.',
+};
+async function puertaCerrada(userId, email) {
+  if (esAdmin(email)) return null;
+  const [e] = await db()`SELECT estado FROM empresas WHERE id = ${userId}`;
+  return e ? SIN_PASO[e.estado] || null : null;
+}
+
 function lee(req, nombre) {
   const raw = req.headers?.cookie || '';
   for (const trozo of raw.split(';')) {
@@ -37,10 +50,13 @@ async function usuarioDeSesion(req) {
   if (!token) return null;
   await init();
   const filas = await db()`
-    SELECT u.id, u.email, u.nombre, u.rol, u.empresa
-    FROM sesiones s JOIN usuarios u ON u.id = s.user_id
+    SELECT u.id, u.email, u.nombre, u.rol, u.empresa, em.estado AS estado_empresa
+    FROM sesiones s JOIN usuarios u ON u.id = s.user_id LEFT JOIN empresas em ON em.id = u.id
     WHERE s.token = ${token} AND s.expira > now() AND u.eliminada IS NULL`;
-  return filas[0] || null;
+  const u = filas[0]; if (!u) return null;
+  if (!esAdmin(u.email) && SIN_PASO[u.estado_empresa]) return null;
+  delete u.estado_empresa;
+  return u;
 }
 
 function cookieEmpresa(id) {
@@ -108,4 +124,5 @@ module.exports.usuarioDeSesion = usuarioDeSesion;
 module.exports.identidad = identidad;
 module.exports.leeCookie = lee;
 module.exports.esAdmin = esAdmin;
+module.exports.puertaCerrada = puertaCerrada;
 module.exports.COOKIE = COOKIE;

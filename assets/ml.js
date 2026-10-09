@@ -139,7 +139,7 @@ window.ML = (function () {
       <h2>Directorio del sector <a class="link" href="directorio.html" style="font-weight:500;text-transform:none;letter-spacing:0;font-family:var(--font)">Ver todo</a></h2><nav class="catlist">${S.map(s => `<a href="sector.html?s=${s.id}" ${s.id === current ? 'aria-current="page"' : ''}>${esc(s.corto)}<span class="n">${(R.D.lite || !(R.D.empresas && R.D.empresas.length) ? s.empresas : R.empresasDe(s.id).length) || ''}</span></a>`).join('')}</nav>
       <h2>Búsqueda</h2><nav class="catlist"><a href="empresas.html">Todas las empresas</a><a href="productos.html">Todos los productos</a><a href="empresas.html?plan=premium">Empresas destacadas</a></nav>
       <h2>Maquinaria</h2><nav class="catlist"><a href="buscar.html">Máquinas en venta</a><a href="vendedores.html">Vendedores</a><a href="solicitudes.html">Solicitudes de maquinaria</a><a href="favoritos.html">Mis máquinas guardadas</a></nav>
-      <h2>Empresas</h2><nav class="catlist"><a href="para-empresas.html">Dar de alta mi empresa</a><a href="vender.html">Anunciar máquinas</a></nav>
+      <h2>Empresas</h2><nav class="catlist"><a href="para-empresas.html">Dar de alta mi empresa</a><a href="vender.html">Anunciar máquinas</a><a href="paquetes.html">Comprar paquetes por WhatsApp</a></nav>
     </div></details>${ads.length > 1 ? `<section class="side-ads" aria-label="Más anunciantes">${ads.slice(1).join('')}${ctaBanner()}</section>` : ''}</aside>`;
   }
   /* El cliente organiza ROBLE en sus 38 apartados: el portal de máquinas usa el mismo lateral que el directorio. */
@@ -163,7 +163,7 @@ window.ML = (function () {
       <div class="footer-top">
         <div class="footer-brand"><img class="brand-word" src="assets/img/wordmark-white.svg" alt="ROBLE" width="127" height="20"><p>Maquinaria para la madera y directorio profesional del sector. Fabricantes, distribuidores y servicios de España.</p></div>
         <div class="footer-col"><span class="label">Directorio</span><ul><li><a href="directorio.html">Los ${(R.D.sectores && R.D.sectores.length ? R.D.sectores : D.sectores || []).length || 38} sectores</a></li><li><a href="empresas.html">Empresas</a></li><li><a href="productos.html">Productos</a></li><li><a href="para-empresas.html">Dar de alta mi empresa</a></li></ul></div>
-        <div class="footer-col"><span class="label">Maquinaria</span><ul><li><a href="buscar.html">Máquinas en venta</a></li><li><a href="vendedores.html">Por vendedor</a></li><li><a href="solicitudes.html">Solicitudes</a></li></ul></div>
+        <div class="footer-col"><span class="label">Maquinaria</span><ul><li><a href="buscar.html">Máquinas en venta</a></li><li><a href="paquetes.html">Paquetes de anuncios</a></li><li><a href="vendedores.html">Por vendedor</a></li><li><a href="solicitudes.html">Solicitudes</a></li></ul></div>
         <div class="footer-col"><span class="label">Empresas</span><ul>${D.tiposVendedor.map(([id, l]) => `<li><a href="vendedores.html?tipo=${id}">${l}</a></li>`).join('')}<li><a href="vender.html">Vender máquinas</a></li><li><a href="panel/index.html">Panel de vendedor</a></li></ul></div>
         <div class="footer-col"><span class="label">ROBLE</span><ul><li><a href="guias.html">Guías de compra</a></li><li><a href="admin/index.html">Administración</a></li><li><a href="contacto.html">Contacto</a></li><li><a href="creditos.html">Créditos de las fotos</a></li><li><a href="legal.html">Aviso legal</a></li><li><a href="legal.html#privacidad">Privacidad</a></li><li><a href="legal.html#cookies">Cookies</a></li></ul></div>
       </div>

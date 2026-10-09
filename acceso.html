@@ -75,7 +75,6 @@
             <p class="acceso-foot"><a href="#" id="olvide">¿Has olvidado la contraseña?</a></p>
           </form>
           <form data-panel-id="crear" id="f-crear" hidden novalidate>
-            <div class="field"><span class="field-label">Quiero</span><div class="seg" role="group" aria-label="Tipo de cuenta" style="width:100%"><button type="button" aria-pressed="true" data-tipo="empresa" style="flex:1">Anunciar mis máquinas</button><button type="button" aria-pressed="false" data-tipo="profesional" style="flex:1">Buscar y guardar</button></div></div>
             <div class="field"><label for="c-nombre">Tu nombre</label><input class="input input-lg" id="c-nombre" required autocomplete="name" maxlength="80"><span class="field-error">Necesitamos tu nombre.</span></div>
             <div class="field" id="campo-empresa"><label for="c-empresa">Nombre de la empresa</label><input class="input input-lg" id="c-empresa" autocomplete="organization" maxlength="120"><span class="field-error">Necesitamos el nombre de la empresa.</span></div>
             <div class="field"><label for="c-email">Correo</label><input class="input input-lg" id="c-email" type="email" required autocomplete="email"><span class="field-error">Falta el correo. Te enviamos ahí la confirmación.</span></div>
@@ -151,6 +150,12 @@
             password: document.getElementById('c-pass').value, rol: tipoCuenta(), empresa: inputEmpresa.value.trim() }) });
           const j = await r.json().catch(() => ({}));
           if (!r.ok) { R.toast(j.error || 'No hemos podido crear la cuenta.', 'error'); return; }
+          if (j.pendiente) {
+            e.target.reset();
+            document.getElementById('f-entrar').insertAdjacentHTML('afterbegin', '<div class="alert" style="margin-bottom:16px"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><div><strong>Cuenta creada.</strong> El equipo de ROBLE tiene que autorizarla antes de que puedas entrar. Te avisaremos por correo.</div></div>');
+            document.getElementById('tab-entrar').click();
+            return;
+          }
           R.toast('Cuenta creada');
           setTimeout(() => { location.href = j.user && j.user.isAdmin ? '/admin' : 'panel/index.html'; }, 400);
         } catch (err) {

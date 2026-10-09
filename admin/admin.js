@@ -128,7 +128,7 @@ window.Admin = (function () {
     setContenido(id, patch) { st.contenidos[id] = Object.assign(st.contenidos[id] || {}, patch); save(); },
     destacados() { return st.destacados || { empresas: D.empresas.filter(e => e.plan === 'premium' && e.desc).slice(0, 4).map(e => e.id), productos: [] }; },
     setDestacados(d) { st.destacados = d; save(); },
-    config() { return Object.assign({ nombre: 'ROBLE', tagline: 'El buscador profesional del sector de la madera', email: 'roldesluis@gmail.com', idioma: 'es', paises: { ES: true, PT: false, IT: false, FR: false }, seoTitle: '%s — ROBLE', seoDesc: 'ROBLE, el buscador profesional del sector de la madera en España, Portugal, Italia y Francia.', porPagina: 20, revisionHoras: 48, altaLibre: true }, st.config); },
+    config() { return Object.assign({ nombre: 'ROBLE', tagline: 'El buscador profesional del sector de la madera', email: '', idioma: 'es', paises: { ES: true, PT: false, IT: false, FR: false }, seoTitle: '%s — ROBLE', seoDesc: 'ROBLE, el buscador profesional del sector de la madera en España, Portugal, Italia y Francia.', porPagina: 20, revisionHoras: 48, altaLibre: true }, st.config); },
     setConfig(patch) { st.config = Object.assign(st.config, patch); save(); },
     log, logs: () => st.log,
     reset() { st = empty(); save(); },

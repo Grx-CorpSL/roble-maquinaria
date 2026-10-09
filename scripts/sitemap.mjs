@@ -23,7 +23,7 @@ const ids = new Set(empresas.map(e => e.id));
 const url = (ruta, fecha) => `  <url><loc>${BASE}/${ruta}</loc>${fecha ? `<lastmod>${fecha}</lastmod>` : ''}</url>`;
 
 const fijas = ['', 'buscar.html', 'vendedores.html', 'directorio.html', 'empresas.html',
-  'productos.html', 'guias.html', 'vender.html', 'solicitudes.html', 'para-empresas.html', 'contacto.html', 'creditos.html'];
+  'productos.html', 'guias.html', 'vender.html', 'paquetes.html', 'solicitudes.html', 'para-empresas.html', 'contacto.html', 'creditos.html'];
 const lineas = [
   ...fijas.map(r => url(r)),
   ...M.anuncios.filter(a => ids.has(a.vendedor_id)).map(a => url(`anuncio.html?id=${a.id}`, a.fecha)),

@@ -91,6 +91,9 @@ module.exports = async function handler(req, res) {
     }
     await registra({ user_id: u.id, empresa_id: rol === 'empresa' ? u.id : null, accion: 'cuenta.alta', datos: { rol }, ip });
 
+    // La cuenta existe, pero no abre sesión: entra cuando administración la autorice desde Moderación.
+    if (rol === 'empresa') { res.status(201).json({ ok: true, pendiente: true }); return; }
+
     const { token, expira } = await abreSesion(u.id);
     res.setHeader('Set-Cookie', cookieSesion(token, expira));
     const id = await identidad({ headers: { cookie: `${COOKIE}=${token}` } });

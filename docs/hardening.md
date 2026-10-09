@@ -1103,3 +1103,34 @@ de las capturas a ojo. Arreglado y desplegado:
 - Productos sin foto en móvil sin el hueco de 270 px. Créditos en móvil: nombre y autor en líneas separadas.
 - Fuera `categorias.html`, `categoria.html` y `repuestos.html` (ya redirigían).
 Comprobado: 33/33, fotos 0 fallos, nombres 31/31, E2E 25/25, sin errores de consola.
+
+## 33. Cuenta de demostración y repositorio público (9 de octubre de 2026)
+
+- Auditoría: los enlaces de nombre en las tablas del administrador medían 14 px de alto; ahora 24. `backups/` entra
+  en `.gitignore` (nunca estuvo versionado; así sigue).
+- Cuenta de empresa de demostración `empresa@carpinteriademo.es` → «Carpintería Demo ROBLE» (id 180), con ficha
+  rellena, en estado pendiente a propósito para enseñar la moderación desde el panel de administración. El primer
+  intento (id 179) quedó rechazado. Contraseña entregada al propietario fuera del repositorio.
+- Repositorio público para el socio: `kdl177/roble-maquinaria`, instantánea de un solo commit (sin historial, sin
+  `.env`, sin `backups/`, rutas locales redactadas en `docs/`) con README. El trabajo sigue en `kdl177/roble-web`.
+
+## 34. Autorización previa, correo pendiente y zona de paquetes (9 de octubre de 2026)
+
+Tres peticiones del cliente, desplegadas:
+- **Nadie entra sin autorización de administración.** `api/auth.js` → `puertaCerrada(userId, email)`: la ficha de la
+  empresa tiene que estar en `activa` o `borrador`; `pendiente`, `rechazada` o `suspendida` no entran (403 con el
+  motivo) y su sesión, si la tuvieran, deja de valer (`usuarioDeSesion` hace el mismo filtro con un LEFT JOIN a
+  `empresas`). Administración entra siempre. `api/registro.js` ya no abre sesión al crear una cuenta de empresa:
+  devuelve `{ pendiente: true }` y `acceso.html` enseña «Cuenta creada. El equipo de ROBLE tiene que autorizarla».
+  La autorización es el botón «Autorizar y publicar» de Moderación (`/api/admin` → `activa`). El alta solo ofrece
+  cuentas de empresa (fuera «Buscar y guardar»): una cuenta sin empresa no tendría a quién pedir la autorización.
+- **Correo de contacto pendiente de rellenar:** `contacto.html` enseña `[CORREO DE CONTACTO]` (clase `.pend`, ahora
+  global en `ml-visual.css`), el formulario ya no apunta a formsubmit y al enviar avisa de que está pendiente de
+  configurar; el valor por defecto de la configuración del admin queda vacío.
+- **Zona de paquetes por WhatsApp:** `paquetes.html` (paquetes, tres pasos, banners), sección en la portada, enlace en
+  el lateral («Comprar paquetes por WhatsApp»), en el pie y desde `vender.html`; en el sitemap. Mientras el número no
+  esté en `api/_maquinaria.json` → `whatsapp`, la página enseña `[NÚMERO POR RELLENAR]` y los botones caen a contacto.
+Comprobado en producción a 1280 y 390 px: la cuenta pendiente recibe el 403 y el aviso, el alta no ofrece comprador,
+el correo sale como pendiente y el envío avisa, 6 paquetes con botón de WhatsApp, portada/lateral/pie enlazan, sin
+errores de consola; QA 113/113. Las comprobaciones que entran como administración (33 de §22 y E2E) no se han
+podido pasar: la contraseña de la cuenta de administración ya no es la que tenía (cambiada después de entregarla).

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Paquetes de anuncios — ROBLE Maquinaria</title>
+  <meta name="description" content="Paquetes de anuncios de maquinaria para la madera en ROBLE: pagas por anuncios, no por meses, y se piden por WhatsApp.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/paquetes.html">
+  <meta property="og:title" content="Paquetes de anuncios — ROBLE Maquinaria">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/paquetes.html">
+  <meta property="og:description" content="Pagas por anuncios, no por meses. Los paquetes se piden por WhatsApp.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>
+    .wa-box { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 24px; padding: 18px 20px; background: var(--paper); border: 1px solid var(--border); border-radius: var(--r3); }
+    .wa-box .i { width: 28px; height: 28px; color: #25D366; flex-shrink: 0; }
+    .wa-box b { display: block; font-size: var(--fs-base); }
+    .wa-box span { font-size: var(--fs-sm); color: var(--text-2); }
+    .wa-box .btn { margin-left: auto; }
+    .pasos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+    .paso { padding: 16px; background: var(--paper); border: 1px solid var(--border); border-radius: var(--r3); }
+    .paso .n { font-family: var(--mono); font-size: var(--fs-label); color: var(--red); letter-spacing: .08em; }
+    .paso b { display: block; margin: 6px 0 4px; }
+    .paso p { font-size: var(--fs-sm); color: var(--text-2); line-height: 1.45; }
+    @media (max-width: 700px) { .pasos { grid-template-columns: 1fr; } .wa-box .btn { margin-left: 0; width: 100%; } }
+  </style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = ML.D, c = ML.shell('vender');
+      const eur = n => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+      const pack = ([n, precio], i) => `<div class="pack ${i === 2 ? 'is-best' : ''}"><span class="n">${n}<small>${n === 1 ? 'anuncio' : 'anuncios'}</small></span><span class="price">${precio ? eur(precio) : 'A consultar'}</span><span class="per">${precio ? (precio / n).toFixed(2).replace('.', ',') + ' € por anuncio' : ''}${i === 2 ? ' · el más elegido' : ''}</span><a class="btn ${i === 2 ? 'btn-ink' : ''} btn-block" href="${ML.wa(`Hola, quiero el paquete de ${n} ${n === 1 ? 'anuncio' : 'anuncios'} en ROBLE Maquinaria.`)}"${ML.waAttrs()}>${R.icon('whatsapp', 'i-16')} Pedir por WhatsApp</a></div>`;
+      c.innerHTML = `
+        <nav class="crumbs" aria-label="Migas"><a href="index.html">Inicio</a>${R.icon('chevron-right', 'sep')}<a href="vender.html">Vender</a>${R.icon('chevron-right', 'sep')}<span aria-current="page">Paquetes</span></nav>
+        <p class="label" style="margin:14px 0 8px">Paquetes de anuncios</p>
+        <h1 class="h1">Paga por anuncios, no por meses.</h1>
+        <p class="intro">Eliges el paquete, nos escribes por WhatsApp y te lo activamos en tu cuenta. Los anuncios no caducan hasta que vendes la máquina.</p>
+        <div class="wa-box">${R.icon('whatsapp')}<div><b>Se pide por WhatsApp</b><span>${D.whatsapp ? `Escríbenos al +${D.whatsapp} y te lo activamos en el momento.` : `WhatsApp de ROBLE: <span class="pend">[NÚMERO POR RELLENAR]</span>`}</span></div><a class="btn btn-primary" href="${ML.wa('Hola, quiero información sobre los paquetes de anuncios de ROBLE Maquinaria.')}"${ML.waAttrs()}>${R.icon('whatsapp', 'i-16')} Escribir por WhatsApp</a></div>
+        <section class="sec" aria-labelledby="h-p" style="margin-top:28px"><div class="section-head"><div><p class="label">Elige</p><h2 class="h2" id="h-p">Los paquetes.</h2></div></div>
+          <div class="packs">${D.paquetes.map(pack).join('')}</div>
+        </section>
+        <section class="sec" aria-labelledby="h-c"><div class="section-head"><div><p class="label">Cómo va</p><h2 class="h2" id="h-c">Tres pasos.</h2></div></div>
+          <div class="pasos">
+            <div class="paso"><span class="n">01</span><b>Eliges el paquete</b><p>Pulsa «Pedir por WhatsApp» en el que te encaje. El mensaje ya lleva el paquete escrito.</p></div>
+            <div class="paso"><span class="n">02</span><b>Te confirmamos por WhatsApp</b><p>Precio, forma de pago y cuándo lo tienes activo. Sin formularios ni pasarelas.</p></div>
+            <div class="paso"><span class="n">03</span><b>Publicas desde tu cuenta</b><p>Los anuncios aparecen en tu panel y los publicas cuando quieras. <a href="acceso.html?crear" style="text-decoration:underline;text-underline-offset:2px">Crear cuenta</a>.</p></div>
+          </div>
+        </section>
+        <div class="alert" style="margin-top:24px"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><div><strong>Banners y posiciones destacadas</strong>, también por WhatsApp: <a href="${ML.wa('Hola, me interesan los banners y posiciones destacadas de ROBLE Maquinaria.')}"${ML.waAttrs()} style="text-decoration:underline;text-underline-offset:2px">escríbenos</a>.</div></div>`;
+    });
+  </script>
+</body>
+</html>

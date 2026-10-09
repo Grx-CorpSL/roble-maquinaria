@@ -17,7 +17,7 @@
 </head>
 <body>
   <main id="main" class="admin-main">
-    <div class="page-title"><div><h1>Moderación <span class="count" id="count"></span></h1><p>Todo lo que espera una decisión. Aprobar publica; rechazar avisa a quien lo envió.</p></div></div>
+    <div class="page-title"><div><h1>Moderación <span class="count" id="count"></span></h1><p>Todo lo que espera una decisión. Aprobar autoriza la cuenta de la empresa y publica su ficha; rechazar avisa a quien lo envió y la deja sin acceso.</p></div></div>
     <div class="tabs" role="tablist" id="tabs" style="margin-bottom:12px"></div>
     <div class="tbar"><select class="select" id="f-estado" aria-label="Estado"><option value="pendiente">Pendientes</option><option value="aprobada">Aprobadas</option><option value="rechazada">Rechazadas</option><option value="">Todas</option></select></div>
     <div class="queue" id="queue"></div>
@@ -75,7 +75,7 @@
           : it.tipo === 'producto' ? [['Tipo', 'Producto'], ['Empresa', R.esc(r.empresa || '—')], ['Sector', (R.sector(r.sector) || {}).corto || '—'], ['Subsector', R.esc(r.sub || '—')], ['Fotos', String((r.fotos || []).length)], ['Estado', Admin.status(r.estado)]]
           : [['Tipo', 'Usuario'], ['Rol', R.esc(r.rol || '—')], ['Correo', R.esc(r.email || '—')], ['Estado', Admin.status(r.estado)]];
         $('#dr-body').innerHTML = `<dl class="specs detail">${rows.map(([k, v]) => `<div class="spec"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${r.desc ? `<div><span class="label" style="display:block;margin-bottom:6px">Descripción</span><div class="msg">${R.esc(r.desc)}</div></div>` : ''}${it.estado === 'pendiente' ? `<div class="field"><label for="motivo">Motivo si rechazas</label><select class="select" id="motivo"><option value="">Sin motivo concreto</option><option>No es una empresa del sector de la madera</option><option>Datos incompletos o no verificables</option><option>Duplicada: ya existe en el directorio</option><option>Contenido inapropiado</option></select></div>` : (r.motivo ? `<div class="alert alert-error"><svg class="i"><use href="#i-warning"/></svg><div><strong>Motivo del rechazo.</strong> ${R.esc(r.motivo)}</div></div>` : '')}`;
-        $('#dr-foot').innerHTML = it.estado === 'pendiente' ? `<span class="status status-pending">Pendiente</span><div class="row"><button class="btn btn-danger" id="d-no">Rechazar</button><button class="btn btn-ink" id="d-ok">Aprobar y publicar</button></div>` : `<span></span><div class="row">${it.tipo === 'empresa' || (it.tipo === 'alta' && r.empresa_id) ? `<a class="btn" href="empresas.html?id=${it.tipo === 'empresa' ? it.id : r.empresa_id}">Abrir ficha</a>` : ''}<button class="btn btn-ghost" data-close>Cerrar</button></div>`;
+        $('#dr-foot').innerHTML = it.estado === 'pendiente' ? `<span class="status status-pending">Pendiente</span><div class="row"><button class="btn btn-danger" id="d-no">Rechazar</button><button class="btn btn-ink" id="d-ok">Autorizar y publicar</button></div>` : `<span></span><div class="row">${it.tipo === 'empresa' || (it.tipo === 'alta' && r.empresa_id) ? `<a class="btn" href="empresas.html?id=${it.tipo === 'empresa' ? it.id : r.empresa_id}">Abrir ficha</a>` : ''}<button class="btn btn-ghost" data-close>Cerrar</button></div>`;
         $('#dr-foot').querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', dr.close));
         const ok = $('#d-ok'), no = $('#d-no'); ok && ok.addEventListener('click', () => aprobar(it)); no && no.addEventListener('click', () => rechazar(it, $('#motivo').value));
         dr.open();
