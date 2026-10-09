@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Tu empresa en ROBLE — Alta en el directorio profesional de la madera</title>
+  <meta name="description" content="Da de alta tu empresa en ROBLE y aparece donde carpinteros, fabricantes y compradores del sector de la madera buscan proveedores. Ficha básica gratis; ficha completa desde 20 €/mes.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/para-empresas.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/para-empresas.html">
+  <meta property="og:title" content="Tu empresa en ROBLE — Alta en el directorio profesional de la madera">
+  <meta property="og:description" content="Da de alta tu empresa en ROBLE y aparece donde carpinteros, fabricantes y compradores del sector de la madera buscan proveedores. Ficha básica gratis; ficha completa desde 20 €/mes.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>
+    .hero { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; padding: clamp(48px, 7vw, 88px) 0 clamp(40px, 5vw, 64px); }
+    .hero .display { font-size: clamp(2.25rem, 5vw, 4rem); max-width: 12ch; }
+    .hero .lead { margin-top: 18px; }
+    .hero .row { margin-top: 28px; }
+    .hero-demo { position: relative; }
+    .hero-demo .label { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .hero-demo .label::before { content: ""; width: 8px; height: 8px; background: var(--red); }
+    .razones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--stone); }
+    .razon { padding: 28px 28px 32px 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px; }
+    .razon:last-child { border-right: 0; }
+    .razon + .razon { padding-left: 28px; }
+    .razon .n { font-family: var(--mono); font-size: var(--fs-sm); color: var(--red); }
+    .razon h3 { font-size: var(--fs-h3); font-weight: 600; letter-spacing: -.015em; max-width: 16ch; }
+    .razon p { color: var(--text-2); font-size: var(--fs-sm); line-height: 1.55; }
+    .planes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 900px; }
+    .plan-price { display: flex; align-items: baseline; gap: 6px; margin: 4px 0 2px; }
+    .plan-price b { font-size: 2.25rem; font-weight: 700; font-stretch: 105%; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+    .plan-price span { color: var(--text-2); font-size: var(--fs-sm); }
+    .plan-note { font-size: var(--fs-xs); color: var(--text-2); margin-bottom: 14px; min-height: 18px; }
+    .plan-list { display: flex; flex-direction: column; gap: 8px; font-size: var(--fs-sm); margin: 10px 0 20px; }
+    .plan-list li { display: flex; gap: 10px; align-items: flex-start; }
+    .plan-list .i { width: 16px; height: 16px; margin-top: 2px; stroke-width: 2.25; flex-shrink: 0; }
+    .plan-list .is-off { color: var(--text-2); }
+    .plan-list .is-off .i { color: var(--stone); }
+    .pasos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--stone); }
+    .paso { padding: 24px 28px 28px 0; border-right: 1px solid var(--border); }
+    .paso:last-child { border-right: 0; }
+    .paso + .paso { padding-left: 28px; }
+    .paso .n { font-family: var(--mono); font-size: var(--fs-sm); color: var(--red); display: block; margin-bottom: 10px; }
+    .paso b { display: block; font-size: var(--fs-lg); font-weight: 600; letter-spacing: -.01em; }
+    .paso span { display: block; color: var(--text-2); font-size: var(--fs-sm); margin-top: 6px; }
+    .alta { display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; align-items: start; }
+    .alta-intro { position: sticky; top: calc(var(--header-h) + 24px); }
+    .alta-intro p { color: var(--text-2); margin-top: 12px; max-width: 40ch; }
+    .alta-form { display: flex; flex-direction: column; gap: 20px; }
+    .alta-form .plate-body { display: flex; flex-direction: column; gap: 16px; }
+    .faq details { border-top: 1px solid var(--border); }
+    .faq details:last-child { border-bottom: 1px solid var(--border); }
+    .faq summary { cursor: pointer; padding: 16px 0; font-weight: 600; font-size: var(--fs-base); display: flex; justify-content: space-between; align-items: center; gap: 12px; list-style: none; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary .i { flex-shrink: 0; transition: transform var(--t1) var(--ease); color: var(--text-2); }
+    .faq details[open] summary .i { transform: rotate(45deg); }
+    .faq details p { padding: 0 0 18px; color: var(--text-2); font-size: var(--fs-sm); max-width: 62ch; line-height: 1.6; }
+    @media (max-width: 1024px) { .razones, .pasos { grid-template-columns: 1fr; } .razon, .paso { border-right: 0; border-bottom: 1px solid var(--border); padding: 20px 0; } .razon + .razon, .paso + .paso { padding-left: 0; } .razon:last-child, .paso:last-child { border-bottom: 0; } }
+    @media (max-width: 900px) { .hero, .alta { grid-template-columns: 1fr; gap: 32px; } .alta-intro { position: static; } .planes { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .faq summary .i { transition: none; } }
+
+    /* Dentro del portal: columna central estrecha */
+    .ml-main .wrap { padding: 0; max-width: none; }
+    .ml-main .section, .ml-main .section-tight { padding: 36px 0; }
+    .ml-main .hero { grid-template-columns: 1fr; gap: 28px; padding: 0 0 36px; }
+    .ml-main .display { font-size: clamp(2rem, 4vw, 2.75rem); }
+    .ml-main .razones, .ml-main .pasos { grid-template-columns: 1fr; }
+    .ml-main .razon, .ml-main .paso { border-right: 0; border-bottom: 1px solid var(--border); padding: 20px 0; }
+    .ml-main .razon + .razon, .ml-main .paso + .paso { padding-left: 0; }
+    .ml-main .alta { grid-template-columns: 1fr; gap: 24px; }
+    .ml-main .alta-intro { position: static; }
+    @media (max-width: 700px) { .ml-main .planes { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main id="main"></main>
+  <template id="src">
+    <section class="wrap hero" aria-labelledby="t">
+      <div>
+        <p class="label" style="margin-bottom:16px">Para empresas</p>
+        <h1 class="display" id="t">Tu empresa, donde el sector busca.</h1>
+        <p class="lead">Carpinteros, fabricantes y compradores entran en ROBLE a buscar proveedores. Una ficha verificada te pone delante de ellos con los datos que importan.</p>
+        <div class="row"><a class="btn btn-primary btn-lg" href="#alta">Dar de alta mi empresa <svg class="i"><use href="#i-arrow-right"/></svg></a><a class="btn btn-lg" href="empresa.html?id=15">Ver una ficha de ejemplo</a></div>
+      </div>
+      <div class="hero-demo"><p class="label">Así se ve tu empresa en los resultados</p><div class="results" id="demo"></div></div>
+    </section>
+
+    <section class="section band" aria-labelledby="h-razones">
+      <div class="wrap">
+        <div class="section-head"><div><p class="label">Por qué ROBLE</p><h2 class="h2" id="h-razones">Especialista, no generalista.</h2></div></div>
+        <div class="razones">
+          <div class="razon"><span class="n">01</span><h3>Te buscan a ti, no a todo el mundo.</h3><p>ROBLE solo lista empresas del sector de la madera. Quien entra sabe lo que busca: una máquina, un tablero, un taller que lacé a terceros.</p></div>
+          <div class="razon"><span class="n">02</span><h3>Una ficha que se lee como una placa.</h3><p>Sector, zona, especialidades, productos. Datos verificados a mano antes de publicarse, sin adornos ni relleno.</p></div>
+          <div class="razon"><span class="n">03</span><h3>Los contactos llegan a tu correo.</h3><p>Sin intermediarios ni comisiones. El mensaje va de quien busca a quien fabrica, y ROBLE no se queda en medio.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band" aria-labelledby="h-planes">
+      <div class="wrap">
+        <div class="section-head"><div><p class="label">Planes</p><h2 class="h2" id="h-planes">Empieza gratis. Completa cuando quieras.</h2></div></div>
+        <div class="planes">
+          <div class="plate">
+            <div class="plate-head"><span class="label">Ficha básica</span><span class="status status-live">Gratis</span></div>
+            <div class="plate-body">
+              <div class="plan-price"><b>0 €</b><span>/ mes</span></div>
+              <p class="plan-note">Sin permanencia. Sin tarjeta.</p>
+              <ul class="plan-list">
+                <li><svg class="i"><use href="#i-check"/></svg> Ficha en el directorio y en tus sectores</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Nombre, actividad, zona y productos</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Verificación manual antes de publicar</li>
+                <li class="is-off"><svg class="i"><use href="#i-minus"/></svg> Web y teléfono visibles en la ficha</li>
+                <li class="is-off"><svg class="i"><use href="#i-minus"/></svg> Especialidades y galería</li>
+                <li class="is-off"><svg class="i"><use href="#i-minus"/></svg> Destacada en los listados</li>
+              </ul>
+              <a class="btn btn-block" href="#alta">Empezar con la ficha básica</a>
+            </div>
+          </div>
+          <div class="plate">
+            <div class="plate-head"><span class="label">Ficha completa</span><span class="featured">Destacada</span></div>
+            <div class="plate-body">
+              <div class="plan-price"><b>25 €</b><span>/ mes</span></div>
+              <p class="plan-note">O 240 € al año (20 € / mes). Sin permanencia.</p>
+              <ul class="plan-list">
+                <li><svg class="i"><use href="#i-check"/></svg> Todo lo de la ficha básica</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Web, teléfono y correo visibles</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Especialidades y galería de fotos</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Destacada en resultados y portada</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Contactos directos desde la ficha</li>
+                <li><svg class="i"><use href="#i-check"/></svg> Estadísticas de visitas</li>
+              </ul>
+              <a class="btn btn-ink btn-block" href="#alta">Empezar con la ficha completa</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band" aria-labelledby="h-pasos">
+      <div class="wrap">
+        <div class="section-head"><div><p class="label">Cómo funciona</p><h2 class="h2" id="h-pasos">Tres pasos. Cuarenta y ocho horas.</h2></div></div>
+        <ol class="pasos">
+          <li class="paso"><span class="n">01</span><b>Cuéntanos qué haces.</b><span>Nombre, zona y dos frases sobre tu actividad. Cinco minutos.</span></li>
+          <li class="paso"><span class="n">02</span><b>Elige tu sector.</b><span>Uno o varios de los 38. Añade tus productos si quieres, ahora o más tarde.</span></li>
+          <li class="paso"><span class="n">03</span><b>Publica.</b><span>Revisamos la ficha a mano en 48 horas y te avisamos por correo.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section band" id="alta" aria-labelledby="h-alta">
+      <div class="wrap alta">
+        <div class="alta-intro">
+          <p class="label" style="margin-bottom:12px">Alta de empresa</p>
+          <h2 class="h2" id="h-alta">Cuéntanos qué haces.</h2>
+          <p>Con estos datos preparamos tu ficha básica. Después podrás completarla desde tu cuenta.</p>
+          <div class="alert" style="margin-top:20px"><svg class="i"><use href="#i-clock"/></svg><div><strong>Revisión en 48 horas.</strong> Comprobamos que la empresa existe y que el sector es correcto.</div></div>
+        </div>
+        <form class="alta-form" id="alta-form" novalidate>
+          <div class="plate">
+            <div class="plate-head"><span class="label">01 · Empresa</span></div>
+            <div class="plate-body">
+              <div class="field"><label for="a-nombre">Nombre de la empresa <span class="req">*</span></label><input class="input" id="a-nombre" name="nombre" required placeholder="Ej.: Maderas del Duero"><span class="field-error">Necesitamos el nombre de la empresa.</span></div>
+              <div class="field"><label for="a-sector">Sector principal <span class="req">*</span></label><select class="select" id="a-sector" name="sector" required><option value="">Elige un sector</option></select><span class="field-error">Elige el sector que mejor te describe.</span></div>
+              <div class="field"><label for="a-desc">Qué hacéis <span class="req">*</span></label><textarea class="textarea" id="a-desc" name="desc" required placeholder="Qué fabricáis o vendéis, para quién y dónde. Dos frases bastan."></textarea><span class="field-hint">Es el texto que verá quien te busque. Sin adjetivos: qué, para quién, dónde.</span><span class="field-error">Cuéntanos qué hacéis, aunque sean dos frases.</span></div>
+            </div>
+          </div>
+          <div class="plate">
+            <div class="plate-head"><span class="label">02 · Zona y contacto</span></div>
+            <div class="plate-body">
+              <div class="form-row">
+                <div class="field"><label for="a-ciudad">Ciudad</label><input class="input" id="a-ciudad" name="ciudad" autocomplete="address-level2"></div>
+                <div class="field"><label for="a-pais">País <span class="req">*</span></label><select class="select" id="a-pais" name="pais" required><option value="ES">España</option><option value="PT">Portugal</option><option value="IT">Italia</option><option value="FR">Francia</option></select></div>
+              </div>
+              <div class="form-row">
+                <div class="field"><label for="a-web">Web</label><input class="input" id="a-web" name="web" type="url" placeholder="https://" autocomplete="url"><span class="field-hint">Solo se muestra en la ficha completa.</span></div>
+                <div class="field"><label for="a-email">Correo de contacto <span class="req">*</span></label><input class="input" id="a-email" name="email" type="email" required autocomplete="email"><span class="field-hint">Solo lo ve el equipo de ROBLE.</span><span class="field-error">Falta el correo. Te avisamos ahí cuando la ficha esté publicada.</span></div>
+              </div>
+              <label class="check"><input type="checkbox" id="a-acepto"> Acepto el <a href="legal.html" style="text-decoration:underline;text-underline-offset:2px">aviso legal</a> y la <a href="legal.html#privacidad" style="text-decoration:underline;text-underline-offset:2px">política de privacidad</a></label>
+            </div>
+            <div class="plate-foot between"><span class="status status-pending">Pendiente de revisión al enviar</span><button class="btn btn-primary btn-lg" type="submit">Enviar la ficha</button></div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="section band" aria-labelledby="h-faq">
+      <div class="wrap wrap-narrow" style="margin-inline:0;padding-inline:0;max-width:none">
+        <div class="wrap">
+          <div class="section-head"><div><p class="label">Preguntas</p><h2 class="h2" id="h-faq">Lo que suelen preguntar.</h2></div></div>
+          <div class="faq" style="max-width:760px">
+            <details><summary>¿Cuánto tarda en publicarse la ficha? <svg class="i"><use href="#i-plus"/></svg></summary><p>Hasta 48 horas laborables. Cada alta la revisa una persona: comprobamos que la empresa existe y que el sector es el correcto. Te avisamos por correo al publicarla.</p></details>
+            <details><summary>¿Puedo estar en varios sectores? <svg class="i"><use href="#i-plus"/></summary><p>Sí. Eliges un sector principal al darte de alta y desde tu cuenta puedes añadir los demás. La ficha aparece en todos ellos.</p></details>
+            <details><summary>¿Quién ve mi teléfono y mi web? <svg class="i"><use href="#i-plus"/></svg></summary><p>Con la ficha básica, nadie: el contacto llega por el formulario de la ficha. Con la ficha completa, la web, el teléfono y el correo se muestran a cualquiera que la visite.</p></details>
+            <details><summary>¿Cómo se verifica una empresa? <svg class="i"><use href="#i-plus"/></svg></summary><p>Comprobamos a mano que la empresa existe, que la actividad coincide con el sector elegido y que la web, si la hay, es suya. Si algo no cuadra, te escribimos antes de rechazar nada.</p></details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </template>
+  <script src="/api/datos.js"></script>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      ML.shell('directorio', { dir: true }).appendChild(document.getElementById('src').content);
+      const R = ROBLE, D = R.D;
+      const demo = R.D.empresas.find(e => e.plan === 'premium' && e.desc) || R.D.empresas[0]; if (demo) document.getElementById('demo').innerHTML = R.tpl.empresaRow(demo);
+      const sec = document.getElementById('a-sector');
+      D.sectores.forEach(s => sec.add(new Option(s.corto, s.id)));
+      const form = document.getElementById('alta-form');
+      form.addEventListener('submit', e => {
+        e.preventDefault(); if (!R.validate(form)) return;
+        if (!document.getElementById('a-acepto').checked) { R.toast('Necesitamos que aceptes el aviso legal para enviar la ficha.', 'error'); document.getElementById('a-acepto').focus(); return; }
+        const alta = { id: Date.now(), fecha: new Date().toISOString(), nombre: form.nombre.value.trim(), sector: form.sector.value, sub: '', desc: form.desc.value.trim(), ciudad: form.ciudad.value.trim(), pais: form.pais.value, web: form.web.value.trim(), email: form.email.value.trim(), estado: 'pendiente', tipo: 'empresa' };
+        try { const A = JSON.parse(localStorage.getItem('roble_altas') || '[]'); A.unshift(alta); localStorage.setItem('roble_altas', JSON.stringify(A)); } catch (err) {}
+        form.innerHTML = `<div class="plate"><div class="plate-head"><span class="label">Ficha enviada</span><span class="status status-pending">Pendiente</span></div><div class="plate-body"><p class="h3">Gracias, ${R.esc(alta.nombre)}.</p><p class="muted" style="margin-top:8px">La revisamos en 48 horas y te avisamos en <strong>${R.esc(alta.email)}</strong>. Mientras, puedes crear tu cuenta para completar la ficha cuando esté publicada.</p><div class="row" style="margin-top:20px"><a class="btn btn-ink" href="acceso.html?crear">Crear mi cuenta</a><a class="btn" href="buscar.html?sector=${alta.sector}">Ver mi sector</a></div></div></div>`;
+        form.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+        R.toast('Ficha enviada. La revisamos en 48 horas.');
+      });
+    });
+  </script>
+</body>
+</html>

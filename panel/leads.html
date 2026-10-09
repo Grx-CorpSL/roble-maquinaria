@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Contactos — Panel de empresa — ROBLE</title>
+  <meta name="description" content="Contactos recibidos desde tus anuncios en ROBLE Maquinaria.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>.admin-header .brand-tag { display: inline-flex; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+    <div class="drawer-head"><h2 id="dr-title">Contacto</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <form class="drawer-body" id="dr-form" novalidate></form>
+    <div class="drawer-foot"><span id="dr-status"></span><div class="row"><button class="btn btn-ghost" data-close type="button">Cerrar</button><button class="btn btn-ink" type="submit" form="dr-form">Guardar</button></div></div>
+  </aside>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="panel/panel.js"></script>
+  <script>
+    ML.auth.ready.then(() => {
+      const R = ROBLE, v = Panel.shell('leads'); if (!v) return;
+      const main = document.getElementById('main');
+      main.innerHTML = `<div class="page-title"><div><h1>Contactos <span class="count" id="count"></span></h1><p>Quien te escribe desde un anuncio o desde tu página, con su WhatsApp. Responde el mismo día: el primero que contesta con datos, vende.</p></div></div><div class="tbar"><select class="select" id="f-estado" aria-label="Estado"><option value="">Todos</option><option value="nuevo">Nuevos</option><option value="en-curso">En curso</option><option value="cerrado">Cerrados</option></select></div><div id="table"></div>`;
+      const all = () => Panel.leads(v);
+      /* Enlace a WhatsApp con el saludo escrito; el número lo prepara el servidor (formato wa.me). */
+      const wa = l => l.whatsapp ? 'https://wa.me/' + l.whatsapp + '?text=' + encodeURIComponent('Hola ' + l.nombre + ', te escribo desde ' + v.nombre + ' por tu consulta' + (l.producto ? ' sobre «' + l.producto + '»' : '') + ' en ROBLE.') : '';
+      const rows = () => all().filter(l => !document.getElementById('f-estado').value || l.estado === document.getElementById('f-estado').value).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      const t = Admin.table(document.getElementById('table'), {
+        rows, per: 20,
+        cols: [
+          { key: 'fecha', label: 'Fecha', cls: 'mono muted', render: l => Panel.fecha(l.fecha) },
+          { key: 'nombre', label: 'Contacto', render: l => `<div class="cell-main"><div><a href="#" data-view="${l.id}"><b>${R.esc(l.nombre)}</b></a><span style="text-transform:none;letter-spacing:0">${R.esc(l.email)}${l.telefono ? ' · ' + R.esc(l.telefono) : ''}${l.contacto_empresa ? ' · ' + R.esc(l.contacto_empresa) : ''}</span></div></div>` },
+          { key: 'producto', label: 'Sobre', render: l => l.producto ? R.esc(l.producto) : '<span class="muted">Contacto general</span>' },
+          { key: 'mensaje', label: 'Mensaje', cls: 'col-opt muted', render: l => R.esc(l.mensaje.length > 60 ? l.mensaje.slice(0, 60) + '…' : l.mensaje) },
+          { key: 'estado', label: 'Estado', render: l => Panel.status(l.estado) },
+        ],
+        actions: l => (wa(l) ? `<a class="btn btn-ghost btn-icon btn-sm" href="${wa(l)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp" title="Escribir por WhatsApp">${R.icon('whatsapp', 'i-16')}</a>` : '') + Admin.ib('eye', 'Ver', `data-view="${l.id}"`) + `<a class="btn btn-ghost btn-icon btn-sm" href="mailto:${R.esc(l.email)}?subject=${encodeURIComponent('Re: ' + (l.producto || 'tu consulta') + ' — ' + v.nombre)}" aria-label="Responder por correo" title="Responder">${R.icon('mail', 'i-16')}</a>`,
+        emptyIcon: 'inbox', emptyTitle: 'Todavía nadie te ha escrito', emptyText: 'Los contactos que lleguen desde tus anuncios aparecerán aquí, con su WhatsApp, y en tu correo.',
+        onRender: () => { document.getElementById('count').textContent = rows().length; },
+      });
+      document.getElementById('f-estado').addEventListener('change', () => t.render());
+      const dr = R.drawer('drawer'); let cur = null;
+      /* El estado se guarda en el servidor, que comprueba que el contacto es de tu empresa; nada en localStorage. */
+      const save = async (id, patch) => {
+        try {
+          const r = await fetch('/api/contactos?id=' + encodeURIComponent(id), { method: 'PATCH', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ estado: patch.estado }) });
+          if (!r.ok) { const j = await r.json().catch(() => ({})); R.toast(j.error || 'No se ha podido guardar.', 'error'); return false; }
+          Panel.setLead(id, { estado: patch.estado }); return true;
+        } catch (e) { R.toast('Sin conexión con el servidor.', 'error'); return false; }
+      };
+      function open(l) {
+        cur = l; document.getElementById('dr-title').textContent = l.nombre;
+        document.getElementById('dr-form').innerHTML = `<dl class="specs detail"><div class="spec"><dt>Fecha</dt><dd class="mono">${Panel.fecha(l.fecha)}</dd></div><div class="spec"><dt>Correo</dt><dd><a href="mailto:${R.esc(l.email)}">${R.esc(l.email)}</a></dd></div>${l.telefono ? `<div class="spec"><dt>WhatsApp</dt><dd>${wa(l) ? `<a href="${wa(l)}" target="_blank" rel="noopener">${R.esc(l.telefono)}</a>` : R.esc(l.telefono)}</dd></div>` : ''}${l.contacto_empresa ? `<div class="spec"><dt>Empresa</dt><dd>${R.esc(l.contacto_empresa)}</dd></div>` : ''}${l.ciudad ? `<div class="spec"><dt>Ciudad</dt><dd>${R.esc(l.ciudad)}</dd></div>` : ''}${l.producto ? `<div class="spec"><dt>Sobre</dt><dd>${R.esc(l.producto)}</dd></div>` : ''}</dl><div><span class="label" style="display:block;margin-bottom:6px">Mensaje</span><div class="msg">${R.esc(l.mensaje)}</div></div>` + Admin.form([{ name: 'estado', label: 'Estado', type: 'select', options: [['nuevo', 'Nuevo'], ['en-curso', 'En curso'], ['cerrado', 'Cerrado']] }], l);
+        document.getElementById('dr-status').innerHTML = (wa(l) ? `<a class="btn btn-sm btn-primary" href="${wa(l)}" target="_blank" rel="noopener">${R.icon('whatsapp')} Escribir por WhatsApp</a> ` : '') + `<a class="btn btn-sm ${wa(l) ? 'btn-ghost' : 'btn-primary'}" href="mailto:${R.esc(l.email)}?subject=${encodeURIComponent('Re: ' + (l.producto || 'tu consulta') + ' — ' + v.nombre)}">${R.icon('mail')} Correo</a>`;
+        if (l.estado === 'nuevo') { save(l.id, { estado: 'en-curso' }); }
+        dr.open();
+      }
+      document.getElementById('dr-form').addEventListener('submit', async ev => { ev.preventDefault(); const x = Admin.read(ev.target); if (await save(cur.id, { estado: x.estado })) { R.toast('Guardado'); dr.close(); t.render(); } });
+      document.addEventListener('click', ev => { const b = ev.target.closest('[data-view]'); if (!b) return; ev.preventDefault(); const l = all().find(x => String(x.id) === b.dataset.view); l && open(l); });
+      const id = R.qs().get('id'); if (id) { const l = all().find(x => String(x.id) === id); l && open(l); }
+    });
+  </script>
+</body>
+</html>

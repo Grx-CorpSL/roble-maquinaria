@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Productos del sector de la madera — Directorio ROBLE</title>
+  <meta name="description" content="Productos, materiales, herrajes, acabados y servicios publicados por las empresas del directorio ROBLE. Busca por palabra y por sector.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/productos.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/productos.html">
+  <meta property="og:title" content="Productos del sector de la madera — Directorio ROBLE">
+  <meta property="og:description" content="Productos, materiales, herrajes, acabados y servicios publicados por las empresas del directorio ROBLE. Busca por palabra y por sector.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/datos.js"></script>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = R.D, p = R.qs(), PER = 24;
+      const st = { q: p.get('q') || '', sector: p.get('sector') || '', sub: p.get('subsector') || p.get('sub') || '', page: 1 };
+      const c = ML.shell('directorio', { dir: true, sector: st.sector || null });
+      const pager = (page, pages) => pages > 1 ? `<nav class="pager" aria-label="Páginas" style="margin-top:24px"><button type="button" data-p="${page - 1}" ${page === 1 ? 'disabled' : ''} aria-label="Anterior">${R.icon('chevron-left', 'i-16')}</button>${Array.from({ length: pages }, (_, i) => i + 1).map(n => `<button type="button" data-p="${n}" ${n === page ? 'aria-current="page"' : ''}>${n}</button>`).join('')}<button type="button" data-p="${page + 1}" ${page === pages ? 'disabled' : ''} aria-label="Siguiente">${R.icon('chevron-right', 'i-16')}</button></nav>` : '';
+      function url() { const u = new URLSearchParams(); ['q', 'sector'].forEach(k => st[k] && u.set(k, st[k])); if (st.sub) u.set('subsector', st.sub); history.replaceState(null, '', 'productos.html' + (u.toString() ? '?' + u : '')); }
+      function render(keep) {
+        const list = R.buscar({ q: st.q, sector: st.sector, sub: st.sub }).productos;
+        const pages = Math.max(1, Math.ceil(list.length / PER)); if (st.page > pages) st.page = pages;
+        const slice = list.slice((st.page - 1) * PER, st.page * PER);
+        c.innerHTML = `
+          <nav class="crumbs" aria-label="Migas"><a href="index.html">Inicio</a>${R.icon('chevron-right', 'sep')}<a href="directorio.html">Directorio</a>${R.icon('chevron-right', 'sep')}<span aria-current="page">Productos</span></nav>
+          <h1 class="h1">Productos del sector</h1>
+          <p class="intro">${D.productos.length} productos y servicios publicados por las empresas del directorio. Para maquinaria con precio y estado, mira los <a href="buscar.html" style="text-decoration:underline;text-underline-offset:2px">anuncios de máquinas</a>.</p>
+          <form class="vfilters" onsubmit="return false" style="margin-top:18px;grid-template-columns:2fr 1fr auto"><div class="field"><label for="q">Qué buscas</label><input class="input" id="q" type="search" placeholder="Ej.: MDF, bisagra, barniz al agua" value="${R.esc(st.q)}"></div><div class="field"><label for="sector">Sector</label><select class="select" id="sector"><option value="">Todos</option>${D.sectores.map(s => `<option value="${s.id}" ${st.sector === s.id ? 'selected' : ''}>${R.esc(s.corto)}</option>`).join('')}</select></div><button class="btn" type="button" id="clear">Quitar filtros</button></form>
+          <p class="count-line"><b>${list.length}</b> ${list.length === 1 ? 'producto' : 'productos'}${st.sub ? ' en «' + R.esc(st.sub) + '»' : ''}${pages > 1 ? ` · página ${st.page} de ${pages}` : ''}</p>
+          ${slice.length ? `<div class="pgrid">${slice.map(R.tpl.productoCard).join('')}</div>${pager(st.page, pages)}` : `<div class="empty">${R.icon('search')}<p class="empty-title">Ningún producto con esa búsqueda</p><p>Prueba con una palabra más general o busca la empresa que lo fabrica.</p><div class="row" style="justify-content:center"><button class="btn" type="button" id="clear2">Quitar filtros</button><a class="btn btn-ink" href="empresas.html${st.q ? '?q=' + encodeURIComponent(st.q) : ''}">Buscar empresas</a></div></div>`}`;
+        const q = c.querySelector('#q'); if (keep != null) { q.focus(); q.setSelectionRange(keep, keep); }
+        q.addEventListener('input', e => { st.q = e.target.value; st.page = 1; url(); render(e.target.selectionStart); });
+        c.querySelector('#sector').addEventListener('change', e => { st.sector = e.target.value; st.sub = ''; st.page = 1; url(); render(); });
+        c.querySelectorAll('#clear,#clear2').forEach(b => b.addEventListener('click', () => { st.q = st.sector = st.sub = ''; st.page = 1; url(); render(); }));
+        c.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => { st.page = Number(b.dataset.p); render(); scrollTo({ top: 0 }); }));
+      }
+      render();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Directorio del sector de la madera — ROBLE</title>
+  <meta name="description" content="Directorio profesional del sector de la madera y el mueble en España: empresas y productos ordenados por sector, de la materia prima al mueble terminado.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/directorio.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/directorio.html">
+  <meta property="og:title" content="Directorio del sector de la madera — ROBLE">
+  <meta property="og:description" content="Directorio profesional del sector de la madera y el mueble en España: empresas y productos ordenados por sector, de la materia prima al mueble terminado.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/datos.js"></script>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = R.D, c = ML.shell('directorio', { dir: true });
+      const prem = [...D.empresas.filter(e => e.plan === 'premium'), ...D.empresas.filter(e => e.plan !== 'premium' && e.desc).sort((a, b) => b.nProductos - a.nProductos)].slice(0, 6);
+      const seen = new Set(), prods = [];
+      for (const p of D.productos.filter(p => p.destacado)) { if (seen.has(p.empresa_id)) continue; seen.add(p.empresa_id); prods.push(p); if (prods.length === 6) break; }
+      c.innerHTML = `
+        <nav class="crumbs" aria-label="Migas"><a href="index.html">Inicio</a>${R.icon('chevron-right', 'sep')}<span aria-current="page">Directorio</span></nav>
+        <h1 class="h1">El directorio del sector de la madera</h1>
+        <p class="intro">${D.empresas.length} empresas, ${D.productos.length} productos y ${D.sectores.length} sectores. De la materia prima a la feria.</p>
+        <form class="dir-search" action="empresas.html" role="search"><input class="input" type="search" name="q" placeholder="Ej.: tableros, bisagras, Valencia" aria-label="Buscar empresas del sector"><button class="btn btn-primary" type="submit">Buscar empresas</button></form>
+        <section class="sec-block" aria-labelledby="h-sec"><div class="section-head"><div><p class="label">Sectores</p><h2 class="h2" id="h-sec">Los ${D.sectores.length} sectores.</h2></div></div><div class="cgrid">${D.sectores.map(ML.tpl.stile).join('')}</div></section>
+        <section class="sec-block" aria-labelledby="h-emp"><div class="section-head"><div><p class="label">Empresas</p><h2 class="h2" id="h-emp">Destacadas del directorio.</h2></div><a class="link" href="empresas.html">Ver las ${D.empresas.length} ${R.icon('arrow-right', 'i-16')}</a></div><div class="vgrid">${prem.map(ML.tpl.empCard).join('')}</div></section>
+        <section class="sec-block" aria-labelledby="h-prod"><div class="section-head"><div><p class="label">Productos</p><h2 class="h2" id="h-prod">Lo que el sector pone en el mercado.</h2></div><a class="link" href="productos.html">Ver los ${D.productos.length} ${R.icon('arrow-right', 'i-16')}</a></div><div class="pgrid">${prods.map(R.tpl.productoCard).join('')}</div></section>
+        <div class="alert" style="margin-top:36px"><svg class="i"><use href="#i-info"/></svg><div><strong>¿Tu empresa no está?</strong> La ficha básica es gratuita y se revisa antes de publicarse. <a href="para-empresas.html" style="text-decoration:underline;text-underline-offset:2px">Dar de alta mi empresa</a></div></div>`;
+    });
+  </script>
+</body>
+</html>

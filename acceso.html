@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Acceder — ROBLE</title>
+  <meta name="description" content="Entra en tu cuenta de ROBLE o crea una nueva para gestionar la ficha de tu empresa o guardar proveedores.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>
+    .acceso { min-height: calc(100vh - var(--header-h)); display: grid; grid-template-columns: 1fr 1fr; }
+    .acceso-side { background: var(--ink); color: var(--warm); padding: clamp(40px, 6vw, 80px) clamp(24px, 5vw, 72px); display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
+    .acceso-side .h2 { font-size: clamp(1.75rem, 3.4vw, 2.75rem); max-width: 14ch; }
+    .acceso-side p { color: var(--steel-2); max-width: 40ch; margin-top: 14px; }
+    .acceso-side .cifras { display: flex; gap: 28px; flex-wrap: wrap; font-family: var(--mono); font-size: var(--fs-xs); color: var(--steel-2); }
+    .acceso-side .cifras b { display: block; color: var(--warm); font-family: var(--font); font-size: 1.75rem; font-weight: 700; font-stretch: 105%; letter-spacing: -.03em; }
+    .acceso-main { display: grid; place-items: center; padding: clamp(32px, 5vw, 64px) var(--gutter); }
+    .acceso-box { width: 100%; max-width: 420px; }
+    .acceso-box .tabs { margin-bottom: 24px; }
+    .acceso-box .tab { flex: 1; justify-content: center; }
+    .acceso-box form { display: flex; flex-direction: column; gap: 16px; }
+    .acceso-box .h3 { margin-bottom: 4px; }
+    .acceso-foot { margin-top: 20px; font-size: var(--fs-sm); color: var(--text-2); text-align: center; }
+    .acceso-foot a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+    .pw { position: relative; }
+    .pw .input { padding-right: 44px; }
+    .pw button { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; display: grid; place-items: center; border-radius: var(--r2); color: var(--text-2); }
+    .pw button:hover { background: var(--warm-2); color: var(--ink); }
+    .demo-note { margin-top: 24px; }
+    @media (max-width: 860px) { .acceso { grid-template-columns: 1fr; min-height: 0; } .acceso-side { order: 2; padding: 40px var(--gutter); gap: 28px; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <header class="site-header cab-oscura">
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="ROBLE Maquinaria, inicio">
+        <img class="brand-mark" src="assets/img/mark-white.svg" alt="" width="28" height="28">
+        <img class="brand-word" src="assets/img/wordmark-white.svg" alt="ROBLE" width="95" height="15"><span class="brand-tag">Maquinaria</span>
+      </a>
+      <nav class="nav" aria-label="Principal"><a href="index.html">Inicio</a><a href="buscar.html">Máquinas</a><a href="vendedores.html">Vendedores</a><a href="directorio.html">Directorio</a><a href="guias.html">Guías</a><a href="vender.html">Vender</a></nav>
+      <form class="hsearch search" action="buscar.html" role="search">
+        <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+        <input class="input" type="search" name="q" placeholder="Buscar máquinas" aria-label="Buscar máquinas en ROBLE">
+      </form>
+      <div class="header-actions">
+        <a class="btn btn-ghost btn-icon" href="favoritos.html" aria-label="Máquinas guardadas" title="Guardadas"><svg class="i" aria-hidden="true"><use href="#i-star"/></svg></a>
+        <a class="btn" href="acceso.html" aria-current="page">Acceder</a>
+      </div>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Abrir menú"><svg class="i i-24" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="acceso">
+    <section class="acceso-main" aria-labelledby="acc-title">
+      <div class="acceso-box">
+        <h1 class="h2" id="acc-title" style="margin-bottom:20px">Tu cuenta en ROBLE Maquinaria.</h1>
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" aria-selected="true" data-panel="entrar" id="tab-entrar">Entrar</button>
+          <button class="tab" role="tab" aria-selected="false" data-panel="crear" id="tab-crear">Crear cuenta</button>
+        </div>
+        <div>
+          <form data-panel-id="entrar" id="f-entrar" novalidate>
+            <div class="field"><label for="e-email">Correo</label><input class="input input-lg" id="e-email" type="email" required autocomplete="email" placeholder="tu@empresa.es"><span class="field-error">Escribe el correo con el que te registraste.</span></div>
+            <div class="field"><label for="e-pass">Contraseña</label><div class="pw"><input class="input input-lg" id="e-pass" type="password" required autocomplete="current-password"><button type="button" id="pw-toggle" aria-label="Mostrar contraseña"><svg class="i"><use href="#i-eye"/></svg></button></div><span class="field-error">Falta la contraseña.</span></div>
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Entrar</button>
+            <p class="acceso-foot"><a href="#" id="olvide">¿Has olvidado la contraseña?</a></p>
+          </form>
+          <form data-panel-id="crear" id="f-crear" hidden novalidate>
+            <div class="field"><span class="field-label">Quiero</span><div class="seg" role="group" aria-label="Tipo de cuenta" style="width:100%"><button type="button" aria-pressed="true" data-tipo="empresa" style="flex:1">Anunciar mis máquinas</button><button type="button" aria-pressed="false" data-tipo="profesional" style="flex:1">Buscar y guardar</button></div></div>
+            <div class="field"><label for="c-nombre">Tu nombre</label><input class="input input-lg" id="c-nombre" required autocomplete="name" maxlength="80"><span class="field-error">Necesitamos tu nombre.</span></div>
+            <div class="field" id="campo-empresa"><label for="c-empresa">Nombre de la empresa</label><input class="input input-lg" id="c-empresa" autocomplete="organization" maxlength="120"><span class="field-error">Necesitamos el nombre de la empresa.</span></div>
+            <div class="field"><label for="c-email">Correo</label><input class="input input-lg" id="c-email" type="email" required autocomplete="email"><span class="field-error">Falta el correo. Te enviamos ahí la confirmación.</span></div>
+            <div class="field"><label for="c-pass">Contraseña</label><input class="input input-lg" id="c-pass" type="password" required autocomplete="new-password" minlength="8"><span class="field-hint">Mínimo 8 caracteres.</span><span class="field-error">Mínimo 8 caracteres.</span></div>
+            <label class="check"><input type="checkbox" id="c-acepto"> Acepto el <a href="legal.html" style="text-decoration:underline;text-underline-offset:2px">aviso legal</a> y la <a href="legal.html#privacidad" style="text-decoration:underline;text-underline-offset:2px">política de privacidad</a></label>
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Crear cuenta</button>
+            <p class="acceso-foot">Las cuentas de empresa se revisan antes de publicar la ficha.</p>
+          </form>
+          <form data-panel-id="recuperar" id="f-recuperar" hidden novalidate>
+            <h2 class="h3" style="margin-bottom:8px">Cambiar la contraseña</h2>
+            <p class="muted small" style="margin-bottom:16px">Te enviamos un código por correo. Caduca en una hora y solo vale una vez.</p>
+            <div class="field"><label for="r-email">Correo</label><input class="input input-lg" id="r-email" type="email" required autocomplete="email"><span class="field-error">Falta el correo.</span></div>
+            <div id="paso-codigo" hidden>
+              <div class="field"><label for="r-codigo">Código del correo</label><input class="input input-lg" id="r-codigo" autocomplete="one-time-code" maxlength="10" style="text-transform:uppercase;letter-spacing:2px"><span class="field-error">Escribe el código del correo.</span></div>
+              <div class="field"><label for="r-nueva">Contraseña nueva</label><input class="input input-lg" id="r-nueva" type="password" autocomplete="new-password" minlength="8"><span class="field-hint">Mínimo 8 caracteres.</span><span class="field-error">Mínimo 8 caracteres.</span></div>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block" type="submit" id="r-boton">Enviarme el código</button>
+            <p class="acceso-foot"><a href="#" id="r-tengo">Ya tengo un código</a> · <a href="#" id="r-volver">Volver a entrar</a></p>
+          </form>
+        </div>
+      </div>
+    </section>
+    <aside class="acceso-side" aria-label="Sobre ROBLE">
+      <div>
+        <p class="label" style="color:var(--steel-2)">El buscador profesional de la madera</p>
+        <h2 class="h2" style="margin-top:12px">Sólida como la madera. Precisa como una máquina.</h2>
+        <p>Una cuenta te permite publicar anuncios de maquinaria, gestionar tu perfil de vendedor y recibir contactos. Si buscas máquinas, guarda las que te interesan y publica solicitudes.</p>
+      </div>
+      <div class="cifras" id="cifras"></div>
+    </aside>
+  </main>
+
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = window.ML_DATA;
+      if (D) document.getElementById('cifras').innerHTML = `<span><b>${D.anuncios.length}</b>máquinas</span><span><b>${D.vendedores.length}</b>vendedores</span><span><b>${(D.sectores || []).length || 38}</b>sectores</span>`;
+      const pw = document.getElementById('e-pass'), tg = document.getElementById('pw-toggle');
+      tg.addEventListener('click', () => { const show = pw.type === 'password'; pw.type = show ? 'text' : 'password'; tg.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña'); tg.innerHTML = R.icon(show ? 'eye-off' : 'eye'); });
+      document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); }));
+      /* Entrar: contraseña, sesión y empresas las comprueba el servidor
+         (/api/sesion, sobre las mismas tablas que el sistema actual). Nada se
+         guarda en localStorage; la sesión es una cookie HttpOnly. */
+      const entrar = async (email, password) => {
+        const boton = document.querySelector('#f-entrar button[type=submit]'); boton.disabled = true;
+        try {
+          const r = await fetch('/api/sesion', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+          const j = await r.json().catch(() => ({}));
+          if (!r.ok) { R.toast(j.error || 'No hemos podido comprobar tus datos.', 'error'); return; }
+          R.toast('Sesión iniciada');
+          setTimeout(() => { location.href = j.user && j.user.isAdmin ? '/admin' : 'panel/index.html'; }, 400);
+        } catch (e) {
+          R.toast('Sin conexión con el servidor. Inténtalo de nuevo.', 'error');
+        } finally { boton.disabled = false; }
+      };
+      document.getElementById('f-entrar').addEventListener('submit', e => { e.preventDefault(); if (!R.validate(e.target)) return; entrar(document.getElementById('e-email').value.trim(), document.getElementById('e-pass').value); });
+      /* Alta de cuenta en este mismo sitio (/api/registro), con las mismas
+         reglas y sobre la misma tabla que el sistema actual: la cuenta vale en
+         los dos. El nombre de empresa solo se pide a las cuentas de empresa. */
+      const tipoCuenta = () => { const b = document.querySelector('#f-crear .seg button[aria-pressed="true"]'); return b && b.dataset.tipo === 'profesional' ? 'comprador' : 'empresa'; };
+      const campoEmpresa = document.getElementById('campo-empresa'), inputEmpresa = document.getElementById('c-empresa');
+      const ajustaEmpresa = () => { const es = tipoCuenta() === 'empresa'; campoEmpresa.hidden = !es; inputEmpresa.required = es; };
+      document.querySelectorAll('#f-crear .seg button').forEach(b => b.addEventListener('click', () => setTimeout(ajustaEmpresa, 0)));
+      ajustaEmpresa();
+      document.getElementById('f-crear').addEventListener('submit', async e => {
+        e.preventDefault(); if (!R.validate(e.target)) return;
+        if (!document.getElementById('c-acepto').checked) { R.toast('Necesitamos que aceptes el aviso legal para crear la cuenta.', 'error'); return; }
+        const boton = e.target.querySelector('button[type=submit]'); boton.disabled = true;
+        try {
+          const r = await fetch('/api/registro', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+            nombre: document.getElementById('c-nombre').value.trim(), email: document.getElementById('c-email').value.trim(),
+            password: document.getElementById('c-pass').value, rol: tipoCuenta(), empresa: inputEmpresa.value.trim() }) });
+          const j = await r.json().catch(() => ({}));
+          if (!r.ok) { R.toast(j.error || 'No hemos podido crear la cuenta.', 'error'); return; }
+          R.toast('Cuenta creada');
+          setTimeout(() => { location.href = j.user && j.user.isAdmin ? '/admin' : 'panel/index.html'; }, 400);
+        } catch (err) {
+          R.toast('Sin conexión con el servidor. Inténtalo de nuevo.', 'error');
+        } finally { boton.disabled = false; }
+      });
+      /* Recuperación de contraseña en esta misma web (/api/password): código
+         por correo, una hora, un uso. Dos pasos en un mismo formulario. */
+      const muestraPanel = id => {
+        document.querySelectorAll('.acceso-box [data-panel-id]').forEach(p => { p.hidden = p.dataset.panelId !== id; });
+        document.querySelectorAll('.acceso-box .tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.panel === id)));
+      };
+      const pasoCodigo = document.getElementById('paso-codigo'), rBoton = document.getElementById('r-boton');
+      const modoCodigo = on => {
+        pasoCodigo.hidden = !on;
+        document.getElementById('r-codigo').required = on; document.getElementById('r-nueva').required = on;
+        rBoton.textContent = on ? 'Cambiar la contraseña' : 'Enviarme el código';
+      };
+      document.getElementById('olvide').addEventListener('click', e => { e.preventDefault(); document.getElementById('r-email').value = document.getElementById('e-email').value.trim(); modoCodigo(false); muestraPanel('recuperar'); document.getElementById('r-email').focus(); });
+      document.getElementById('r-tengo').addEventListener('click', e => { e.preventDefault(); modoCodigo(true); document.getElementById('r-codigo').focus(); });
+      document.getElementById('r-volver').addEventListener('click', e => { e.preventDefault(); muestraPanel('entrar'); });
+      document.getElementById('f-recuperar').addEventListener('submit', async e => {
+        e.preventDefault(); if (!R.validate(e.target)) return;
+        const email = document.getElementById('r-email').value.trim(); rBoton.disabled = true;
+        const cabeceras = { 'Content-Type': 'application/json' };
+        try {
+          if (pasoCodigo.hidden) {
+            const r = await fetch('/api/password?a=olvide', { method: 'POST', credentials: 'same-origin', headers: cabeceras, body: JSON.stringify({ email }) });
+            const j = await r.json().catch(() => ({}));
+            if (!r.ok) { R.toast(j.error || 'No se ha podido enviar el código.', 'error'); return; }
+            R.toast('Si el correo está registrado, recibirás un código en unos minutos.');
+            modoCodigo(true); document.getElementById('r-codigo').focus();
+          } else {
+            const r = await fetch('/api/password?a=nueva', { method: 'POST', credentials: 'same-origin', headers: cabeceras, body: JSON.stringify({ email, codigo: document.getElementById('r-codigo').value.trim(), nueva: document.getElementById('r-nueva').value }) });
+            const j = await r.json().catch(() => ({}));
+            if (!r.ok) { R.toast(j.error || 'No se ha podido cambiar la contraseña.', 'error'); return; }
+            R.toast('Contraseña cambiada');
+            setTimeout(() => { location.href = 'panel/index.html'; }, 400);
+          }
+        } catch (err) {
+          R.toast('Sin conexión con el servidor. Inténtalo de nuevo.', 'error');
+        } finally { rBoton.disabled = false; }
+      });
+      // El enlace del correo trae ?p=codigo: se abre directamente el paso del código.
+      if (R.qs().get('p') === 'codigo') { modoCodigo(true); muestraPanel('recuperar'); }
+      // Con la sesión ya abierta no se pide entrar otra vez: se va a su panel.
+      else fetch('/api/auth', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.ok ? r.json() : null)
+        .then(j => { if (j && j.user) location.replace(j.user.isAdmin ? '/admin' : 'panel/index.html'); }).catch(() => {});
+      const p = R.qs().get('crear'); if (p !== null) document.getElementById('tab-crear').click();
+    });
+  </script>
+</body>
+</html>

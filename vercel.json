@@ -1,0 +1,653 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), interest-cohort=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://blob.vercel-storage.com; form-action 'self' https://formsubmit.co; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/assets/img/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/categorias.html",
+      "destination": "/directorio.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/categoria.html",
+      "destination": "/buscar.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/repuestos.html",
+      "destination": "/buscar.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "maqdemad.vercel.app"
+        }
+      ],
+      "destination": "https://roble-maquinaria.vercel.app/",
+      "statusCode": 308
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "maqdemad.vercel.app"
+        }
+      ],
+      "destination": "https://roble-maquinaria.vercel.app/:path*",
+      "statusCode": 308
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin-directorio/index.html",
+      "statusCode": 308
+    },
+    {
+      "source": "/admin/",
+      "destination": "/admin-directorio/index.html",
+      "statusCode": 308
+    },
+    {
+      "source": "/admin/index.html",
+      "destination": "/admin-directorio/index.html",
+      "statusCode": 308
+    },
+    {
+      "source": "/admin/leads.html",
+      "destination": "/admin-directorio/leads.html",
+      "statusCode": 308
+    },
+    {
+      "source": "/admin-directorio",
+      "destination": "/admin-directorio/index.html",
+      "statusCode": 308
+    },
+    {
+      "source": "/perfil.html",
+      "destination": "/empresa.html?id=:id",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<id>.+)"
+        }
+      ]
+    },
+    {
+      "source": "/perfil.html",
+      "destination": "/empresas.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/listado.html",
+      "destination": "/empresas.html?q=:q&sector=:sector",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "query",
+          "key": "q",
+          "value": "(?<q>.+)"
+        },
+        {
+          "type": "query",
+          "key": "sector",
+          "value": "(?<sector>.+)"
+        }
+      ]
+    },
+    {
+      "source": "/listado.html",
+      "destination": "/empresas.html?sector=:sector",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "query",
+          "key": "sector",
+          "value": "(?<sector>.+)"
+        }
+      ]
+    },
+    {
+      "source": "/listado.html",
+      "destination": "/empresas.html?q=:q",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "query",
+          "key": "q",
+          "value": "(?<q>.+)"
+        }
+      ]
+    },
+    {
+      "source": "/listado.html",
+      "destination": "/empresas.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/busqueda.html",
+      "destination": "/empresas.html?q=:q",
+      "statusCode": 301,
+      "has": [
+        {
+          "type": "query",
+          "key": "q",
+          "value": "(?<q>.+)"
+        }
+      ]
+    },
+    {
+      "source": "/busqueda.html",
+      "destination": "/empresas.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/sectores.html",
+      "destination": "/directorio.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-acabados-tratamientos.html",
+      "destination": "/sector.html?s=acabados-tratamientos",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-acabados-tratamientos.html",
+      "destination": "/sector.html?s=acabados-tratamientos#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-carpinteria-construccion.html",
+      "destination": "/sector.html?s=carpinteria-construccion",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-carpinteria-construccion.html",
+      "destination": "/sector.html?s=carpinteria-construccion#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-comunicacion-eventos.html",
+      "destination": "/sector.html?s=comunicacion-eventos",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-comunicacion-eventos.html",
+      "destination": "/sector.html?s=comunicacion-eventos#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-construccion-madera.html",
+      "destination": "/sector.html?s=construccion-madera",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-construccion-madera.html",
+      "destination": "/sector.html?s=construccion-madera#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-contract-proyectos.html",
+      "destination": "/sector.html?s=contract-proyectos",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-contract-proyectos.html",
+      "destination": "/sector.html?s=contract-proyectos#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-herrajes-accesorios.html",
+      "destination": "/sector.html?s=herrajes-accesorios",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-herrajes-accesorios.html",
+      "destination": "/sector.html?s=herrajes-accesorios#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-maquinaria.html",
+      "destination": "/sector.html?s=maquinaria",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-maquinaria.html",
+      "destination": "/sector.html?s=maquinaria#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-materias-primas.html",
+      "destination": "/sector.html?s=materias-primas",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-materias-primas.html",
+      "destination": "/sector.html?s=materias-primas#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-mueble-por-ambiente.html",
+      "destination": "/sector.html?s=mueble-por-ambiente",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-mueble-por-ambiente.html",
+      "destination": "/sector.html?s=mueble-por-ambiente#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-mueble-por-producto.html",
+      "destination": "/sector.html?s=mueble-por-ambiente",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-mueble-por-producto.html",
+      "destination": "/sector.html?s=mueble-por-ambiente#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-servicios-profesionales.html",
+      "destination": "/sector.html?s=carpinteros",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-servicios-profesionales.html",
+      "destination": "/sector.html?s=carpinteros#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-tableros-superficies.html",
+      "destination": "/sector.html?s=paneles-decorativos",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-tableros-superficies.html",
+      "destination": "/sector.html?s=paneles-decorativos#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-tapiceria-complementos.html",
+      "destination": "/sector.html?s=sofas",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-tapiceria-complementos.html",
+      "destination": "/sector.html?s=sofas#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/sector-tecnologia-software.html",
+      "destination": "/sector.html?s=tecnologia-software",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq-tecnologia-software.html",
+      "destination": "/sector.html?s=tecnologia-software#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/faq.html",
+      "destination": "/sector.html?s=herrajes-accesorios#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/maquinaria",
+      "destination": "/sector.html?s=maquinaria",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/maquinaria/preguntas-frecuentes",
+      "destination": "/sector.html?s=maquinaria#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/materias-primas",
+      "destination": "/sector.html?s=materias-primas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/materias-primas/preguntas-frecuentes",
+      "destination": "/sector.html?s=materias-primas#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/tableros-superficies",
+      "destination": "/sector.html?s=paneles-decorativos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/tableros-superficies/preguntas-frecuentes",
+      "destination": "/sector.html?s=paneles-decorativos#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/herrajes-accesorios",
+      "destination": "/sector.html?s=herrajes-accesorios",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/herrajes-accesorios/preguntas-frecuentes",
+      "destination": "/sector.html?s=herrajes-accesorios#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/acabados-tratamientos",
+      "destination": "/sector.html?s=acabados-tratamientos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/acabados-tratamientos/preguntas-frecuentes",
+      "destination": "/sector.html?s=acabados-tratamientos#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/tecnologia-software",
+      "destination": "/sector.html?s=tecnologia-software",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/tecnologia-software/preguntas-frecuentes",
+      "destination": "/sector.html?s=tecnologia-software#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/carpinteria-construccion",
+      "destination": "/sector.html?s=carpinteria-construccion",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/carpinteria-construccion/preguntas-frecuentes",
+      "destination": "/sector.html?s=carpinteria-construccion#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/construccion-madera",
+      "destination": "/sector.html?s=construccion-madera",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/construccion-madera/preguntas-frecuentes",
+      "destination": "/sector.html?s=construccion-madera#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/mueble/por-ambiente",
+      "destination": "/sector.html?s=mueble-por-ambiente",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/mueble/por-ambiente/preguntas-frecuentes",
+      "destination": "/sector.html?s=mueble-por-ambiente#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/mueble/por-producto",
+      "destination": "/sector.html?s=mueble-por-ambiente",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/mueble/por-producto/preguntas-frecuentes",
+      "destination": "/sector.html?s=mueble-por-ambiente#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/contract-proyectos",
+      "destination": "/sector.html?s=contract-proyectos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/contract-proyectos/preguntas-frecuentes",
+      "destination": "/sector.html?s=contract-proyectos#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/tapiceria-complementos",
+      "destination": "/sector.html?s=sofas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/tapiceria-complementos/preguntas-frecuentes",
+      "destination": "/sector.html?s=sofas#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/servicios-profesionales",
+      "destination": "/sector.html?s=carpinteros",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/servicios-profesionales/preguntas-frecuentes",
+      "destination": "/sector.html?s=carpinteros#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/comunicacion-eventos",
+      "destination": "/sector.html?s=comunicacion-eventos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/comunicacion-eventos/preguntas-frecuentes",
+      "destination": "/sector.html?s=comunicacion-eventos#preguntas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/cnc",
+      "destination": "/sector.html?s=maquinaria",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/formateadoras",
+      "destination": "/sector.html?s=maquinaria",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/enchapadoras",
+      "destination": "/sector.html?s=maquinaria",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/lijadoras",
+      "destination": "/sector.html?s=maquinaria",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/prensas",
+      "destination": "/sector.html?s=maquinaria",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/mecanizado",
+      "destination": "/sector.html?s=maquinaria",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/herramientas",
+      "destination": "/sector.html?s=maquinaria",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/madera-maciza",
+      "destination": "/sector.html?s=materias-primas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/chapas",
+      "destination": "/sector.html?s=materias-primas",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/tableros",
+      "destination": "/sector.html?s=paneles-decorativos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/tableros-mdf",
+      "destination": "/sector.html?s=paneles-decorativos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/cantos",
+      "destination": "/sector.html?s=paneles-decorativos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/herrajes",
+      "destination": "/sector.html?s=herrajes-accesorios",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/barnices",
+      "destination": "/sector.html?s=acabados-tratamientos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/colas",
+      "destination": "/sector.html?s=acabados-tratamientos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/abrasivos",
+      "destination": "/sector.html?s=acabados-tratamientos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/protectores",
+      "destination": "/sector.html?s=acabados-tratamientos",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/software",
+      "destination": "/sector.html?s=tecnologia-software",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/transporte",
+      "destination": "/sector.html?s=carpinteros",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/formacion",
+      "destination": "/sector.html?s=carpinteros",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/reciclaje",
+      "destination": "/sector.html?s=carpinteros",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/perfiles",
+      "destination": "/sector.html?s=herrajes-accesorios",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/sector/iluminacion",
+      "destination": "/sector.html?s=herrajes-accesorios",
+      "statusCode": 301
+    },
+    {
+      "source": "/para-anunciantes.html",
+      "destination": "/para-empresas.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/alta-empresa.html",
+      "destination": "/para-empresas.html#alta",
+      "statusCode": 301
+    },
+    {
+      "source": "/login.html",
+      "destination": "/acceso.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/registro.html",
+      "destination": "/acceso.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/password.html",
+      "destination": "/acceso.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/mi-ficha.html",
+      "destination": "/panel/perfil.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/dashboard.html",
+      "destination": "/panel/index.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/panel-usuario.html",
+      "destination": "/panel/index.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/panel-solicitudes.html",
+      "destination": "/panel/leads.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/admin.html",
+      "destination": "/admin-directorio/index.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/comparar.html",
+      "destination": "/empresas.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/soporte.html",
+      "destination": "/contacto.html",
+      "statusCode": 301
+    },
+    {
+      "source": "/home.html",
+      "destination": "/",
+      "statusCode": 301
+    }
+  ]
+}

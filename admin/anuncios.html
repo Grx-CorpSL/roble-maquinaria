@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Anuncios — Admin maquinaria — ROBLE</title>
+  <meta name="description" content="Moderación y gestión de anuncios del portal de maquinaria.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <aside class="drawer wide" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+    <div class="drawer-head"><h2 id="dr-title">Anuncio</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <div class="drawer-body" id="dr-body"></div>
+    <div class="drawer-foot" id="dr-foot"></div>
+  </aside>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="admin/ml-admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const R = ROBLE, S = ML.store, D = ML.D, who = MLA.shell('anuncios'); if (!who) return; const $ = s => document.querySelector(s);
+      document.getElementById('main').innerHTML = `<div class="page-title"><div><h1>Anuncios <span class="count" id="count"></span></h1><p>Las máquinas en venta de todas las empresas. Se publican al guardarlas; aquí puedes verlas o eliminarlas.</p></div></div>
+        <div class="tbar"><div class="input-icon"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg><input class="input" id="q" type="search" placeholder="Buscar por máquina o vendedor" aria-label="Buscar anuncios"></div><select class="select" id="f-cat" aria-label="Categoría"><option value="">Todas las categorías</option>${ML.catsAZ().map(c => `<option value="${c.id}">${R.esc(c.nombre)}</option>`).join('')}</select></div>
+        <div class="bulk" id="bulk"><b id="bulk-n"></b><span>seleccionados</span><button class="btn btn-danger" data-bulk="eliminar">Eliminar</button><button class="btn x" data-bulk="x">Quitar selección</button></div><div id="table"></div>`;
+      const rows = () => { const q = R.norm($('#q').value.trim()), cat = $('#f-cat').value; return D.anuncios.filter(a => (!q || R.norm(a.titulo).includes(q) || R.norm(a.vendedor).includes(q)) && (!cat || a.cat === cat)).sort((a, b) => a.titulo.localeCompare(b.titulo, 'es')); };
+      const t = Admin.table($('#table'), {
+        rows, select: true, per: 25,
+        cols: [
+          { key: 'titulo', label: 'Máquina', sortable: true, render: a => `<div class="cell-main"><div class="logo-tile" style="width:44px;height:33px;border-radius:3px;overflow:hidden">${(a.fotos[0] || ML.fotoCat(a.cat)) ? `<img src="${R.esc(a.fotos[0] || ML.fotoCat(a.cat))}" alt="" style="width:100%;height:100%;object-fit:cover">` : ''}</div><div><a href="#" data-ver="${a.id}"><b>${R.esc(a.titulo)}</b></a><span>${R.esc((ML.cat(a.cat) || {}).nombre || '')}${a.marca ? ' · ' + R.esc(a.marca) : ''}</span></div></div>` },
+          { key: 'vendedor', label: 'Vendedor', sortable: true, render: a => `<a href="admin/vendedores.html">${R.esc(a.vendedor)}</a>` },
+          { key: 'fecha', label: 'Fecha', cls: 'col-opt mono muted', sortable: true, render: a => MLA.fecha(a.fecha) },
+        ],
+        actions: a => Admin.ib('external', 'Ver', `data-view="${a.id}"`) + Admin.ib('trash', 'Eliminar', `data-del="${a.id}"`),
+        emptyIcon: 's-maquinaria', emptyTitle: 'Ningún anuncio con esos filtros', emptyText: 'Prueba a quitar un filtro.',
+        onSelect: sel => { $('#bulk').classList.toggle('is-on', sel.length > 0); $('#bulk-n').textContent = sel.length; },
+        onRender: () => { $('#count').textContent = rows().length; },
+      });
+      ['#q', '#f-cat'].forEach(s => $(s).addEventListener('input', () => { t.state.page = 1; t.render(); }));
+      const dr = R.drawer('drawer');
+      function ver(a) {
+        $('#dr-title').textContent = a.titulo;
+        $('#dr-body').innerHTML = `${(a.fotos[0] || ML.fotoCat(a.cat)) ? `<img src="${R.esc(a.fotos[0] || ML.fotoCat(a.cat))}" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px">` : ''}<dl class="specs detail">${[['Vendedor', R.esc(a.vendedor)], ['Categoría', R.esc((ML.cat(a.cat) || {}).nombre || '')], ['Marca / modelo', R.esc([a.marca, a.modelo].filter(Boolean).join(' ') || '—')], ['Año', R.esc(a.anio || '—')], ['Estado', a.estado ? ML.ESTADO[a.estado] : '—'], ['Ubicación', R.esc(a.zona || '—')], ['Fotos', a.fotos.length], ['Publicado', MLA.fecha(a.fecha)]].map(([k, v]) => `<div class="spec"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>${a.desc ? `<div><span class="label" style="display:block;margin-bottom:6px">Descripción</span><div class="msg">${R.esc(a.desc)}</div></div>` : ''}`;
+        $('#dr-foot').innerHTML = `<span>${MLA.status(a.estadoPub)}</span><div class="row"><a class="btn" href="anuncio.html?id=${a.id}" target="_blank" rel="noopener">Ver en el portal</a><button class="btn btn-ghost" data-close>Cerrar</button></div>`;
+        $('#dr-foot').querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', dr.close));
+        dr.open();
+      }
+      /* Eliminar es lo único que escribe (DELETE /api/productos): se espera la
+         respuesta antes de recargar, para que un fallo se vea y no quede escondido. */
+      const borra = async ids => { try { await Promise.all(ids.map(i => S.delAnuncio(i))); R.toast(ids.length === 1 ? 'Eliminado' : `${ids.length} anuncios eliminados`); setTimeout(() => location.reload(), 400); } catch (e) { Admin.falla(e); } };
+      document.addEventListener('click', async ev => {
+        const b = ev.target.closest('[data-ver],[data-view],[data-del],[data-bulk]'); if (!b || b.closest('#roble-confirm')) return;
+        const id = b.dataset.ver || b.dataset.view || b.dataset.del; const a = id ? D.anuncios.find(x => String(x.id) === id) : null;
+        if (id && !a) { R.toast('Ese anuncio ya no existe.', 'error'); t.render(); return; }
+        if (b.dataset.ver) { ev.preventDefault(); ver(a); }
+        else if (b.dataset.view) window.open(`anuncio.html?id=${a.id}`, '_blank', 'noopener');
+        else if (b.dataset.del) { const ok = await R.confirmDialog({ title: 'Eliminar anuncio', html: `Vas a eliminar <strong>${R.esc(a.titulo)}</strong>. No se puede deshacer.`, ok: 'Eliminar', danger: true }); if (ok) borra([a.id]); }
+        else if (b.dataset.bulk) { const ids = [...t.state.sel]; if (b.dataset.bulk === 'x') { t.clearSel(); return; } if (!ids.length) return; const ok = await R.confirmDialog({ title: 'Eliminar anuncios', html: `Vas a eliminar <strong>${ids.length} anuncios</strong>. No se puede deshacer.`, ok: 'Eliminar', danger: true }); if (ok) borra(ids); }
+      });
+    });
+  </script>
+</body>
+</html>

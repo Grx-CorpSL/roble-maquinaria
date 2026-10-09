@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Mis productos — Panel de empresa — ROBLE</title>
+  <meta name="description" content="Gestiona los productos y servicios de tu empresa en el directorio ROBLE.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>.admin-header .brand-tag { display: inline-flex; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <aside class="drawer wide" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+    <div class="drawer-head"><h2 id="dr-title">Producto</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <form class="drawer-body" id="dr-form" novalidate></form>
+    <div class="drawer-foot"><span id="dr-status"></span><div class="row"><button class="btn btn-ghost" data-close type="button">Cancelar</button><button class="btn btn-primary" type="submit" form="dr-form" id="dr-save">Guardar</button></div></div>
+  </aside>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="assets/subir.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="panel/panel.js"></script>
+  <script>
+    ML.auth.ready.then(() => {
+      const R = ROBLE, St = Admin.Store, v = Panel.shell('productos'); if (!v) return;
+      const e = Panel.empresa(v.id), main = document.getElementById('main');
+      if (!e) { main.innerHTML = `<div class="gate plate"><div class="plate-head"><span class="label">Productos</span></div><div class="plate-body"><h1 class="h3">Tu empresa todavía no está en el directorio.</h1><p class="muted small" style="margin-top:8px">Da de alta la ficha y, cuando esté publicada, podrás añadir productos.</p><div class="row" style="margin-top:18px"><a class="btn btn-ink" href="para-empresas.html">Dar de alta mi empresa</a></div></div></div>`; return; }
+      const sectores = (e.sectores && e.sectores.length ? e.sectores : [e.sector]).map(R.sector).filter(Boolean);
+      main.innerHTML = `<div class="page-title"><div><h1>Mis productos <span class="count" id="count"></span></h1><p>Productos y servicios que aparecen en tu ficha del directorio y en las búsquedas de tu sector. Se publican al momento.</p></div><div class="actions"><button class="btn btn-primary" id="btn-new">${R.icon('plus')} Nuevo producto</button></div></div><div class="tbar"><select class="select" id="flt-estado" aria-label="Estado"><option value="">Todos los estados</option><option value="publicado">Publicados</option><option value="borrador">Borradores</option></select></div><div id="table"></div>`;
+      const rows = () => Panel.productos(v).filter(p => !document.getElementById('flt-estado').value || (p.estado || 'publicado') === document.getElementById('flt-estado').value);
+      const t = Admin.table(document.getElementById('table'), {
+        rows, per: 20,
+        cols: [
+          { key: 'titulo', label: 'Producto', sortable: true, render: p => `<div class="cell-main"><div class="logo-tile" style="width:44px;height:33px;border-radius:3px;overflow:hidden">${p.fotos && p.fotos[0] ? `<img src="${R.esc(p.fotos[0])}" alt="" style="width:100%;height:100%;object-fit:cover">` : R.icon('s-' + p.sector, 'i-16')}</div><div><a href="#" data-edit="${p.id}"><b>${R.esc(p.titulo)}</b></a><span>${R.esc(p.sub || '')}</span></div></div>` },
+          { key: 'sector', label: 'Sector', cls: 'col-opt', render: p => R.esc((R.sector(p.sector) || {}).corto || p.sector) },
+          { key: 'fotos', label: 'Fotos', cls: 'col-opt muted', render: p => (p.fotos || []).length || '<span class="muted">sin foto</span>' },
+          { key: 'destacado', label: 'Destacado', render: p => p.destacado ? '<span class="featured">Sí</span>' : '<span class="muted">—</span>' },
+          { key: 'estado', label: 'Estado', sortable: true, render: p => Panel.status(p.estado || 'publicado') },
+        ],
+        actions: p => Admin.ib('edit', 'Editar', `data-edit="${p.id}"`) + ((p.estado || 'publicado') === 'publicado' ? Admin.ib('external', 'Ver en la web', `data-view="${p.id}"`) : '') + Admin.ib('trash', 'Eliminar', `data-del="${p.id}"`),
+        emptyIcon: 'box', emptyTitle: 'Todavía no has publicado productos', emptyText: 'Añade lo que fabricas o distribuyes: título, subsector y una descripción corta.',
+        onRender: () => { document.getElementById('count').textContent = rows().length; },
+      });
+      document.getElementById('flt-estado').addEventListener('change', () => t.render());
+      const dr = R.drawer('drawer'); let editing = null;
+      const fields = sid => [
+        { group: 'Producto' },
+        { name: 'titulo', label: 'Título', required: true, placeholder: 'Ej.: Tablero contrachapado de abedul 18 mm', hint: 'Así se busca y se encuentra.' },
+        { name: 'sector', label: 'Sector', type: 'select', required: true, options: sectores.map(s => [s.id, s.corto]) },
+        { name: 'desc', label: 'Descripción', type: 'textarea', rows: 4, placeholder: 'Qué es, para qué se usa, medidas o formatos, plazos.' },
+        { name: 'fotos', label: 'Fotos', type: 'fotos', rows: 3, empresa: v.id, hint: 'Hasta 12. Súbelas desde tu ordenador, o pega una dirección https por línea.' },
+      ];
+      function open(p, sid) {
+        editing = p; sid = sid || (p ? p.sector : sectores[0].id);
+        document.getElementById('dr-title').textContent = p ? 'Editar producto' : 'Nuevo producto';
+        const vals = p ? Object.assign({}, p, { fotos: (p.fotos || []).join('\n'), estado: p.estado || 'publicado' }) : { sector: sid, estado: 'publicado' };
+        document.getElementById('dr-form').innerHTML = Admin.form(fields(sid), vals);
+        Admin.activaSubidas(document.getElementById('dr-form'));
+        document.getElementById('dr-status').innerHTML = p ? Panel.status(p.estado || 'publicado') : '<span class="label">Se publica al guardar</span>';
+        document.getElementById('dr-save').textContent = p ? 'Guardar cambios' : 'Publicar producto';
+        document.getElementById('f-sector').addEventListener('change', ev => { const cur = Admin.read(document.getElementById('dr-form')); open(p ? Object.assign({}, p, cur, { fotos: cur.fotos ? cur.fotos.split(/\n+/) : [] }) : null, ev.target.value); if (!p) { document.getElementById('f-titulo').value = cur.titulo || ''; document.getElementById('f-desc').value = cur.desc || ''; } });
+        dr.open();
+      }
+      document.getElementById('dr-form').addEventListener('submit', async ev => {
+        ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return; const x = Admin.read(f);
+        const datos = { titulo: x.titulo, sector: x.sector, sub: editing ? editing.sub || '' : '', desc: x.desc, fotos: x.fotos ? x.fotos.split(/\n+/).map(s => s.trim()).filter(Boolean).slice(0, 12) : [] };
+        const boton = document.getElementById('dr-save'); boton.disabled = true;
+        try {
+          /* Se guarda en el servidor, que comprueba que el producto es de tu
+             empresa; nada queda en localStorage. */
+          const cab = { 'Content-Type': 'application/json' };
+          const r = editing
+            ? await fetch('/api/productos?id=' + encodeURIComponent(editing.id), { method: 'PATCH', credentials: 'same-origin', headers: cab, body: JSON.stringify(datos) })
+            : await fetch('/api/productos', { method: 'POST', credentials: 'same-origin', headers: cab, body: JSON.stringify(Object.assign({ empresa_id: v.id }, datos)) });
+          const j = await r.json().catch(() => ({}));
+          if (!r.ok) { R.toast(j.error || 'No se ha podido guardar el producto.', 'error'); return; }
+          R.toast(editing ? 'Producto guardado' : 'Producto publicado en el directorio'); dr.close(); location.reload();
+        } catch (err) {
+          R.toast('Sin conexión con el servidor. Inténtalo de nuevo.', 'error');
+        } finally { boton.disabled = false; }
+      });
+      document.getElementById('btn-new').addEventListener('click', () => open(null));
+      if (R.qs().has('nuevo')) open(null);
+      document.addEventListener('click', async ev => {
+        const b = ev.target.closest('[data-edit],[data-view],[data-del]'); if (!b || b.closest('#roble-confirm')) return;
+        const p = Panel.productos(v).find(x => String(x.id) === (b.dataset.edit || b.dataset.view || b.dataset.del));
+        if (b.dataset.edit) { ev.preventDefault(); open(p); }
+        else if (b.dataset.view) window.open(`producto.html?id=${p.id}`, '_blank');
+        else { const ok = await R.confirmDialog({ title: 'Eliminar producto', html: `Vas a eliminar <strong>${R.esc(p.titulo)}</strong>. No se puede deshacer.`, ok: 'Eliminar', danger: true }); if (ok) { const r = await fetch('/api/productos?id=' + encodeURIComponent(p.id), { method: 'DELETE', credentials: 'same-origin' }); const j = await r.json().catch(() => ({})); if (!r.ok) { R.toast(j.error || 'No se ha podido eliminar.', 'error'); return; } R.toast('Producto eliminado'); location.reload(); } }
+      });
+    });
+  </script>
+</body>
+</html>

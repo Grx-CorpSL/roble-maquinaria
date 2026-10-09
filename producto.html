@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Producto — Directorio ROBLE</title>
+  <meta name="description" content="Ficha de producto en el directorio profesional de la madera ROBLE.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/producto.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/producto.html">
+  <meta property="og:title" content="Producto — Directorio ROBLE">
+  <meta property="og:description" content="Ficha de producto en el directorio profesional de la madera ROBLE.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/datos.js"></script>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = R.D, p = R.producto(R.qs().get('id'));
+      const c = ML.shell('directorio', { dir: true, sector: p ? p.sector : null });
+      if (!p) { document.title = 'Producto no encontrado — ROBLE'; R.noindex(); c.innerHTML = `<div class="empty">${R.icon('box')}<h1 class="empty-title">Ese producto ya no está publicado</h1><p>Puede que la empresa lo haya retirado.</p><a class="btn" href="productos.html">Buscar productos</a></div>`; return; }
+      const s = R.sector(p.sector), e = R.empresa(p.empresa_id), z = e ? R.zona(e) : '';
+      document.title = `${p.titulo} — ${p.empresa} — ROBLE`; R.canon('?id=' + p.id);
+      document.querySelector('meta[name=description]').content = `${p.titulo} de ${p.empresa}${z ? ', ' + z : ''}. Ficha y contacto directo con el fabricante en ROBLE.`.slice(0, 158);
+      const dato = (k, val) => `<div class="spec"><dt>${k}</dt><dd>${val}</dd></div>`;
+      const mismo = R.productosDe(p.empresa_id).filter(x => x.id !== p.id).slice(0, 3);
+      const similares = D.productos.filter(x => x.id !== p.id && x.empresa_id !== p.empresa_id && (p.sub ? x.sub === p.sub : x.sector === p.sector)).slice(0, 6);
+      c.innerHTML = `
+        <nav class="crumbs" aria-label="Migas"><a href="index.html">Inicio</a>${R.icon('chevron-right', 'sep')}<a href="directorio.html">Directorio</a>${R.icon('chevron-right', 'sep')}${s ? `<a href="sector.html?s=${s.id}">${R.esc(s.corto)}</a>${R.icon('chevron-right', 'sep')}` : ''}<span aria-current="page">${R.esc(p.titulo)}</span></nav>
+        <div class="ad">
+          <div><div class="media">${R.icon('s-' + (s ? s.id : 'maquinaria'))}<span class="label">${R.esc(s ? s.nombre : '')}</span>${p.fotos[0] ? `<img src="${R.esc(p.fotos[0])}" alt="${R.esc(p.titulo)}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">` : ''}</div>${p.fotos.length ? '' : '<p class="small muted" style="margin-top:8px">La empresa no ha añadido fotos de este producto todavía. Pídeselas desde el formulario.</p>'}</div>
+          <div class="ad-info">
+            <p class="label">${s ? `<a href="sector.html?s=${s.id}">${R.esc(s.corto)}</a>` : ''}</p>
+            <h1 class="h1">${R.esc(p.titulo)}</h1>
+            ${e ? `<a class="seller-box" href="empresa.html?id=${e.id}">${R.tpl.logoTile(e)}<div><b>${R.esc(e.nombre)}</b><span>${R.esc([s ? s.corto : '', z].filter(Boolean).join(' · '))}</span></div>${R.icon('arrow-right')}</a>` : ''}
+            <div class="ad-actions"><button class="btn btn-primary btn-lg" id="btn-info" type="button">Pedir información</button>${e ? `<a class="btn btn-lg" href="empresa.html?id=${e.id}">Ver la empresa</a>` : ''}</div>
+            <div class="plate"><div class="plate-head"><span class="label">Ficha técnica</span>${p.destacado ? '<span class="featured">Destacado</span>' : ''}</div><div class="plate-body"><dl class="specs">${[['Sector', s ? `<a href="sector.html?s=${s.id}">${R.esc(s.corto)}</a>` : '—'], ['Empresa', R.esc(p.empresa)], ['Zona', R.esc(z || '—')], ['Referencia', `<span class="mono">PR ${String(p.id).padStart(5, '0')}</span>`]].map(([k, val]) => dato(k, val)).join('')}</dl></div><div class="plate-foot"><span class="label">Especificaciones: consulta a la empresa</span></div></div>
+          </div>
+        </div>
+        <section style="margin-top:32px" aria-labelledby="h-desc"><h2 class="h3" id="h-desc" style="margin-bottom:10px">Descripción</h2><div class="ad-desc"><p>${R.esc(p.desc || 'La empresa no ha añadido descripción.')}</p></div></section>
+        ${mismo.length ? `<section class="more" aria-labelledby="h-mas"><div class="section-head"><div><p class="label">${R.esc(p.empresa)}</p><h2 class="h2" id="h-mas" style="font-size:1.375rem">Más de esta empresa.</h2></div><a class="link" href="empresa.html?id=${p.empresa_id}">Ver la ficha ${R.icon('arrow-right', 'i-16')}</a></div><div class="pgrid">${mismo.map(R.tpl.productoCard).join('')}</div></section>` : ''}
+        ${similares.length ? `<section class="more" aria-labelledby="h-sim"><div class="section-head"><div><p class="label">${R.esc(s ? s.nombre : '')}</p><h2 class="h2" id="h-sim" style="font-size:1.375rem">Similares de otras empresas.</h2></div></div><div class="pgrid">${similares.map(R.tpl.productoCard).join('')}</div></section>` : ''}`;
+      document.getElementById('btn-info').addEventListener('click', () => ML.contacto({ empresa_id: p.empresa_id, empresa: p.empresa, producto_id: p.id, producto: p.titulo, origen: 'directorio', intro: `Escribe a ${p.empresa} sobre «${p.titulo}». Te responden ellos directamente.`, mensaje: `Hola, me interesa «${p.titulo}». ` }));
+      ML.barraMovil({ label: 'Pedir información', onClick: () => document.getElementById('btn-info').click(), watch: document.getElementById('btn-info') });
+      const ld = { '@context': 'https://schema.org', '@type': 'Product', name: p.titulo, description: p.desc || undefined, category: s ? s.nombre : undefined, brand: { '@type': 'Organization', name: p.empresa } };
+      const sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.textContent = JSON.stringify(ld); document.head.appendChild(sc);
+    });
+  </script>
+</body>
+</html>

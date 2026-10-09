@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Empresas — ROBLE Admin</title>
+  <meta name="description" content="Gestión de empresas del directorio ROBLE: crear, editar, publicar, destacar y revisar fichas.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="../assets/roble.css">
+  <link rel="stylesheet" href="../admin/admin.css">
+  <style>@media (max-width: 480px) { .page-title h1 { font-size: 1.375rem; } } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main">
+    <div class="page-title"><div><h1>Empresas <span class="count" id="count"></span></h1><p>Fichas del directorio. Publica, pasa a borrador o edita sin salir de la lista. Las altas nuevas se aprueban en Moderación.</p></div><div class="actions"><button class="btn" id="btn-export">Exportar CSV</button><button class="btn btn-primary" id="btn-new"></button></div></div>
+    <div class="tbar">
+      <div class="input-icon"><svg class="i"><use href="#i-search"/></svg><input class="input" id="q" type="search" placeholder="Buscar por nombre, zona o REF" aria-label="Buscar empresas"></div>
+      <select class="select" id="f-estado" aria-label="Estado"><option value="">Todos los estados</option><option value="publicada">Publicadas</option><option value="borrador">Borrador</option><option value="pendiente">Pendientes</option><option value="rechazada">Rechazadas</option></select>
+      <select class="select" id="f-sector" aria-label="Sector"><option value="">Todos los sectores</option></select>
+      <select class="select" id="f-filtro" aria-label="Completitud"><option value="">Todas las fichas</option><option value="sin-zona">Sin zona</option><option value="sin-web">Sin web</option><option value="sin-desc">Sin descripción</option><option value="destacadas">Solo destacadas</option></select>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-sm" id="f-clear" hidden>Quitar filtros</button>
+    </div>
+    <div class="bulk" id="bulk"><b id="bulk-n"></b><span>seleccionadas</span><button class="btn" data-bulk="publicar">Publicar</button><button class="btn" data-bulk="despublicar">Pasar a borrador</button><button class="btn x" data-bulk="x" aria-label="Quitar selección">Quitar selección</button></div>
+    <div id="table"></div>
+
+    <aside class="drawer wide" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+      <div class="drawer-head"><h2 id="dr-title">Empresa</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+      <form class="drawer-body" id="dr-form" novalidate></form>
+      <div class="drawer-foot"><span id="dr-status"></span><div class="row"><button class="btn btn-ghost" data-close type="button">Cancelar</button><button class="btn btn-ink" type="submit" form="dr-form" id="dr-save">Guardar</button></div></div>
+    </aside>
+  </main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="../assets/roble.js"></script>
+  <script src="../admin/admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const who = Admin.shell('empresas'); if (!who) return;
+      const R = ROBLE, D = R.D, S = Admin.Store, $ = s => document.querySelector(s);
+      $('#btn-new').hidden = true; $('#btn-export').innerHTML = `${R.icon('download')} Exportar CSV`;
+      D.sectores.forEach(s => $('#f-sector').add(new Option(s.corto, s.id)));
+      const p = R.qs(); if (p.get('filtro')) $('#f-filtro').value = p.get('filtro'); if (p.get('sector')) $('#f-sector').value = p.get('sector'); if (p.get('estado')) $('#f-estado').value = p.get('estado');
+      const rows = () => {
+        const q = R.norm($('#q').value.trim()), est = $('#f-estado').value, sec = $('#f-sector').value, f = $('#f-filtro').value;
+        $('#f-clear').hidden = !(q || est || sec || f);
+        return S.empresas().filter(e => (!q || R.norm(e.nombre).includes(q) || R.norm(R.zona(e)).includes(q) || String(e.id).includes(q)) && (!est || e.estado === est) && (!sec || e.sectores.includes(sec)) && (!f || (f === 'sin-zona' ? !e.ciudad && !e.region : f === 'sin-web' ? !e.web : f === 'sin-desc' ? !e.desc : e.destacada)));
+      };
+      const t = Admin.table($('#table'), {
+        rows, select: true, sort: 'nombre', per: 25,
+        cols: [
+          { key: 'nombre', label: 'Empresa', sortable: true, render: e => `<div class="cell-main">${R.tpl.logoTile(e)}<div><a href="#" data-edit="${e.id}"><b>${R.esc(e.nombre)}</b></a><span>${R.ref(e)} · ${e.plan === 'premium' ? 'Ficha completa' : 'Ficha básica'}${e.origen === 'alta' ? ' · Alta web' : ''}</span></div></div>` },
+          { key: 'sector', label: 'Sector', sortable: true, val: e => (R.sector(e.sector) || {}).corto || '', render: e => `${R.esc((R.sector(e.sector) || {}).corto || '—')}${e.sectores.length > 1 ? ` <span class="muted">+${e.sectores.length - 1}</span>` : ''}` },
+          { key: 'zona', label: 'Zona', sortable: true, cls: 'col-opt', val: e => R.zona(e), render: e => R.zona(e) ? R.esc(R.zona(e)) : '<span class="muted">Sin zona</span>' },
+          { key: 'prods', label: 'Prod.', sortable: true, cls: 'num', val: e => S.productos().filter(p => p.empresa_id === e.id).length, render: e => S.productos().filter(p => p.empresa_id === e.id).length },
+          { key: 'estado', label: 'Estado', sortable: true, render: e => Admin.status(e.estado) },
+          { key: 'actualizada', label: 'Actualizada', sortable: true, cls: 'col-opt mono muted', render: e => Admin.fmtDate(e.actualizada) },
+        ],
+        actions: e => Admin.ib('edit', 'Editar', `data-edit="${e.id}"`) + Admin.ib('external', 'Ver ficha pública', `data-view="${e.id}"`) + Admin.ib(e.estado === 'publicada' ? 'eye-off' : 'eye', e.estado === 'publicada' ? 'Pasar a borrador' : 'Publicar', `data-toggle="${e.id}"`),
+        emptyIcon: 'building', emptyTitle: 'Ninguna empresa con esos filtros', emptyText: 'Prueba a quitar un filtro o crea la empresa.',
+        onSelect: sel => { $('#bulk').classList.toggle('is-on', sel.length > 0); $('#bulk-n').textContent = sel.length; },
+        onRender: () => { $('#count').textContent = rows().length; },
+      });
+      ['#q', '#f-estado', '#f-sector', '#f-filtro'].forEach(s => $(s).addEventListener('input', () => { t.state.page = 1; t.render(); }));
+      $('#f-clear').addEventListener('click', () => { $('#q').value = ''; $('#f-estado').value = ''; $('#f-sector').value = ''; $('#f-filtro').value = ''; t.render(); });
+
+      const dr = R.drawer('drawer'); let editing = null;
+      const fields = e => [
+        { group: 'Identidad' },
+        { name: 'nombre', label: 'Nombre de la empresa', required: true, placeholder: 'Ej.: Maderas del Duero' },
+        { name: 'sector', label: 'Sector principal', type: 'select', required: true, options: [['', 'Elige un sector'], ...D.sectores.map(s => [s.id, s.corto])] },
+        { name: 'sectores', label: 'Otros sectores', type: 'checks', options: D.sectores.map(s => [s.id, s.corto]) },
+        { name: 'desc', label: 'Descripción corta', type: 'textarea', required: true, rows: 3, hint: 'Es lo que se ve en los resultados. Dos frases.', placeholder: 'Qué hace, para quién, dónde.' },
+        { name: 'desc_larga', label: 'Actividad (texto largo)', type: 'textarea', rows: 5 },
+        { name: 'servicios', label: 'Especialidades', hint: 'Separadas por comas.', placeholder: 'Madera maciza, secado en cámara, corte a medida' },
+        { group: 'Zona y contacto' },
+        { name: 'ciudad', label: 'Ciudad' }, { name: 'region', label: 'Región / provincia' },
+        { name: 'pais', label: 'País', type: 'select', options: [['ES', 'España'], ['PT', 'Portugal'], ['IT', 'Italia'], ['FR', 'Francia']] },
+        { name: 'web', label: 'Web', type: 'url', placeholder: 'https://' }, { name: 'telefono', label: 'Teléfono', type: 'tel' }, { name: 'email', label: 'Correo de contacto', type: 'email' },
+        { group: 'Publicación' },
+        { name: 'estado', label: 'Estado', type: 'select', options: [['publicada', 'Publicada'], ['borrador', 'Borrador'], ['pendiente', 'Pendiente de revisión'], ['rechazada', 'Rechazada'], ['suspendida', 'Suspendida']] },
+      ];
+      function open(e) {
+        editing = e; $('#dr-title').textContent = e ? `Editar: ${e.nombre}` : 'Nueva empresa';
+        const vals = e ? Object.assign({}, e, { servicios: (e.servicios || []).join(', '), sectores: e.sectores.filter(x => x !== e.sector), plan: e.plan === 'premium' ? 'premium' : 'gratuito' }) : { pais: 'ES', plan: 'gratuito', estado: 'publicada', sectores: [] };
+        $('#dr-form').innerHTML = Admin.form(fields(e), vals);
+        $('#dr-status').innerHTML = e ? `<span class="label">${R.ref(e)} · ${Admin.fmtDate(e.actualizada)}</span>` : '<span class="label">Se crea con REF nueva</span>';
+        dr.open();
+      }
+      $('#dr-form').addEventListener('submit', ev => {
+        ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return;
+        const v = Admin.read(f); const patch = { nombre: v.nombre, sector: v.sector, sectores: [v.sector, ...(v.sectores || []).filter(x => x !== v.sector)], desc: v.desc, desc_larga: v.desc_larga, servicios: v.servicios ? v.servicios.split(',').map(x => x.trim()).filter(Boolean) : [], ciudad: v.ciudad, region: v.region, pais: v.pais, web: v.web, telefono: v.telefono, email: v.email, estado: v.estado };
+        if (editing) { S.setEmpresa(editing.id, patch); S.log(`Empresa editada: ${patch.nombre}`); R.toast('Guardado'); }
+        else { const n = S.addEmpresa(Object.assign({ demo: false, origen: 'admin' }, patch)); S.log(`Empresa creada: ${n.nombre} (REF ${String(n.id).padStart(4, '0')})`, 'ok'); R.toast(`${n.nombre} creada`); }
+        dr.close(); t.render();
+      });
+      $('#btn-new').addEventListener('click', () => open(null));
+      if (p.get('id')) { const e = S.empresa(p.get('id')); e && open(e); }
+      $('#btn-export').addEventListener('click', () => Admin.csv(rows(), [['REF', e => String(e.id).padStart(4, '0')], ['Empresa', 'nombre'], ['Sector', e => (R.sector(e.sector) || {}).corto], ['Zona', e => R.zona(e)], ['País', 'pais'], ['Web', 'web'], ['Plan', 'plan'], ['Estado', 'estado']]));
+
+      document.addEventListener('click', async ev => {
+        const a = ev.target.closest('[data-edit],[data-view],[data-toggle],[data-del],[data-feat],[data-bulk]'); if (!a) return;
+        if (a.dataset.edit) { ev.preventDefault(); open(S.empresa(a.dataset.edit)); }
+        else if (a.dataset.view) window.open(`../empresa.html?id=${a.dataset.view}`, '_blank');
+        else if (a.dataset.toggle) { const e = S.empresa(a.dataset.toggle); const pub = e.estado !== 'publicada'; S.setEmpresa(e.id, { estado: pub ? 'publicada' : 'borrador' }); S.log(`${e.nombre}: ${pub ? 'publicada' : 'pasada a borrador'}`, pub ? 'ok' : 'info'); R.toast(pub ? `${e.nombre} publicada` : `${e.nombre} en borrador`); t.render(); }
+        else if (a.dataset.feat) { const e = S.empresa(a.dataset.feat); const on = a.getAttribute('aria-checked') === 'true'; S.setEmpresa(e.id, { destacada: on, plan: on ? 'premium' : 'gratuito' }); S.log(`${e.nombre}: ${on ? 'destacada' : 'ya no destacada'}`); R.toast(on ? 'Destacada' : 'Sin destacar'); }
+        else if (a.dataset.del) { const e = S.empresa(a.dataset.del); const n = S.productos().filter(x => x.empresa_id === e.id).length; const ok = await R.confirmDialog({ title: 'Eliminar empresa', html: `Vas a eliminar <strong>${R.esc(e.nombre)}</strong>${n ? ` y sus ${n} productos` : ''}. No se puede deshacer.`, ok: `Eliminar ${R.esc(e.nombre.split(' ')[0])}`, danger: true }); if (ok) { S.delEmpresa(e.id); S.log(`Empresa eliminada: ${e.nombre}`, 'error'); R.toast('Empresa eliminada'); t.render(); } }
+        else if (a.dataset.bulk) {
+          const ids = [...t.state.sel]; const k = a.dataset.bulk;
+          if (k === 'x') { t.clearSel(); return; }
+          if (k === 'eliminar') { const ok = await R.confirmDialog({ title: 'Eliminar empresas', html: `Vas a eliminar <strong>${ids.length} empresas</strong> y sus productos. No se puede deshacer.`, ok: 'Eliminar', danger: true }); if (!ok) return; ids.forEach(id => S.delEmpresa(id)); S.log(`${ids.length} empresas eliminadas`, 'error'); }
+          else ids.forEach(id => S.setEmpresa(id, k === 'publicar' ? { estado: 'publicada' } : k === 'despublicar' ? { estado: 'borrador' } : { destacada: true, plan: 'premium' }));
+          if (k !== 'eliminar') S.log(`${ids.length} empresas: ${k}`);
+          R.toast(`${ids.length} empresas actualizadas`); t.clearSel();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

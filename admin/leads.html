@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Contactos — Admin maquinaria — ROBLE</title>
+  <meta name="description" content="Contactos recibidos en el portal de maquinaria.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="admin/ml-admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const R = ROBLE, who = MLA.shell('leads'); if (!who) return; const $ = s => document.querySelector(s);
+      document.getElementById('main').innerHTML = `<div class="page-title"><div><h1>Contactos <span class="count" id="count"></span></h1><p>Mensajes enviados a los vendedores desde anuncios y páginas de vendedor. El seguimiento lo hace cada vendedor en su panel; aquí se vigila que nadie se quede sin respuesta.</p></div><div class="actions"><button class="btn" id="csv">${R.icon('download')} Exportar CSV</button></div></div><div class="tbar"><select class="select" id="f" aria-label="Estado"><option value="">Todos</option><option value="nuevo">Sin responder</option><option value="en-curso">En curso</option><option value="cerrado">Cerrados</option></select></div><div id="table"></div>`;
+      const rows = () => MLA.leads().filter(l => !$('#f').value || l.estado === $('#f').value).sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      const t = Admin.table($('#table'), {
+        rows, per: 25,
+        cols: [
+          { key: 'fecha', label: 'Fecha', cls: 'mono muted', render: l => MLA.fecha(l.fecha) },
+          { key: 'nombre', label: 'Comprador', render: l => `<b>${R.esc(l.nombre)}</b><div class="muted" style="font-size:11px">${R.esc(l.email)}${l.contacto_empresa ? ' · ' + R.esc(l.contacto_empresa) : ''}</div>` },
+          { key: 'empresa', label: 'Vendedor', render: l => `<a href="vendedor.html?id=${l.empresa_id}">${R.esc(l.empresa)}</a>` },
+          { key: 'producto', label: 'Máquina', cls: 'col-opt', render: l => l.producto ? `<a href="anuncio.html?id=${l.producto_id}">${R.esc(l.producto)}</a>` : '<span class="muted">General</span>' },
+          { key: 'mensaje', label: 'Mensaje', cls: 'col-opt muted', render: l => R.esc(l.mensaje.length > 50 ? l.mensaje.slice(0, 50) + '…' : l.mensaje) },
+          { key: 'estado', label: 'Estado', render: l => MLA.status(l.estado) },
+        ],
+        emptyIcon: 'inbox', emptyTitle: 'Ningún contacto todavía', emptyText: 'Aparecen cuando un comprador escribe desde un anuncio.',
+        onRender: () => { $('#count').textContent = rows().length; },
+      });
+      $('#f').addEventListener('change', () => t.render());
+      $('#csv').addEventListener('click', () => Admin.csv(rows(), [['Fecha', 'fecha'], ['Comprador', 'nombre'], ['Correo', 'email'], ['Su empresa', 'contacto_empresa'], ['Vendedor', 'empresa'], ['Máquina', 'producto'], ['Mensaje', 'mensaje'], ['Estado', 'estado']]));
+    });
+  </script>
+</body>
+</html>

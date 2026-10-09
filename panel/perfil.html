@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Perfil — Panel de empresa — ROBLE</title>
+  <meta name="description" content="Perfil de vendedor en ROBLE Maquinaria.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>.admin-header .brand-tag { display: inline-flex; } .perfil { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; } .perfil form .plate-body { display: flex; flex-direction: column; gap: 14px; } @media (max-width: 900px) { .perfil { grid-template-columns: 1fr; } } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="panel/panel.js"></script>
+  <script>
+    ML.auth.ready.then(() => {
+      const R = ROBLE, S = ML.store, v = Panel.shell('perfil'); if (!v) return; const e = Panel.empresa(v.id); const vals = Object.assign({}, e || {}, v, { servicios: (v.servicios || []).join(', '), sectores: e ? (e.sectores && e.sectores.length ? e.sectores : [e.sector]) : [] });
+      const main = document.getElementById('main');
+      main.innerHTML = `
+        <div class="page-title"><div><h1>Perfil de empresa</h1><p>Lo que ven los compradores en tu ficha del directorio y en tus anuncios de maquinaria.</p></div><div class="actions"><a class="btn" href="empresa.html?id=${v.id}" target="_blank" rel="noopener">${R.icon('external')} Ver mi ficha</a></div></div>
+        <div class="perfil">
+          <form id="f" novalidate><div class="plate"><div class="plate-head"><span class="label">Empresa</span></div><div class="plate-body">${Admin.form([
+            { name: 'nombre', label: 'Nombre comercial', required: true },
+            { name: 'sectores', label: 'Sectores del directorio', type: 'checks', options: R.D.sectores.map(s => [s.id, s.corto]) },
+            { name: 'desc', label: 'Descripción', type: 'textarea', rows: 4, required: true, hint: 'Qué vendes o fabricas, marcas que representas, zona que cubres. Dos o tres frases.' },
+            { name: 'ciudad', label: 'Ciudad' }, { name: 'region', label: 'Región / provincia' },
+            { name: 'pais', label: 'País', type: 'select', options: ML.D.paises.slice(0, 4) },
+            { name: 'web', label: 'Web', type: 'url', placeholder: 'https://' }, { name: 'telefono', label: 'Teléfono', type: 'tel' }, { name: 'email', label: 'Correo de contacto', type: 'email', hint: 'Recibe los contactos de tus anuncios.' },
+            { group: 'Como vendedor de maquinaria' },
+            { name: 'tipos', label: 'Tipo de vendedor', type: 'checks', options: ML.D.tiposVendedor },
+            { name: 'servicios', label: 'Marcas y especialidades', hint: 'Separadas por comas. Se muestran como etiquetas.' },
+          ], vals)}</div><div class="plate-foot between"><span class="label">REF ${String(v.id).padStart(4, '0')}</span><button class="btn btn-ink" type="submit">Guardar perfil</button></div></div></form>
+          <div class="stack">
+            <div class="card"><div class="card-head"><h2>Una sola empresa, dos sitios</h2></div><div class="card-body pad"><p class="small muted">Lo que guardes aquí se aplica a tu ficha del directorio y, si anuncias máquinas, a tu página de vendedor.</p><div class="row" style="margin-top:12px;gap:8px"><a class="btn btn-sm" href="empresa.html?id=${v.id}">Ficha</a>${Panel.misAnuncios(v).length ? `<a class="btn btn-sm" href="vendedor.html?id=${v.id}">Página de vendedor</a>` : ''}</div></div></div>
+            <div class="card"><div class="card-head"><h2>Banner lateral</h2></div><div class="card-body pad"><p class="small muted">${v.destacado ? 'Tu empresa aparece en la columna de vendedores destacados de todo el portal.' : 'Los vendedores destacados aparecen con foto en la columna lateral de todo el portal.'}</p>${v.destacado ? '' : `<a class="btn btn-primary btn-block" style="margin-top:12px" href="contacto.html?asunto=banner">Pedir un banner</a>`}</div></div>
+          </div>
+        </div>`;
+      document.getElementById('f').addEventListener('submit', async ev => { ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return; const x = Admin.read(f); const comunes = { nombre: x.nombre, desc: x.desc, ciudad: x.ciudad, region: x.region, pais: x.pais, web: x.web, telefono: x.telefono, email: x.email };
+        const sect = x.sectores && x.sectores.length ? x.sectores : vals.sectores;
+        const boton = f.querySelector('button[type=submit]'); boton.disabled = true;
+        try {
+          /* La ficha del directorio se guarda en el servidor, que comprueba la
+             membresía con la empresa; nada queda en localStorage. */
+          const r = await fetch('/api/empresa?id=' + encodeURIComponent(v.id), { method: 'PATCH', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(Object.assign({ sectores: sect, servicios: x.servicios }, comunes)) });
+          const j = await r.json().catch(() => ({}));
+          if (!r.ok) { R.toast(j.error || 'No se ha podido guardar el perfil.', 'error'); return; }
+          // Lo de vendedor de maquinaria (tipos) sigue siendo del prototipo local.
+          if (!v.derivado || Panel.misAnuncios(v).length) S.setVendedor(v.id, Object.assign({ tipos: x.tipos && x.tipos.length ? x.tipos : v.tipos, servicios: x.servicios ? x.servicios.split(',').map(s => s.trim()).filter(Boolean) : [] }, comunes));
+          R.toast('Perfil guardado'); setTimeout(() => location.reload(), 500);
+        } catch (err) {
+          R.toast('Sin conexión con el servidor. Inténtalo de nuevo.', 'error');
+        } finally { boton.disabled = false; }
+      });
+    });
+  </script>
+</body>
+</html>

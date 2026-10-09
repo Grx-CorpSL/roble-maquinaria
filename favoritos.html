@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Mis máquinas guardadas — ROBLE Maquinaria</title>
+  <meta name="description" content="Las máquinas que has guardado en ROBLE Maquinaria.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, S = ML.store, c = ML.shell('buscar');
+      function render() {
+        const favs = S.favoritos().map(id => ML.anuncio(id)).filter(Boolean);
+        c.innerHTML = `
+          <h1 class="h1">Mis máquinas guardadas</h1>
+          <p class="intro">${S.session() ? 'Guardadas en tu cuenta: las tienes en cualquier dispositivo donde entres.' : 'Se guardan en este navegador. Entra con tu cuenta para tenerlas en todos tus dispositivos.'}</p>
+          ${favs.length ? `<div class="agrid">${favs.map(ML.tpl.acard).join('')}</div>` : `<div class="empty">${R.icon('star')}<p class="empty-title">Todavía no has guardado ninguna máquina</p><p>Pulsa la estrella de cualquier anuncio para tenerlo aquí.</p><a class="btn" href="buscar.html">Buscar máquinas</a></div>`}`;
+      }
+      render();
+      document.addEventListener('click', e => { if (e.target.closest('[data-fav]')) setTimeout(render, 50); });
+      // Las de la cuenta llegan después del primer pintado: se vuelve a pintar la lista.
+      document.addEventListener('roble:guardadas', render);
+      ML.auth.ready.then(render);
+    });
+  </script>
+</body>
+</html>

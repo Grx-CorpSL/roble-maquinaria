@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Categorías — ROBLE Admin</title>
+  <meta name="description" content="Gestión de sectores y subsectores del directorio ROBLE: crear, editar, ordenar y activar.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="../assets/roble.css">
+  <link rel="stylesheet" href="../admin/admin.css">
+  <style>@media (max-width: 480px) { .page-title h1 { font-size: 1.375rem; } } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main">
+    <div class="page-title"><div><h1>Categorías <span class="count" id="count"></span></h1><p>Los sectores y subsectores que ve el público. Los identificadores no cambian: sostienen las URL.</p></div><div class="actions"><button class="btn btn-primary" id="btn-new"></button></div></div>
+    <div class="alert" style="margin-bottom:16px"><svg class="i"><use href="#i-info"/></svg><div><strong>Desactivar un sector lo oculta del público sin borrar sus empresas.</strong> El orden se aplica en portada, en la página de sectores y en los filtros.</div></div>
+    <div id="list"></div>
+
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+      <div class="drawer-head"><h2 id="dr-title">Categoría</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+      <form class="drawer-body" id="dr-form" novalidate></form>
+      <div class="drawer-foot"><span id="dr-status"></span><div class="row"><button class="btn btn-ghost" data-close type="button">Cancelar</button><button class="btn btn-ink" type="submit" form="dr-form">Guardar</button></div></div>
+    </aside>
+  </main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="../assets/roble.js"></script>
+  <script src="../admin/admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const who = Admin.shell('categorias'); if (!who) return;
+      const R = ROBLE, S = Admin.Store, $ = s => document.querySelector(s);
+      $('#btn-new').innerHTML = `${R.icon('plus')} Nueva categoría`;
+      const openIds = new Set();
+      const slug = t => R.norm(t).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      function render() {
+        const cats = S.categorias(); $('#count').textContent = cats.length;
+        $('#list').innerHTML = cats.map((c, i) => `<div class="cat ${c.activo ? '' : 'is-off'} ${openIds.has(c.id) ? 'is-open' : ''}" data-id="${c.id}">
+          <div class="cat-row">
+            <span class="n">${R.pad2(i + 1)}</span>
+            ${R.icon(R.D.sectores.find(s => s.id === c.id) ? 's-' + c.id : 'grid', 'i-sec')}
+            <div><b>${R.esc(c.corto)}</b><span class="sub">${R.esc(c.nombre)}</span></div>
+            <span class="counts">${c.empresas} emp · ${c.productos} prod · ${c.sub.length} sub</span>
+            <span class="order">${Admin.ib('chevron-down', 'Bajar', `data-move="1" ${i === cats.length - 1 ? 'disabled' : ''}`).replace('chevron-down', 'chevron-down')}${Admin.ib('chevron-down', 'Subir', `data-move="-1" ${i === 0 ? 'disabled' : ''} style="transform:rotate(180deg)"`)}</span>
+            <span class="row" style="gap:4px;flex-wrap:nowrap">${Admin.sw(c.activo, `data-act="${c.id}" aria-label="Activar ${R.esc(c.corto)}"`)}${Admin.ib('edit', 'Editar', `data-edit="${c.id}"`)}${Admin.ib('list', 'Subsectores', `data-open="${c.id}" aria-expanded="${openIds.has(c.id)}"`)}</span>
+          </div>
+          <div class="cat-subs"><ul>${c.sub.map((s, j) => `<li><span>${R.esc(s)}</span>${Admin.ib('edit', 'Renombrar', `data-ren="${j}"`)}${Admin.ib('x', 'Quitar', `data-rm="${j}"`)}</li>`).join('') || '<li class="muted">Sin subsectores todavía.</li>'}</ul><form class="add" data-add="${c.id}"><input class="input" placeholder="Nuevo subsector" aria-label="Nuevo subsector" required><button class="btn btn-sm" type="submit">Añadir</button></form></div>
+        </div>`).join('');
+      }
+      const dr = R.drawer('drawer'); let editing = null;
+      function open(c) {
+        editing = c; $('#dr-title').textContent = c ? `Editar: ${c.corto}` : 'Nueva categoría';
+        $('#dr-form').innerHTML = Admin.form([
+          { name: 'corto', label: 'Nombre corto', required: true, placeholder: 'Ej.: Maquinaria', hint: 'Se usa en menús, filtros y tarjetas.' },
+          { name: 'nombre', label: 'Nombre completo', required: true, placeholder: 'Ej.: Maquinaria y equipamiento', hint: 'Título de la página del sector.' },
+          { name: 'desc', label: 'Descripción', type: 'textarea', rows: 3, required: true, placeholder: 'Una línea con lo que incluye.' },
+          ...(c ? [] : [{ name: 'id', label: 'Identificador (URL)', hint: 'Se genera del nombre. Minúsculas y guiones. No se puede cambiar después.', placeholder: 'maquinaria' }]),
+        ], c || {});
+        $('#dr-status').innerHTML = c ? `<span class="label mono">/buscar?sector=${R.esc(c.id)}</span>` : '<span class="label">Nueva</span>';
+        dr.open();
+        if (!c) { const n = document.querySelector('#dr-form [name=corto]'), i = document.querySelector('#dr-form [name=id]'); n.addEventListener('input', () => { if (!i.dataset.touched) i.value = slug(n.value); }); i.addEventListener('input', () => i.dataset.touched = '1'); }
+      }
+      $('#dr-form').addEventListener('submit', ev => {
+        ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return; const v = Admin.read(f);
+        if (editing) { S.setCategoria(editing.id, { corto: v.corto, nombre: v.nombre, desc: v.desc }); S.log(`Categoría editada: ${v.corto}`); R.toast('Guardado'); }
+        else { const id = slug(v.id || v.corto); if (!id || S.categorias().find(c => c.id === id)) { R.toast('Ese identificador ya existe o no es válido.', 'error'); return; } S.setCategoria(id, { id, corto: v.corto, nombre: v.nombre, desc: v.desc, activo: true, orden: S.categorias().length + 1, sub: [], empresas: 0, productos: 0 }); S.log(`Categoría creada: ${v.corto}`, 'ok'); R.toast(`${v.corto} creada`); }
+        dr.close(); render();
+      });
+      $('#btn-new').addEventListener('click', () => open(null));
+      document.addEventListener('click', ev => {
+        const a = ev.target.closest('[data-edit],[data-open],[data-move],[data-act],[data-rm],[data-ren]'); if (!a) return;
+        const cat = a.closest('.cat'); const id = cat && cat.dataset.id; const c = id && S.categorias().find(x => x.id === id);
+        if (a.dataset.edit) open(c);
+        else if (a.dataset.open) { openIds.has(id) ? openIds.delete(id) : openIds.add(id); render(); }
+        else if (a.dataset.move) { const cats = S.categorias(); const i = cats.findIndex(x => x.id === id); const j = i + Number(a.dataset.move); if (j < 0 || j >= cats.length) return; const o1 = cats[i].orden, o2 = cats[j].orden; S.setCategoria(cats[i].id, { orden: o2 }); S.setCategoria(cats[j].id, { orden: o1 }); S.log(`Orden de categorías cambiado: ${cats[i].corto}`); render(); }
+        else if (a.dataset.act) { const on = a.getAttribute('aria-checked') === 'true'; S.setCategoria(id, { activo: on }); S.log(`${c.corto}: ${on ? 'activada' : 'desactivada'}`); R.toast(on ? `${c.corto} visible` : `${c.corto} oculta`); render(); }
+        else if (a.dataset.rm) { const sub = [...c.sub]; const [gone] = sub.splice(Number(a.dataset.rm), 1); S.setCategoria(id, { sub }); S.log(`Subsector quitado: ${gone}`); render(); }
+        else if (a.dataset.ren) { const sub = [...c.sub]; const j = Number(a.dataset.ren); const nuevo = prompt('Nuevo nombre del subsector', sub[j]); if (nuevo && nuevo.trim()) { sub[j] = nuevo.trim(); S.setCategoria(id, { sub }); S.log(`Subsector renombrado: ${nuevo.trim()}`); render(); } }
+      });
+      document.addEventListener('submit', ev => { const f = ev.target.closest('[data-add]'); if (!f) return; ev.preventDefault(); const c = S.categorias().find(x => x.id === f.dataset.add); const v = f.querySelector('input').value.trim(); if (!v) return; S.setCategoria(c.id, { sub: [...c.sub, v] }); S.log(`Subsector añadido: ${v} (${c.corto})`, 'ok'); R.toast('Subsector añadido'); render(); });
+      render();
+    });
+  </script>
+</body>
+</html>

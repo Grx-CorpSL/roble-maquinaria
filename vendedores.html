@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Vendedores de maquinaria — ROBLE Maquinaria</title>
+  <meta name="description" content="Fabricantes, distribuidores y servicios técnicos de maquinaria para la madera que anuncian en ROBLE. Busca por tipo de empresa y país.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/vendedores.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/vendedores.html">
+  <meta property="og:title" content="Vendedores de maquinaria — ROBLE Maquinaria">
+  <meta property="og:description" content="Fabricantes, distribuidores y servicios técnicos de maquinaria para la madera que anuncian en ROBLE. Busca por tipo de empresa y país.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = ML.D, c = ML.shell('vendedores'); const p = R.qs();
+      let tipo = p.get('tipo') || '', pais = p.get('pais') || '', q = '';
+      function render() {
+        const list = D.vendedores.filter(v => (!v.derivado || ML.anunciosDe(v.id).length) && (!tipo || v.tipos.includes(tipo)) && (!pais || v.pais === pais) && (!q || R.norm(v.nombre).includes(R.norm(q)) || R.norm(v.desc).includes(R.norm(q)))).sort((a, b) => b.destacado - a.destacado || a.nombre.localeCompare(b.nombre, 'es'));
+        c.innerHTML = `
+          <h1 class="h1">Buscar máquinas por vendedor</h1>
+          <p class="intro">${D.vendedores.length} empresas de maquinaria para la madera. Comercio, producción y asistencia técnica.</p>
+          <form class="vfilters" onsubmit="return false"><div class="field"><label for="q">Nombre</label><input class="input" id="q" placeholder="Buscar vendedor" value="${R.esc(q)}"></div><div class="field"><label for="tipo">Tipo de empresa</label><select class="select" id="tipo"><option value="">Todos</option>${D.tiposVendedor.map(([id, l]) => `<option value="${id}" ${tipo === id ? 'selected' : ''}>${l}</option>`).join('')}</select></div>${new Set(D.vendedores.map(v => v.pais)).size > 1 ? `<div class="field"><label for="pais">País</label><select class="select" id="pais"><option value="">Todos</option>${D.paises.map(([k, n]) => `<option value="${k}" ${pais === k ? 'selected' : ''}>${n}</option>`).join('')}</select></div>` : ''}<div class="field"><span class="field-label">Resultado</span><p class="small muted" style="height:40px;display:flex;align-items:center"><b style="color:var(--ink);margin-right:4px">${list.length}</b> ${list.length === 1 ? 'vendedor' : 'vendedores'}</p></div><button class="btn btn-ghost" type="button" id="clear" ${tipo || pais || q ? '' : 'hidden'}>Quitar filtros</button></form>
+          ${list.length ? `<div class="vgrid">${list.map(ML.tpl.vendCard).join('')}</div>` : `<div class="empty">${R.icon('building')}<p class="empty-title">Ningún vendedor con esos filtros</p><p>Prueba con otro tipo de vendedor o quita el filtro.</p><button class="btn" type="button" id="clear2">Quitar filtros</button></div>`}`;
+        c.querySelector('#q').addEventListener('input', e => { q = e.target.value; const pos = e.target.selectionStart; render(); const el = c.querySelector('#q'); el.focus(); el.setSelectionRange(pos, pos); });
+        c.querySelector('#tipo').addEventListener('change', e => { tipo = e.target.value; history.replaceState(null, '', 'vendedores.html' + (tipo ? '?tipo=' + tipo : '')); render(); });
+        c.querySelector('#pais') && c.querySelector('#pais').addEventListener('change', e => { pais = e.target.value; render(); });
+        c.querySelectorAll('#clear,#clear2').forEach(b => b.addEventListener('click', () => { tipo = ''; pais = ''; q = ''; history.replaceState(null, '', 'vendedores.html'); render(); }));
+      }
+      render();
+    });
+  </script>
+</body>
+</html>

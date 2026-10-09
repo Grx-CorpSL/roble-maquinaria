@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Configuración — ROBLE Admin</title>
+  <meta name="description" content="Configuración general, países, SEO, parámetros y permisos de ROBLE.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="../assets/roble.css">
+  <link rel="stylesheet" href="../admin/admin.css">
+  <style>@media (max-width: 480px) { .page-title h1 { font-size: 1.375rem; } } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main">
+    <div class="page-title"><div><h1>Configuración</h1><p>Parámetros del sistema. Los cambios se aplican a toda la web pública.</p></div></div>
+    <div class="cfg">
+      <nav class="cfg-nav" aria-label="Apartados"><a href="#general">General</a><a href="#paises">Países</a><a href="#seo">SEO</a><a href="#parametros">Parámetros</a><a href="#permisos">Permisos</a><a href="categorias.html">Categorías ↗</a><a href="usuarios.html">Usuarios ↗</a></nav>
+      <div class="cfg-body" id="body"></div>
+    </div>
+  </main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="../assets/roble.js"></script>
+  <script src="../admin/admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const who = Admin.shell('configuracion'); if (!who) return;
+      const R = ROBLE, S = Admin.Store, $ = s => document.querySelector(s);
+      const c = S.config();
+      const plate = (id, title, body, foot) => `<form class="plate" id="${id}"><div class="plate-head"><span class="label">${title}</span></div><div class="plate-body">${body}</div><div class="plate-foot between"><span class="small muted">${foot || ''}</span><button class="btn btn-ink btn-sm" type="submit">Guardar</button></div></form>`;
+      const yes = R.icon('check'), no = `<span class="no">${R.icon('minus')}</span>`;
+      $('#body').innerHTML =
+        plate('general', 'General', Admin.form([{ name: 'nombre', label: 'Nombre de la plataforma', required: true }, { name: 'tagline', label: 'Descripción corta', required: true, hint: 'Aparece en la cabecera del pie y en los títulos SEO.' }, { name: 'email', label: 'Correo de contacto', type: 'email', required: true, hint: 'Recibe los mensajes del formulario de contacto y los avisos de altas.' }, { name: 'idioma', label: 'Idioma de la interfaz', type: 'select', options: [['es', 'Español'], ['pt', 'Português (pendiente de traducción)'], ['it', 'Italiano (pendiente)'], ['fr', 'Français (pendiente)']] }], c), 'Se usa en cabecera, pie y correos.') +
+        plate('paises', 'Países', `<p class="small muted">Un país activo aparece en los filtros de zona y en el alta de empresa. Los datos actuales son de España.</p>${['ES', 'PT', 'IT', 'FR'].map(k => `<div class="row" style="justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span><b style="font-weight:600">${R.pais[k]}</b> <span class="mono muted small">${k}</span> <span class="muted small">· ${R.D.empresas.filter(e => e.pais === k).length} empresas</span></span>${Admin.sw(!!c.paises[k], `name="pais-${k}" aria-label="${R.pais[k]}"`)}</div>`).join('')}`, 'España no se puede desactivar mientras tenga empresas.') +
+        plate('seo', 'SEO', Admin.form([{ name: 'seoTitle', label: 'Plantilla de título', required: true, hint: '%s se sustituye por el nombre de la página, empresa o producto.' }, { name: 'seoDesc', label: 'Descripción por defecto', type: 'textarea', rows: 3, required: true, hint: 'Hasta 158 caracteres. Se usa cuando la página no tiene una propia.' }, { name: 'indexar', label: 'Permitir indexación', type: 'switch', value: c.indexar !== false, hint: 'Desactívalo solo en entornos de prueba.' }], c), 'Los sitemaps se generan con las fichas publicadas.') +
+        plate('parametros', 'Parámetros', Admin.form([{ name: 'porPagina', label: 'Resultados por página', type: 'number', required: true, attrs: 'min="10" max="60"' }, { name: 'revisionHoras', label: 'Plazo de revisión prometido (horas)', type: 'number', required: true, attrs: 'min="1" max="168"', hint: 'Se muestra en la web como compromiso. Cúmplelo.' }, { name: 'altaLibre', label: 'Alta abierta desde la web', type: 'switch', hint: 'Si se desactiva, solo el equipo puede crear empresas.' }], c), '') +
+        `<div class="plate" id="permisos"><div class="plate-head"><span class="label">Permisos por rol</span></div><div class="plate-body" style="padding:0 0 4px"><div style="overflow:auto" tabindex="0" role="region" aria-label="Permisos por rol"><table class="perm"><thead><tr><th>Acción</th><th>Admin</th><th>Edición</th><th>Empresa</th><th>Profesional</th></tr></thead><tbody>
+          ${[['Crear y editar cualquier empresa', 1, 1, 0, 0], ['Editar su propia ficha', 1, 1, 1, 0], ['Publicar / despublicar', 1, 1, 0, 0], ['Destacar', 1, 0, 0, 0], ['Moderar altas', 1, 1, 0, 0], ['Gestionar productos', 1, 1, 1, 0], ['Ver y gestionar leads', 1, 1, 0, 0], ['Contactar empresas', 1, 1, 1, 1], ['Gestionar usuarios y roles', 1, 0, 0, 0], ['Configuración del sistema', 1, 0, 0, 0]].map(r => `<tr><td>${r[0]}</td>${r.slice(1).map(v => `<td>${v ? yes : no}</td>`).join('')}</tr>`).join('')}
+        </tbody></table></div></div><div class="plate-foot"><span class="small muted">Los permisos son fijos por rol. Para excepciones, crea un usuario con rol de edición.</span></div></div>`;
+      document.querySelectorAll('form.plate').forEach(f => f.addEventListener('submit', ev => {
+        ev.preventDefault(); if (!R.validate(f)) return; const v = Admin.read(f);
+        if (f.id === 'paises') { const paises = {}; ['ES', 'PT', 'IT', 'FR'].forEach(k => paises[k] = !!v['pais-' + k]); if (!paises.ES) { R.toast('España tiene empresas publicadas: no se puede desactivar.', 'error'); return; } S.setConfig({ paises }); }
+        else if (f.id === 'parametros') S.setConfig({ porPagina: Number(v.porPagina), revisionHoras: Number(v.revisionHoras), altaLibre: !!v.altaLibre });
+        else if (f.id === 'seo') S.setConfig({ seoTitle: v.seoTitle, seoDesc: v.seoDesc, indexar: !!v.indexar });
+        else S.setConfig({ nombre: v.nombre, tagline: v.tagline, email: v.email, idioma: v.idioma });
+        S.log(`Configuración guardada: ${f.querySelector('.label').textContent}`); R.toast('Guardado');
+      }));
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Solicitudes — Admin maquinaria — ROBLE</title>
+  <meta name="description" content="Moderación de solicitudes de maquinaria.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="admin/ml-admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const R = ROBLE, S = ML.store, who = MLA.shell('solicitudes'); if (!who) return; const $ = s => document.querySelector(s);
+      document.getElementById('main').innerHTML = `<div class="page-title"><div><h1>Solicitudes de maquinaria <span class="count" id="count"></span></h1><p>Demanda de compradores. Al aprobar, se publica y (en producción) se avisa a los vendedores de esa categoría.</p></div></div><div class="tbar"><select class="select" id="f" aria-label="Estado"><option value="pendiente">Pendientes</option><option value="publicada">Publicadas</option><option value="rechazada">Rechazadas</option><option value="">Todas</option></select></div><div id="table"></div>`;
+      const est = s => s.pendiente ? 'pendiente' : s.rechazada ? 'rechazada' : 'publicada';
+      const rows = () => ML.solicitudes().filter(s => !$('#f').value || est(s) === $('#f').value);
+      const t = Admin.table($('#table'), {
+        rows, per: 25,
+        cols: [
+          { key: 'titulo', label: 'Solicitud', render: s => `<div class="cell-main"><div><b>${R.esc(s.titulo)}</b><span>${R.esc((ML.cat(s.cat) || {}).nombre || '')} · ${s.cantidad} ud. · ${ML.pais[s.pais] || s.pais}${s.estado ? ' · ' + ML.ESTADO[s.estado] : ''}</span></div></div>` },
+          { key: 'nombre', label: 'Solicitante', render: s => `${R.esc(s.nombre)}<div class="muted" style="font-size:11px">${R.esc(s.email)}</div>` },
+          { key: 'desc', label: 'Detalles', cls: 'col-opt muted', render: s => R.esc((s.desc || '—').slice(0, 70)) },
+          { key: 'vend', label: 'Vendedores en la categoría', cls: 'num', render: s => new Set(ML.publicados().filter(a => a.cat === s.cat).map(a => a.vendedor_id)).size },
+          { key: 'fecha', label: 'Fecha', cls: 'mono muted', render: s => MLA.fecha(s.fecha) },
+          { key: 'estado', label: 'Estado', render: s => MLA.status(est(s) === 'publicada' ? 'publicado' : est(s) === 'rechazada' ? 'rechazado' : 'pendiente') },
+        ],
+        actions: s => s.pendiente ? Admin.ib('check', 'Aprobar y publicar', `data-ok="${s.id}"`) + Admin.ib('x', 'Rechazar', `data-no="${s.id}"`) : Admin.ib('trash', 'Eliminar', `data-del="${s.id}"`),
+        emptyIcon: 'inbox', emptyTitle: 'Ninguna solicitud en este estado', emptyText: 'Las solicitudes que publiquen los compradores desde la web aparecen aquí para revisión.',
+        onRender: () => { $('#count').textContent = rows().length; },
+      });
+      $('#f').addEventListener('change', () => t.render());
+      document.addEventListener('click', async ev => {
+        const b = ev.target.closest('[data-ok],[data-no],[data-del]'); if (!b || b.closest('#roble-confirm')) return; const id = Number(b.dataset.ok || b.dataset.no || b.dataset.del); const s = ML.solicitudes().find(x => x.id === id);
+        if (b.dataset.ok) { S.setSolicitud(id, { pendiente: false, rechazada: false }); S.log(`Solicitud publicada: ${s.titulo}`, 'ok'); R.toast('Solicitud publicada'); location.reload(); }
+        else if (b.dataset.no) { const ok = await R.confirmDialog({ title: 'Rechazar solicitud', html: `Vas a rechazar <strong>${R.esc(s.titulo)}</strong>. Avisaremos a ${R.esc(s.email)}.`, ok: 'Rechazar', danger: true }); if (ok) { S.setSolicitud(id, { pendiente: false, rechazada: true }); S.log(`Solicitud rechazada: ${s.titulo}`, 'error'); R.toast('Rechazada'); location.reload(); } }
+        else { const ok = await R.confirmDialog({ title: 'Eliminar solicitud', html: `Vas a eliminar <strong>${R.esc(s.titulo)}</strong>.`, ok: 'Eliminar', danger: true }); if (ok) { const x = ML.extras(); x.solicitudes = (x.solicitudes || []).filter(y => y.id !== id); ML.saveExtras(x); R.toast('Eliminada'); location.reload(); } }
+      });
+    });
+  </script>
+</body>
+</html>

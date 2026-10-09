@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Panel — ROBLE Admin</title>
+  <meta name="description" content="Panel de administración de ROBLE: actividad, pendientes de revisión, empresas, productos y contactos.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="../assets/roble.css">
+  <link rel="stylesheet" href="../admin/admin.css">
+  <style>@media (max-width: 480px) { .page-title h1 { font-size: 1.375rem; } } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="../assets/roble.js"></script>
+  <script src="../admin/admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const who = Admin.shell('index'); if (!who) return;
+      const R = ROBLE, S = Admin.Store, main = document.getElementById('main');
+      function render() {
+        const E = S.empresas(), P = S.productos(), L = S.leads(), A = S.altas();
+        const pend = Admin.pendientes(), nuevos = L.filter(l => l.estado === 'nuevo');
+        const altasP = A.filter(a => a.estado === 'pendiente');
+        const sinZona = E.filter(e => !e.ciudad && !e.region).length, sinWeb = E.filter(e => !e.web).length, sinDesc = E.filter(e => !e.desc).length;
+        const hoy = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+        const cats = S.categorias().filter(c => c.activo); const maxE = Math.max(...cats.map(c => c.empresas), 1);
+        main.innerHTML = `
+          <div class="page-title"><div><h1>Panel</h1><p>${hoy.charAt(0).toUpperCase() + hoy.slice(1)} · ${who.nombre}</p></div><div class="actions"><a class="btn" href="empresas.html?nueva">${R.icon('plus')} Nueva empresa</a><a class="btn btn-ink" href="moderacion.html">Revisar pendientes${pend ? ` <span class="mono">${pend}</span>` : ''}</a></div></div>
+          <div class="kpis">
+            <a class="kpi" href="empresas.html"><span class="label">Empresas publicadas ${R.icon('arrow-right', 'i-16')}</span><b>${E.filter(e => e.estado === 'publicada').length}</b><span class="sub">${E.filter(e => e.destacada).length} destacadas · ${E.length - E.filter(e => e.estado === 'publicada').length} sin publicar</span></a>
+            <a class="kpi ${pend ? 'is-alert' : ''}" href="moderacion.html"><span class="label">Pendientes de revisar ${R.icon('arrow-right', 'i-16')}</span><b>${pend}</b><span class="sub">${altasP.length} altas · ${E.filter(e => e.estado === 'pendiente').length} empresas · ${P.filter(p => p.estado === 'pendiente').length} productos</span></a>
+            <a class="kpi" href="productos.html"><span class="label">Productos ${R.icon('arrow-right', 'i-16')}</span><b>${P.length}</b><span class="sub">${P.filter(p => p.destacado).length} destacados · ${P.filter(p => p.fotos && p.fotos.length).length} con foto</span></a>
+            <a class="kpi ${nuevos.length ? 'is-alert' : ''}" href="leads.html"><span class="label">Contactos nuevos ${R.icon('arrow-right', 'i-16')}</span><b>${nuevos.length}</b><span class="sub">${L.length} en total · ${L.filter(l => l.estado === 'en-curso').length} en curso</span></a>
+          </div>
+          <div class="split">
+            <div class="stack">
+              <div class="card"><div class="card-head"><h2>Pendiente de ti</h2><a class="link" href="moderacion.html">Moderación ${R.icon('arrow-right', 'i-16')}</a></div><div class="card-body">
+                ${altasP.length ? `<div class="list">${altasP.slice(0, 5).map(a => `<div class="list-item"><span class="sq sq-wood"></span><div class="t"><b>${R.esc(a.nombre)}</b><span>Alta de empresa · ${R.esc((R.sector(a.sector) || {}).corto || a.sector)}${a.ciudad ? ' · ' + R.esc(a.ciudad) : ''}</span></div><span class="when">${Admin.ago(a.fecha)}</span><span class="row" style="gap:4px"><button class="btn btn-sm btn-ink" data-aprobar="${a.id}">Aprobar</button><button class="btn btn-sm" data-rechazar="${a.id}">Rechazar</button></span></div>`).join('')}</div>` : ''}
+                ${nuevos.length ? `<div class="list">${nuevos.slice(0, 5).map(l => `<div class="list-item"><span class="sq"></span><div class="t"><b>${R.esc(l.nombre)} → ${R.esc(l.empresa)}</b><span>${R.esc(l.producto ? 'Sobre ' + l.producto : 'Contacto desde la ficha')}</span></div><span class="when">${Admin.ago(l.fecha)}</span><a class="btn btn-sm" href="leads.html?id=${l.id}">Ver</a></div>`).join('')}</div>` : ''}
+                ${!altasP.length && !nuevos.length ? `<div class="empty" style="border:0;background:none;padding:32px 8px">${R.icon('check')}<p class="empty-title">Nada pendiente.</p><p>Ningún alta ni contacto sin atender. Buen momento para completar fichas.</p></div>` : ''}
+              </div></div>
+              <div class="card"><div class="card-head"><h2>Fichas incompletas</h2><span class="label">${E.length} empresas</span></div><div class="card-body">
+                <div class="list">
+                  <a class="list-item" href="empresas.html?filtro=sin-zona"><span class="sq ${sinZona ? 'sq-wood' : 'sq-ghost'}"></span><div class="t"><b>Sin zona</b><span>Sin ciudad ni región: no aparecen al filtrar por zona.</span></div><span class="mono">${sinZona}</span>${R.icon('chevron-right', 'i-16')}</a>
+                  <a class="list-item" href="empresas.html?filtro=sin-web"><span class="sq ${sinWeb ? 'sq-wood' : 'sq-ghost'}"></span><div class="t"><b>Sin web</b><span>No se puede verificar la actividad con una fuente pública.</span></div><span class="mono">${sinWeb}</span>${R.icon('chevron-right', 'i-16')}</a>
+                  <a class="list-item" href="empresas.html?filtro=sin-desc"><span class="sq ${sinDesc ? 'sq-wood' : 'sq-ghost'}"></span><div class="t"><b>Sin descripción</b><span>La ficha sale vacía en los resultados.</span></div><span class="mono">${sinDesc}</span>${R.icon('chevron-right', 'i-16')}</a>
+                </div>
+              </div></div>
+            </div>
+            <div class="stack">
+              <div class="card"><div class="card-head"><h2>Actividad reciente</h2><span class="label">Este dispositivo</span></div><div class="card-body">
+                ${S.logs().length ? `<div class="list">${S.logs().slice(0, 8).map(l => `<div class="list-item"><span class="sq ${l.tipo === 'ok' ? 'sq-ink' : l.tipo === 'error' ? '' : 'sq-ghost'}"></span><div class="t"><span style="color:var(--ink)">${R.esc(l.texto)}</span></div><span class="when">${Admin.ago(l.fecha)}</span></div>`).join('')}</div>` : `<p class="small muted" style="padding:14px 0">Sin actividad registrada todavía. Aquí verás lo que se aprueba, publica o edita.</p>`}
+              </div></div>
+              <div class="card"><div class="card-head"><h2>Empresas por sector</h2><a class="link" href="categorias.html">Categorías ${R.icon('arrow-right', 'i-16')}</a></div><div class="card-body">
+                <table class="mini"><tbody>${cats.map(c => `<tr><td style="width:28px" class="mono muted">${R.pad2(c.n || c.orden)}</td><td><a href="empresas.html?sector=${c.id}">${R.esc(c.corto)}</a><div class="bar" style="margin-top:4px;max-width:160px"><i style="width:${Math.round(c.empresas / maxE * 100)}%"></i></div></td><td class="num">${c.empresas}</td><td class="num muted">${c.productos}</td></tr>`).join('')}</tbody></table>
+              </div></div>
+            </div>
+          </div>`;
+        main.querySelectorAll('[data-aprobar]').forEach(b => b.addEventListener('click', () => { const a = S.altas().find(x => String(x.id) === b.dataset.aprobar); const e = Admin.aprobarAlta(a); R.toast(`${a.nombre} publicada como REF ${String(e.id).padStart(4, '0')}`); render(); }));
+        main.querySelectorAll('[data-rechazar]').forEach(b => b.addEventListener('click', async () => { const a = S.altas().find(x => String(x.id) === b.dataset.rechazar); const ok = await R.confirmDialog({ title: 'Rechazar alta', html: `Vas a rechazar el alta de <strong>${R.esc(a.nombre)}</strong>. Le avisaremos por correo a ${R.esc(a.email)}.`, ok: 'Rechazar', danger: true }); if (ok) { Admin.rechazarAlta(a, ''); R.toast('Alta rechazada'); render(); } }));
+      }
+      render();
+    });
+  </script>
+</body>
+</html>

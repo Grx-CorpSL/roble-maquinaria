@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Paquetes y pedidos — Admin maquinaria — ROBLE</title>
+  <meta name="description" content="Paquetes de anuncios, precios y pedidos de vendedores.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>.precios td .input { height: 32px; font-size: 12px; width: 110px; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="admin/ml-admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const R = ROBLE, S = ML.store, D = ML.D, who = MLA.shell('pedidos'); if (!who) return; const $ = s => document.querySelector(s);
+      const precios = () => ML.extras().precios || {};
+      const fmt = n => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
+      function render() {
+        const ped = S.pedidos(); const pr = precios();
+        document.getElementById('main').innerHTML = `<div class="page-title"><div><h1>Paquetes y pedidos</h1><p>Fija los precios de los paquetes y confirma los pedidos. Confirmar un pedido activa el saldo del vendedor.</p></div></div>
+          <div class="split">
+            <div class="card"><div class="card-head"><h2>Pedidos</h2><span class="label">${ped.filter(p => p.estado === 'pendiente').length} por confirmar</span></div><div class="card-body" style="padding:0"><div id="table"></div></div></div>
+            <div class="card"><div class="card-head"><h2>Precios de los paquetes</h2></div><div class="card-body" style="padding:0"><form id="fp"><table class="dtable precios" style="min-width:0"><thead><tr><th>Anuncios</th><th>Precio (€)</th><th class="num">€ / anuncio</th></tr></thead><tbody>${D.paquetes.map(([n, p]) => { const val = pr[n] != null ? pr[n] : p; return `<tr><td><b>${n}</b></td><td><input class="input" type="number" min="0" step="1" name="p${n}" value="${val != null ? val : ''}" placeholder="Sin fijar" aria-label="Precio del paquete de ${n}"></td><td class="num muted">${val ? (val / n).toFixed(2).replace('.', ',') : '—'}</td></tr>`; }).join('')}</tbody></table><div class="plate-foot between"><span class="small muted">Los precios se muestran en Vender máquinas y en el panel de vendedor.</span><button class="btn btn-ink btn-sm" type="submit">Guardar precios</button></div></form></div></div>
+          </div>`;
+        Admin.table($('#table'), {
+          rows: () => ped, per: 20,
+          cols: [
+            { key: 'fecha', label: 'Fecha', cls: 'mono muted', render: p => MLA.fecha(p.fecha) },
+            { key: 'vendedor', label: 'Vendedor', render: p => `<b>${R.esc(p.vendedor)}</b>` },
+            { key: 'anuncios', label: 'Paquete', render: p => `${p.anuncios} anuncios` },
+            { key: 'precio', label: 'Importe', cls: 'num', render: p => p.precio ? fmt(p.precio) : '<span class="muted">Sin fijar</span>' },
+            { key: 'estado', label: 'Estado', render: p => MLA.status(p.estado) },
+          ],
+          actions: p => p.estado === 'pendiente' ? Admin.ib('check', 'Confirmar pago', `data-ok="${p.id}"`) + Admin.ib('x', 'Cancelar', `data-no="${p.id}"`) : '',
+          emptyIcon: 'inbox', emptyTitle: 'Ningún pedido todavía', emptyText: 'Los vendedores piden paquetes desde su panel. En producción el pago con tarjeta los confirma solos.',
+        });
+        $('#fp').addEventListener('submit', e => { e.preventDefault(); const x = ML.extras(); x.precios = {}; D.paquetes.forEach(([n]) => { const v = $(`[name=p${n}]`).value; if (v) x.precios[n] = Number(v); }); ML.saveExtras(x); D.paquetes.forEach(pq => { pq[1] = x.precios[pq[0]] || null; }); S.log('Precios de paquetes actualizados'); R.toast('Precios guardados'); render(); });
+      }
+      render();
+      document.addEventListener('click', async ev => { const b = ev.target.closest('[data-ok],[data-no]'); if (!b || b.closest('#roble-confirm')) return; const id = Number(b.dataset.ok || b.dataset.no); const p = S.pedidos().find(x => x.id === id); if (b.dataset.ok) { S.setPedido(id, { estado: 'pagado' }); S.log(`Pedido confirmado: ${p.anuncios} anuncios · ${p.vendedor}`, 'ok'); R.toast('Pedido confirmado: saldo activado'); } else { const ok = await R.confirmDialog({ title: 'Cancelar pedido', html: `Vas a cancelar el pedido de <strong>${p.anuncios} anuncios</strong> de ${R.esc(p.vendedor)}.`, ok: 'Cancelar pedido', danger: true }); if (!ok) return; S.setPedido(id, { estado: 'cancelado' }); S.log(`Pedido cancelado: ${p.vendedor}`, 'error'); R.toast('Pedido cancelado'); } render(); });
+    });
+  </script>
+</body>
+</html>

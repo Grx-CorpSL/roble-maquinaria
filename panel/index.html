@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Panel de empresa — ROBLE</title>
+  <meta name="description" content="Panel de empresa de ROBLE: ficha, productos, máquinas, contactos y paquetes.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>.admin-header .brand-tag { display: inline-flex; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="panel/panel.js"></script>
+  <script>
+    ML.auth.ready.then(() => {
+      const R = ROBLE, S = ML.store, v = Panel.shell('index'); if (!v) return;
+      const mis = Panel.misAnuncios(v), L = Panel.leads(v), e = Panel.empresa(v.id) || { sectores: [] };
+      const pub = mis.filter(a => a.estadoPub === 'publicado'), pend = mis.filter(a => a.estadoPub === 'pendiente'), nuevos = L.filter(l => l.estado === 'nuevo');
+      document.getElementById('main').innerHTML = `
+        <div class="page-title"><div><h1>Hola, ${R.esc(v.nombre)}</h1><p>${Panel.productos(v).length} productos en el directorio · ${pub.length} máquinas en venta · ${nuevos.length} contactos sin responder</p></div><div class="actions"><a class="btn" href="empresa.html?id=${v.id}" target="_blank" rel="noopener">Ver mi ficha</a><a class="btn btn-primary" href="panel/anuncios.html?nuevo">${R.icon('plus')} Nuevo anuncio</a></div></div>
+        <div class="kpis">
+          <a class="kpi" href="panel/anuncios.html"><span class="label">Anuncios publicados ${R.icon('arrow-right', 'i-16')}</span><b>${pub.length}</b><span class="sub">${pend.length} pendientes de revisión · ${mis.filter(a => a.destacado).length} destacados</span></a>
+          <a class="kpi ${nuevos.length ? 'is-alert' : ''}" href="panel/leads.html"><span class="label">Contactos nuevos ${R.icon('arrow-right', 'i-16')}</span><b>${nuevos.length}</b><span class="sub">${L.length} en total</span></a>
+          <a class="kpi" href="panel/productos.html"><span class="label">Productos en el directorio ${R.icon('arrow-right', 'i-16')}</span><b>${Panel.productos(v).length}</b><span class="sub">visibles en tu ficha</span></a>
+          <a class="kpi" href="panel/perfil.html"><span class="label">Tu ficha ${R.icon('arrow-right', 'i-16')}</span><b>${e.sectores.length}</b><span class="sub">${e.sectores.length === 1 ? 'sector' : 'sectores'} en el directorio</span></a>
+        </div>
+        <div class="split">
+          <div class="card"><div class="card-head"><h2>Últimos contactos</h2><a class="link" href="panel/leads.html">Ver todos ${R.icon('arrow-right', 'i-16')}</a></div><div class="card-body">${L.length ? `<div class="list">${L.slice(0, 5).map(l => `<div class="list-item"><span class="sq ${l.estado === 'nuevo' ? '' : 'sq-ghost'}"></span><div class="t"><b>${R.esc(l.nombre)}${l.contacto_empresa ? ' · ' + R.esc(l.contacto_empresa) : ''}</b><span>${R.esc(l.producto ? 'Sobre ' + l.producto : 'Contacto general')}</span></div><span class="when">${Panel.fecha(l.fecha)}</span><a class="btn btn-sm" href="panel/leads.html?id=${l.id}">Ver</a></div>`).join('')}</div>` : `<p class="small muted" style="padding:14px 0">Todavía nadie te ha escrito. Cuantos más datos y fotos tengan tus anuncios, más contactos llegan.</p>`}</div></div>
+          <div class="stack">
+            <div class="card"><div class="card-head"><h2>Tus anuncios</h2><a class="link" href="panel/anuncios.html">Gestionar ${R.icon('arrow-right', 'i-16')}</a></div><div class="card-body">${mis.length ? `<div class="list">${mis.slice(0, 6).map(a => `<div class="list-item"><div class="t"><b>${R.esc(a.titulo)}</b><span>${R.esc((ML.cat(a.cat) || {}).nombre || '')}</span></div>${Panel.status(a.estadoPub)}</div>`).join('')}</div>` : '<p class="small muted" style="padding:14px 0">Aún no has publicado ninguna máquina.</p>'}</div></div>
+            <div class="card"><div class="card-head"><h2>Cómo mejorar tus anuncios</h2></div><div class="card-body"><div class="list">${[['Productos en el directorio', Panel.productos(v).length + ' publicados · <a href="panel/productos.html">gestionar</a>'], ['Fotos propias de cada máquina', mis.filter(a => a.fotos.length).length + '/' + mis.length + ' con foto'], ['Marca, modelo y año', mis.filter(a => a.marca && a.anio).length + '/' + mis.length + ' completos'], ['Precio o "a consultar" con respuesta rápida', mis.filter(a => a.precio).length + '/' + mis.length + ' con precio']].map(([t, s]) => `<div class="list-item"><div class="t"><b>${t}</b><span>${s}</span></div></div>`).join('')}</div><a class="link" href="guia.html?id=publicar-anuncio-que-se-vende" style="padding:10px 0;display:inline-flex">Leer la guía ${R.icon('arrow-right', 'i-16')}</a></div></div>
+          </div>
+        </div>`;
+    });
+  </script>
+</body>
+</html>

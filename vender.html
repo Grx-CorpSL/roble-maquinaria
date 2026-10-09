@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Vender máquinas — ROBLE Maquinaria</title>
+  <meta name="description" content="Publica tus máquinas para la madera en ROBLE: anuncios para fabricantes, distribuidores y talleres, con contacto directo con los compradores.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/vender.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/vender.html">
+  <meta property="og:title" content="Vender máquinas — ROBLE Maquinaria">
+  <meta property="og:description" content="Publica tus máquinas para la madera en ROBLE: anuncios para fabricantes, distribuidores y talleres, con contacto directo con los compradores.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>
+    .sell-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: center; margin-bottom: 32px; }
+    .sell-hero .h1 { font-size: clamp(1.625rem, 3.4vw, 2.5rem); max-width: 14ch; }
+    .sell-hero p { color: var(--text-2); margin-top: 10px; max-width: 48ch; }
+    .sell-hero .row { margin-top: 20px; }
+    .sec { margin-top: 36px; }
+    .sec .section-head { margin-bottom: 16px; }
+    .sec .section-head .h2 { font-size: 1.375rem; }
+    @media (max-width: 900px) { .sell-hero { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = ML.D, c = ML.shell('vender');
+      const demo = D.anuncios.find(a => a.destacado) || D.anuncios[0];
+      c.innerHTML = `
+        <section class="sell-hero" aria-labelledby="t"><div><p class="label" style="margin-bottom:12px">Vender máquinas</p><h1 class="h1" id="t">Tus máquinas, donde el sector las busca.</h1><p>Carpinteros, fabricantes y talleres entran en ROBLE a buscar maquinaria nueva y de segunda mano. Un anuncio con datos claros y contacto directo, sin comisiones por venta.</p><div class="row"><a class="btn btn-primary btn-lg" href="#paquetes">Ver paquetes de anuncios ${R.icon('arrow-right')}</a><a class="btn btn-lg" href="acceso.html?crear">Crear cuenta de vendedor</a></div></div><div><p class="label" style="margin-bottom:8px;display:flex;align-items:center;gap:8px"><span class="sq"></span> Así se ve tu anuncio</p><div class="agrid" style="grid-template-columns:1fr;max-width:360px">${demo ? ML.tpl.acard(demo) : ''}</div></div></section>
+        <section class="sec" id="paquetes" aria-labelledby="h-p"><div class="section-head"><div><p class="label">Paquetes</p><h2 class="h2" id="h-p">Paga por anuncios, no por meses.</h2></div></div>
+          <div class="packs">${D.paquetes.map(([n, precio], i) => `<div class="pack ${i === 2 ? 'is-best' : ''}"><span class="n">${n}<small>${n === 1 ? 'anuncio' : 'anuncios'}</small></span><span class="price">${precio ? new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(precio) : 'A consultar'}</span><span class="per">${precio ? (precio / n).toFixed(2).replace('.', ',') + ' € por anuncio' : ''}${i === 2 ? ' · el más elegido' : ''}</span><a class="btn ${i === 2 ? 'btn-ink' : ''} btn-block" href="${ML.wa(`Hola, quiero el paquete de ${n} ${n === 1 ? 'anuncio' : 'anuncios'} en ROBLE Maquinaria.`)}"${ML.waAttrs()}>${D.whatsapp ? `${R.icon('whatsapp', 'i-16')} Pedir por WhatsApp` : 'Pedir'}</a></div>`).join('')}</div>
+          <div class="alert" style="margin-top:14px"><svg class="i"><use href="#i-info"/></svg><div><strong>Los anuncios no caducan hasta que vendes la máquina.</strong> Cada paquete incluye fotos, datos técnicos y contacto directo. Los paquetes y los banners se piden por WhatsApp: <a href="${ML.wa('Hola, me interesan los banners y posiciones destacadas de ROBLE Maquinaria.')}"${ML.waAttrs()} style="text-decoration:underline;text-underline-offset:2px">escríbenos</a>.</div></div>
+        </section>
+        <section class="sec" aria-labelledby="h-c"><div class="section-head"><div><p class="label">Cómo funciona</p><h2 class="h2" id="h-c">Tres pasos.</h2></div></div>
+          <ol class="steps"><li><span class="n">01</span><b>Crea tu cuenta de vendedor.</b><span>Nombre de la empresa, tipo (comercio, producción, asistencia), zona y contacto.</span></li><li><span class="n">02</span><b>Elige un paquete y publica.</b><span>Categoría, descripción, fotos y contacto directo.</span></li><li><span class="n">03</span><b>Recibe contactos.</b><span>Los interesados te escriben desde el anuncio. Sin intermediarios.</span></li></ol>
+        </section>
+        <section class="sec" aria-labelledby="h-q"><div class="section-head"><div><p class="label">Qué incluye cada anuncio</p><h2 class="h2" id="h-q">Una ficha que se lee como una placa.</h2></div></div>
+          <div class="plate" style="max-width:640px"><div class="plate-body"><dl class="specs">${[['Tipo de máquina', 'Seccionadora, chapadora, CNC…'], ['Datos', 'Categoría, descripción y ubicación del vendedor'], ['Precio', 'A consultar: el comprador te escribe'], ['Fotos', 'Hasta 12 por máquina'], ['Contacto', 'Formulario directo, teléfono y web'], ['Visibilidad', 'Categoría, buscador, perfil de vendedor y portada si es destacado']].map(([k, v]) => `<div class="spec"><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl></div></div>
+        </section>`;
+    });
+  </script>
+</body>
+</html>

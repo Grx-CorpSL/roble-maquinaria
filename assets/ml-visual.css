@@ -1,0 +1,370 @@
+/* ROBLE Maquinaria — capa visual: la fotografía manda. Minimalista: menos bordes, más imagen, texto corto. */
+:root { --aside: 300px; }
+
+/* Cabecera más ligera: sin tira de patrocinadores (los vendedores viven en la columna de banners) */
+.sponsors { display: none; }
+
+/* Hero fotográfico de portada */
+.hero-photo { position: relative; min-height: 420px; border-radius: var(--r3); overflow: hidden; background: var(--ink); color: var(--warm); display: flex; align-items: flex-end; margin-bottom: 28px; }
+.hero-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .9; }
+.hero-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,18,18,.12) 0%, rgba(18,18,18,.55) 38%, rgba(18,18,18,.88) 100%); }
+.hero-photo .in { position: relative; z-index: 1; padding: 28px; width: 100%; }
+.hero-photo .kicker { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: var(--fs-label); letter-spacing: .08em; text-transform: uppercase; color: rgba(246,244,239,.9); margin-bottom: 10px; }
+.hero-photo .kicker .sq { width: 7px; height: 7px; }
+.hero-photo .h1 { font-size: clamp(1.75rem, 3.6vw, 2.75rem); max-width: 16ch; color: var(--warm); }
+.hero-photo .search { margin-top: 18px; max-width: 720px; }
+.hero-photo .search-box { box-shadow: var(--sh-3); border-color: transparent; }
+.hero-photo .credit { position: absolute; right: 12px; bottom: 8px; z-index: 1; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: rgba(246,244,239,.5); }
+@media (max-width: 800px) { .hero-photo .credit { display: none; } }
+@media (max-width: 800px) { .hero-photo { min-height: 340px; } .hero-photo .in { padding: 18px; } }
+
+/* Categorías con foto: la imagen es la tarjeta */
+.cgrid { gap: 10px; grid-template-columns: repeat(3, 1fr); }
+/* En movil dos columnas y la tarjeta mas alta que ancha: con tres columnas los
+   nombres largos ("Centros de mecanizado CNC") no caben y se quedan en "Centros
+   de...", que no dice que categoria es. */
+@media (max-width: 700px) { .cgrid { grid-template-columns: repeat(2, 1fr); } .ctile { aspect-ratio: 3 / 2.4; } }
+.ctile { position: relative; padding: 0; min-height: 0; aspect-ratio: 4 / 3; border: 0; overflow: hidden; background: var(--warm-2); box-shadow: none; }
+.ctile img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 400ms var(--ease); }
+.ctile:hover img { transform: scale(1.03); }
+.ctile.has-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,18,18,.05) 0%, rgba(18,18,18,.15) 35%, rgba(18,18,18,.86) 100%); }
+.ctile .n { position: absolute; left: 12px; top: 10px; right: 12px; z-index: 1; color: rgba(246,244,239,.8); }
+.ctile.has-photo > .i { display: none; }
+.ctile.has-photo .n { color: rgba(246,244,239,.8); }
+.ctile:not(.has-photo) .n { color: var(--text-2); }
+/* El titulo se ancla abajo, asi que si crece se sale por arriba de la tarjeta,
+   que recorta con overflow:hidden. En movil, con la tarjeta a 82px, un nombre de
+   cuatro lineas perdia la primera ("Centros de mecanizado CNC" se leia "de
+   mecanizado CNC"). Se limita a las lineas que caben de verdad. */
+.ctile b { position: absolute; left: 12px; right: 40px; bottom: 28px; z-index: 1; margin: 0; font-size: var(--fs-base); line-height: 1.15; color: var(--warm); text-shadow: 0 1px 2px rgba(0,0,0,.4); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+@media (max-width: 700px) { .ctile b { -webkit-line-clamp: 3; line-clamp: 3; font-size: var(--fs-sm); } }
+.ctile:not(.has-photo) b { color: var(--ink); text-shadow: none; }
+.ctile span.c { position: absolute; left: 12px; bottom: 10px; z-index: 1; color: rgba(246,244,239,.75); }
+.ctile:not(.has-photo) span.c { color: var(--text-2); }
+.ctile > .i { position: absolute; right: 12px; bottom: 12px; z-index: 1; width: 22px; height: 22px; color: rgba(246,244,239,.7); }
+.ctile:not(.has-photo) > .i { color: var(--stone); left: 50%; top: 42%; transform: translate(-50%, -50%); width: 36px; height: 36px; }
+.ctile:hover { transform: none; box-shadow: none; }
+
+/* Columna de banners (anuncios laterales): fotos altas, como el portal de referencia */
+.ml-aside h2 { border-bottom: 0; padding-bottom: 4px; }
+.banner { position: relative; display: block; aspect-ratio: 3 / 4; border-radius: var(--r3); overflow: hidden; background: var(--warm-2); color: var(--warm); box-shadow: var(--sh-1); transition: transform var(--t1) var(--ease), box-shadow var(--t1) var(--ease); }
+.banner:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+.banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,18,18,.05) 0%, rgba(18,18,18,.1) 45%, rgba(18,18,18,.85) 100%); }
+.banner .head { position: absolute; left: 12px; top: 12px; z-index: 1; display: flex; align-items: center; gap: 8px; }
+.banner .head .logo-tile { width: 32px; height: 32px; font-size: 10px; box-shadow: var(--sh-2); }
+.banner .head .featured { background: rgba(255,255,255,.94); padding: 3px 7px; border-radius: var(--r1); }
+.banner .foot { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 1; }
+.banner .foot b { display: block; font-size: var(--fs-base); font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
+.banner .foot span { display: block; font-family: var(--mono); font-size: var(--fs-label); letter-spacing: .06em; text-transform: uppercase; color: rgba(246,244,239,.75); margin-top: 4px; }
+.banner .foot .cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: var(--fs-xs); font-weight: 600; color: var(--warm); }
+.banner .foot .cta .i { width: 14px; height: 14px; }
+.banner.no-photo { background: var(--ink); }
+.banner.no-photo::after { background: none; }
+.banner.no-photo .bg { position: absolute; inset: 0; display: grid; place-items: center; }
+.banner.no-photo .bg .i { width: 96px; height: 96px; color: rgba(246,244,239,.08); stroke-width: 1; }
+.banner.no-photo .foot b { color: var(--warm); }
+.banner-ad { aspect-ratio: 3 / 2; }
+.banner-ad .foot b { font-size: var(--fs-sm); }
+.banner-cta { display: block; padding: 16px; background: var(--red); color: #fff; border-radius: var(--r3); text-align: center; font-weight: 600; font-size: var(--fs-sm); box-shadow: inset 0 -1px 0 rgba(0,0,0,.22), var(--sh-1); }
+.banner-cta:hover { background: var(--red-hover); }
+@media (max-width: 1100px) { .ml-aside { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); } }
+
+/* Tarjetas de anuncio: la foto ocupa; el texto se reduce a lo esencial */
+.acard { border: 0; box-shadow: none; background: transparent; border-radius: 0; }
+.acard:hover { transform: none; box-shadow: none; }
+.acard .media { border: 0; border-radius: var(--r3); overflow: hidden; aspect-ratio: 4 / 3; }
+.acard .media img { transition: transform 400ms var(--ease); }
+.acard:hover .media img { transform: scale(1.03); }
+.acard .media .orient { position: absolute; right: 8px; bottom: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.85); background: rgba(18,18,18,.55); padding: 2px 6px; border-radius: 2px; }
+.acard .media .label { display: none; }
+.acard .media.has-photo .i { display: none; }
+.acard .body { padding: 10px 2px 0; gap: 4px; }
+.acard .title { font-size: var(--fs-sm); }
+.acard .desc { display: none; }
+.acard .foot { border-top: 0; padding-top: 4px; }
+.acard .seller .logo-tile { display: none; }
+.acard .seller { color: var(--text-2); font-weight: 500; }
+
+/* Ficha de anuncio: imagen grande, galería */
+.ad .media { border: 0; }
+.ad .media .orient { position: absolute; right: 10px; bottom: 10px; font-family: var(--mono); font-size: var(--fs-label); letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.85); background: rgba(18,18,18,.55); padding: 3px 7px; border-radius: 2px; }
+
+/* Vendedores: tarjetas con foto de cabecera */
+.vend-plate.has-photo { padding: 0; overflow: hidden; }
+.vend-plate.has-photo .cover { aspect-ratio: 16 / 9; overflow: hidden; background: var(--warm-2); }
+.vend-plate.has-photo .cover img { width: 100%; height: 100%; object-fit: cover; }
+.vend-plate.has-photo .top, .vend-plate.has-photo p, .vend-plate.has-photo .tags { margin-left: 12px; margin-right: 12px; }
+.vend-plate.has-photo .top { margin-top: 12px; }
+.vend-plate.has-photo .tags { margin-bottom: 12px; }
+
+/* Menos ruido: la lista lateral de categorías más ligera */
+.catlist a { border-bottom-color: transparent; padding: 5px 0; }
+.catlist a:hover { border-bottom-color: transparent; }
+.ml-side h2 { border-bottom: 0; }
+
+/* Créditos de fotografía */
+.sector-cover { position: relative; aspect-ratio: 21 / 9; border-radius: var(--r3); overflow: hidden; margin-top: 18px; background: var(--warm-2); }
+.sector-cover img { width: 100%; height: 100%; object-fit: cover; }
+.sector-cover .credit { position: absolute; right: 10px; bottom: 6px; font-family: var(--mono); font-size: var(--fs-label); color: rgba(246,244,239,.85); text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+@media (max-width: 800px) { .sector-cover { aspect-ratio: 16 / 9; } .sector-cover .credit { display: none; } }
+.credits { font-family: var(--mono); font-size: var(--fs-label); color: var(--steel); line-height: 1.6; }
+.credits a { text-decoration: underline; text-underline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .ctile img, .acard .media img { transition: none; } }
+
+/* Guardar (favorito) sobre la imagen */
+.fav { position: absolute; right: 8px; top: 8px; z-index: 2; width: 32px; height: 32px; display: grid; place-items: center; background: rgba(255,255,255,.92); border-radius: var(--r2); color: var(--ink); box-shadow: var(--sh-1); transition: transform var(--t1) var(--ease); }
+.fav:hover { transform: translateY(-1px); }
+.acard .media .fav .i, .acard .media.has-photo .fav .i { display: block; width: 16px; height: 16px; opacity: 1; stroke-width: 1.75; }
+.fav.is-on { background: var(--ink); color: var(--warm); }
+.fav.is-on .i { fill: var(--red); stroke: var(--red); }
+.btn.is-on .i, .btn[aria-pressed="true"] .i { fill: var(--red); stroke: var(--red); }
+.acard .media .estado { right: 46px; }
+.alerta-form { display: flex; gap: 8px; margin-top: 14px; justify-content: center; flex-wrap: wrap; }
+.alerta-form .input { max-width: 260px; }
+/* Guías */
+.ggrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ggrid .gcard:first-child { grid-column: 1 / -1; flex-direction: row; }
+.ggrid .gcard:first-child .cover { flex: 0 0 56%; aspect-ratio: auto; min-height: 260px; }
+.ggrid .gcard:first-child .body { padding: 24px; justify-content: flex-end; gap: 10px; }
+.ggrid .gcard:first-child b { font-size: var(--fs-h3); }
+.ggrid .gcard:first-child p { font-size: var(--fs-sm); }
+@media (max-width: 900px) { .ggrid { grid-template-columns: 1fr; } .ggrid .gcard:first-child { flex-direction: column; } .ggrid .gcard:first-child .cover { flex: none; aspect-ratio: 16 / 9; min-height: 0; } .ggrid .gcard:first-child .body { padding: 14px 16px 16px; } }
+.gcard { display: flex; flex-direction: column; background: var(--paper); border-radius: var(--r3); overflow: hidden; box-shadow: var(--sh-1); color: var(--ink); transition: transform var(--t1) var(--ease), box-shadow var(--t1) var(--ease); }
+.gcard:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+.gcard .cover { aspect-ratio: 16 / 9; background: var(--warm-2); overflow: hidden; }
+.gcard .cover img { width: 100%; height: 100%; object-fit: cover; }
+.gcard .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+.gcard b { font-size: var(--fs-base); font-weight: 600; letter-spacing: -.01em; line-height: 1.25; }
+.gcard p { font-size: var(--fs-xs); color: var(--text-2); line-height: 1.5; }
+.gcard .meta { font-family: var(--mono); font-size: var(--fs-label); letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); }
+.guia { max-width: 68ch; }
+.guia .cover { aspect-ratio: 21 / 9; border-radius: var(--r3); overflow: hidden; margin: 16px 0 24px; background: var(--warm-2); }
+.guia .cover img { width: 100%; height: 100%; object-fit: cover; }
+.guia h2 { font-size: var(--fs-h3); font-weight: 600; margin: 28px 0 8px; letter-spacing: -.01em; }
+.guia p { color: var(--graphite); line-height: 1.6; }
+.guia p + p { margin-top: 10px; }
+.guia ul { padding-left: 18px; list-style: square; color: var(--graphite); margin-top: 8px; }
+.guia li + li { margin-top: 6px; }
+.guia .cta { margin-top: 32px; padding: 18px; background: var(--ink); color: var(--warm); border-radius: var(--r3); display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.guia .cta b { font-size: var(--fs-base); }
+.acard .title a { display: block; padding: 5px 0; margin: -5px 0; }
+.ad .label a, .ad dd a { display: inline-block; padding: 5px 0; margin: -5px 0; }
+.ctile.has-photo.is-empty b { color: var(--warm); }
+
+/* DIRECTORIO dentro del portal: mismas tres columnas */
+.ml-main .pgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.ml-main .pcard-media { aspect-ratio: 4 / 3; }
+.ml-main .vgrid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dir-search { display: flex; gap: 8px; margin: 18px 0 8px; }
+.dir-search .input { flex: 1; min-width: 0; height: 48px; }
+.dir-search .btn { height: 48px; }
+.dir-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+.count-line { font-size: var(--fs-sm); color: var(--text-2); margin-bottom: 12px; }
+.count-line b { color: var(--ink); }
+.sec-block { margin-top: 36px; }
+.sec-block .section-head { margin-bottom: 16px; }
+.sec-block .section-head .h2 { font-size: 1.375rem; }
+@media (max-width: 1100px) { .ml-main .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .ml-main .vgrid.two { grid-template-columns: 1fr; } .dir-search { flex-direction: column; } }
+@media (max-width: 600px) { .dir-search .input { flex: none; } }
+.ml-main .pcard-title a { display: block; padding: 5px 0; margin: -5px 0; }
+.ml-main .spec dd a, .ml-main .crumbs a, .ml-main .intro a, .ml-main .alert a { display: inline-block; padding: 5px 0; margin: -5px 0; }
+.ml-side .catlist + h2 { margin-top: 22px; }
+.catlist a[aria-current] { justify-content: flex-start; }
+.catlist a .n { margin-left: auto; }
+.vhead.emp { grid-template-columns: 72px minmax(0, 1fr); }
+.vhead.emp .actions { grid-column: 2; margin-top: 4px; }
+.vsplit.emp { grid-template-columns: minmax(0, 1fr) 290px; }
+@media (max-width: 900px) { .vsplit.emp { grid-template-columns: 1fr; } .vhead.emp .actions { grid-column: 1 / -1; } }
+.dir-tabs .chip { height: auto; min-height: 30px; padding: 5px 12px; text-align: left; }
+@media (max-width: 700px) { .dir-tabs { flex-wrap: nowrap; overflow-x: auto; margin-right: calc(-1 * var(--gutter, 16px)); padding-bottom: 6px; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); } .dir-tabs::-webkit-scrollbar { display: none; } .dir-tabs .chip { flex: none; white-space: nowrap; } }
+/* Ficha de anuncio y de producto: la foto a todo el ancho, datos debajo en dos columnas */
+.ml-main .ad { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+.ml-main .ad .media { aspect-ratio: 16 / 10; }
+.ml-main .ad-info { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px 24px; align-items: start; }
+.ml-main .ad-info > .label, .ml-main .ad-info > .h1 { grid-column: 1 / -1; }
+.ml-main .ad-info > .plate { grid-column: 2; grid-row: 3 / span 4; }
+.ml-main .ad-info > .ad-actions { display: flex; flex-direction: column; gap: 8px; }
+.ml-main .ad-info > .ad-actions .btn { width: 100%; }
+@media (max-width: 700px) { .ml-main .ad-info { grid-template-columns: minmax(0, 1fr); } .ml-main .ad-info > .plate { grid-column: 1; grid-row: auto; } }
+.ml-main .ad-info .price-box { flex-direction: column; align-items: flex-start; gap: 2px; }
+/* Sin saltos al cargar la fuente: en móvil el encabezado de sección siempre apila título y enlace */
+@media (max-width: 700px) { .ml-main .section-head { flex-direction: column; align-items: flex-start; flex-wrap: nowrap; gap: 8px; } }
+
+/* GALERÍA de la ficha: foto principal, miniaturas y ampliación */
+.ad .media.gal { background: var(--ink); }
+.gal-main { position: absolute; inset: 0; display: block; width: 100%; height: 100%; padding: 0; cursor: zoom-in; touch-action: pan-y; }
+.gal-main img { width: 100%; height: 100%; object-fit: cover; }
+.gal-nav { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 40px; height: 40px; display: grid; place-items: center; background: rgba(255,255,255,.92); border-radius: var(--r2); box-shadow: var(--sh-1); color: var(--ink); transition: background var(--t1); }
+.gal-nav:hover { background: var(--paper); }
+.gal-nav.prev { left: 10px; } .gal-nav.next { right: 10px; }
+.ad .media .gal-nav .i, .lightbox .i { width: 20px; height: 20px; opacity: 1; stroke-width: 1.75; background: none; box-shadow: none; color: inherit; }
+.gal-count, .lb-count { font-family: var(--mono); font-size: var(--fs-label); letter-spacing: .08em; color: var(--warm); background: rgba(18,18,18,.72); padding: 4px 8px; border-radius: var(--r1); }
+.gal-count { position: absolute; left: 10px; bottom: 10px; z-index: 2; }
+.ad .thumbs { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.ad .thumbs button { flex: none; width: 88px; aspect-ratio: 4 / 3; padding: 0; border-radius: var(--r2); overflow: hidden; border: 2px solid transparent; opacity: .7; background: var(--warm-2); transition: opacity var(--t1), border-color var(--t1); }
+.ad .thumbs button:hover { opacity: 1; }
+.ad .thumbs button[aria-current] { border-color: var(--ink); opacity: 1; }
+.ad .thumbs img { width: 100%; height: 100%; object-fit: cover; }
+.lightbox { position: fixed; inset: 0; z-index: 400; display: none; align-items: center; justify-content: center; background: rgba(18,18,18,.95); }
+.lightbox.is-open { display: flex; }
+.lightbox > img { max-width: min(94vw, 1600px); max-height: 86vh; width: auto; height: auto; object-fit: contain; touch-action: pan-y; }
+.lb-btn { position: absolute; width: 44px; height: 44px; display: grid; place-items: center; color: var(--warm); border: 1px solid rgba(246,244,239,.3); border-radius: var(--r2); background: rgba(18,18,18,.6); }
+.lb-btn:hover { border-color: var(--warm); }
+.lb-btn:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
+.lb-close { top: 14px; right: 14px; }
+.lb-nav { top: 50%; transform: translateY(-50%); } .lb-nav.prev { left: 14px; } .lb-nav.next { right: 14px; }
+.lb-count { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); }
+/* Barra fija de contacto en móvil */
+.mbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 150; display: none; gap: 8px; align-items: center; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--paper); border-top: 1px solid var(--stone); box-shadow: 0 -4px 16px rgba(18,18,18,.08); transform: translateY(105%); transition: transform var(--t2) var(--ease); }
+.mbar .btn { flex: 1; }
+.mbar .fav { position: static; flex: none; width: 48px; height: 48px; border: 1px solid var(--stone); box-shadow: none; }
+.mbar .fav .i { width: 20px; height: 20px; }
+@media (max-width: 700px) { .mbar { display: flex; } .mbar.is-on { transform: none; } body.has-mbar .toasts { bottom: 84px; } body.has-mbar .ml-footer { padding-bottom: 76px; } }
+@media (prefers-reduced-motion: reduce) { .mbar { transition: none; } }
+/* Página de vendedor: mandan las máquinas */
+.vhead.emp .actions { flex-wrap: wrap; }
+
+/* Preguntas frecuentes por sector */
+.ml-main .faq details { border-top: 1px solid var(--border); }
+.ml-main .faq details:last-child { border-bottom: 1px solid var(--border); }
+.ml-main .faq summary { cursor: pointer; padding: 16px 0; font-weight: 600; font-size: var(--fs-base); line-height: 1.35; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; list-style: none; transition: color var(--t1); }
+.ml-main .faq summary::-webkit-details-marker { display: none; }
+.ml-main .faq summary:hover { color: var(--red-press); }
+.ml-main .faq summary .i { flex: none; width: 18px; height: 18px; margin-top: 2px; color: var(--text-2); transition: transform var(--t2) var(--ease); }
+.ml-main .faq details[open] summary .i { transform: rotate(45deg); }
+.ml-main .faq-a { padding: 0 0 20px; max-width: 66ch; }
+.ml-main .faq-a p { color: var(--graphite); font-size: var(--fs-sm); line-height: 1.65; }
+.ml-main .faq-a p + p { margin-top: 10px; }
+@media (prefers-reduced-motion: reduce) { .ml-main .faq summary .i { transition: none; } }
+
+/* MÁS AIRE: nombres del lateral legibles y anuncios a dos columnas */
+.catlist a { font-size: var(--fs-sm); line-height: 1.35; padding: 7px 0; }
+.catlist .n { font-size: var(--fs-xs); }
+.ml-side h2, .ml-aside h2 { font-size: var(--fs-xs); letter-spacing: .06em; padding-bottom: 10px; }
+.ml-side .catlist + h2 { margin-top: 26px; }
+.ml-layout { gap: 40px; }
+/* Dos columnas de anuncios: tarjeta más grande, con su descripción */
+.agrid .acard .title { font-size: var(--fs-base); line-height: 1.25; }
+.agrid .acard .desc { display: -webkit-box; font-size: var(--fs-sm); color: var(--text-2); line-height: 1.45; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.agrid .acard .meta { font-size: 11px; }
+.agrid .acard .body { padding: 12px 2px 0; gap: 6px; }
+.agrid .acard .price { font-size: var(--fs-base); }
+/* La columna central manda: categorías y empresas también respiran.
+   Solo a partir de 700px: por debajo son dos columnas (ver arriba), o los
+   nombres largos de categoría no caben. */
+@media (min-width: 701px) { .cgrid { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
+.ml-main .pgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.vgrid { gap: 16px; }
+@media (max-width: 900px) { .agrid { grid-template-columns: 1fr; gap: 24px; } }
+
+/* Los 38 apartados llevan el nombre exacto del cliente, algunos largos («Consumibles y herrajes para la
+   construcción de casas prefabricadas»): ni las losetas ni las etiquetas los recortan. */
+.ctile.is-sector b { -webkit-line-clamp: 6; line-clamp: 6; font-size: var(--fs-sm); line-height: 1.2; }
+@media (max-width: 700px) { .ctile.is-sector b { -webkit-line-clamp: 6; line-clamp: 6; font-size: var(--fs-xs); } }
+.tag, .vend-plate .tag { height: auto; min-height: 20px; white-space: normal; line-height: 1.3; padding-top: 3px; padding-bottom: 3px; }
+.pcard-media .label { white-space: normal; }
+/* La regla de tres columnas de arriba (.ml-main .pgrid) se aplicaba también en móvil y anulaba las de
+   roble.css: a 390 px salían tarjetas de 108 px. Dos columnas por debajo de 1100 px; una por debajo de 400. */
+@media (max-width: 1100px) { .ml-main .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 400px) { .ml-main .pgrid { grid-template-columns: 1fr; } }
+
+/* Anuncios en los dos laterales (08-10): más grandes (2:3 en vez de 3:4; columnas de 340 px desde 1400 px)
+   y el izquierdo también lleva: uno encima de los sectores y el resto debajo. El lateral izquierdo deja de ser
+   una caja con scroll propio: si no, los anuncios quedaban escondidos dentro. */
+@media (min-width: 1400px) { :root { --side: 340px; --aside: 340px; } }
+.ml-side { position: static; max-height: none; overflow: visible; padding-right: 0; }
+.ml-aside { gap: 14px; }
+.side-ads { display: flex; flex-direction: column; gap: 14px; margin-top: 28px; }
+.side-ads-top { margin: 0 0 26px; }
+.ml-aside .banner, .side-ads .banner { aspect-ratio: 2 / 3; }
+.ml-aside .banner .head, .side-ads .banner .head { left: 14px; top: 14px; }
+.ml-aside .banner .head .logo-tile, .side-ads .banner .head .logo-tile { width: 40px; height: 40px; font-size: var(--fs-xs); }
+.ml-aside .banner .foot, .side-ads .banner .foot { left: 16px; right: 16px; bottom: 16px; }
+.ml-aside .banner .foot b, .side-ads .banner .foot b { font-size: 1.25rem; }
+.ml-aside .banner .foot .cta, .side-ads .banner .foot .cta { font-size: var(--fs-sm); }
+@media (max-width: 1100px) { .ml-aside .banner { aspect-ratio: 3 / 4; } .ml-aside .banner .foot b { font-size: var(--fs-base); } }
+@media (max-width: 800px) {
+  .ml-side { display: flex; flex-direction: column; }
+  .ml-side details { order: 1; }
+  .side-ads-top { order: 2; margin: 16px 0 0; }
+  .side-ads { order: 3; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); margin-top: 14px; }
+  .side-ads-top h2 { grid-column: 1 / -1; }
+  .side-ads .banner { aspect-ratio: 3 / 4; }
+  .side-ads .banner .foot b { font-size: var(--fs-base); }
+}
+@media (max-width: 800px) {
+  .ml-aside, .side-ads { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .ml-aside h2, .ml-aside .banner-cta, .side-ads .banner-cta, .side-ads-top h2 { grid-column: 1 / -1; }
+  .side-ads-top { display: block; }
+  .side-ads-top .banner { max-width: calc(50% - 5px); }
+  .ml-aside .banner .foot b, .side-ads .banner .foot b { font-size: var(--fs-sm); }
+  .ml-aside .banner .foot span, .side-ads .banner .foot span { font-size: var(--fs-label); }
+  .ml-aside .banner .head .logo-tile, .side-ads .banner .head .logo-tile { width: 32px; height: 32px; }
+}
+
+/* 08-10: «que los anuncios ocupen el lado entero». En escritorio la página deja de estar encajonada en 1480 px:
+   el centro crece hasta 780 px y los dos laterales (anuncios y sectores) se reparten el resto de la pantalla.
+   Tope en 2200 px para monitores enormes. La cabecera se ensancha igual para que todo quede alineado. */
+@media (min-width: 1101px) {
+  .ml-layout.wrap { max-width: 2200px; grid-template-columns: minmax(300px, 1fr) minmax(0, 780px) minmax(300px, 1fr); }
+  .ml-header .wrap { max-width: 2200px; }
+}
+@media (min-width: 1500px) {
+  .ml-aside .banner, .side-ads .banner { aspect-ratio: 4 / 5; }
+  .ml-aside .banner .head .logo-tile, .side-ads .banner .head .logo-tile { width: 48px; height: 48px; font-size: var(--fs-sm); }
+  .ml-aside .banner .foot, .side-ads .banner .foot { left: 22px; right: 22px; bottom: 22px; }
+  .ml-aside .banner .head, .side-ads .banner .head { left: 20px; top: 20px; }
+  .ml-aside .banner .foot b, .side-ads .banner .foot b { font-size: 1.75rem; }
+  .ml-aside .banner .foot span, .side-ads .banner .foot span { font-size: var(--fs-xs); }
+  .ml-aside .banner .foot .cta, .side-ads .banner .foot .cta { font-size: var(--fs-base); }
+  .banner-cta { padding: 20px; font-size: var(--fs-base); }
+}
+@media (min-width: 2000px) { .ml-aside .banner, .side-ads .banner { aspect-ratio: 1 / 1; } }
+
+/* 08-10: «la parte de arriba, que se vea más». Barra negra con filo rojo, más alta, logotipo blanco y menú
+   más grandes, buscador más alto y «Acceder» en rojo. Solo la barra de escritorio (.wrap > …): el menú
+   desplegable del móvil sigue claro. */
+:root { --header-h: 76px; }
+@media (max-width: 768px) { :root { --header-h: 60px; } }
+.site-header.cab-oscura { background: var(--ink); border-bottom: 3px solid var(--red); box-shadow: 0 2px 12px rgba(0,0,0,.18); }
+.cab-oscura .brand { height: 48px; gap: 12px; }
+.cab-oscura .brand-mark { width: 38px; height: 38px; }
+.cab-oscura .brand-word { height: 20px; }
+.ml-header .cab-oscura .brand-tag, .cab-oscura .brand-tag { background: var(--red); color: #fff; border-color: var(--red); height: 22px; }
+.ml-header .cab-oscura .brand-tag::before, .cab-oscura .brand-tag::before { background: #fff; }
+.cab-oscura .wrap > .nav a { height: 44px; padding: 0 14px; font-size: var(--fs-base); font-weight: 600; color: rgba(246,244,239,.8); }
+.cab-oscura .wrap > .nav a:hover { color: #fff; background: rgba(255,255,255,.1); }
+.cab-oscura .wrap > .nav a[aria-current="page"] { color: #fff; }
+.cab-oscura .wrap > .hsearch .input { height: 46px; font-size: var(--fs-base); border-color: transparent; }
+.cab-oscura .wrap > .header-actions .btn-ghost { color: var(--warm); }
+.cab-oscura .wrap > .header-actions .btn-ghost:hover { background: rgba(255,255,255,.1); color: #fff; }
+.cab-oscura .wrap > .header-actions .btn:not(.btn-ghost) { height: 44px; padding: 0 20px; font-size: var(--fs-base); background: var(--red); border-color: var(--red); color: #fff; box-shadow: none; }
+.cab-oscura .wrap > .header-actions .btn:not(.btn-ghost):hover { background: var(--red-hover); }
+.cab-oscura .nav-toggle { color: var(--warm); }
+.cab-oscura .nav-toggle:hover { background: rgba(255,255,255,.1); }
+@media (max-width: 768px) { .cab-oscura .brand-mark { width: 32px; height: 32px; } .cab-oscura .brand-word { height: 17px; } }
+@media (min-width: 1025px) and (max-width: 1400px) {
+  .cab-oscura .wrap { gap: var(--s4); }
+  .cab-oscura .wrap > .nav { gap: 0; }
+  .cab-oscura .wrap > .nav a { padding: 0 9px; font-size: var(--fs-sm); }
+  .cab-oscura .wrap > .hsearch { min-width: 210px; }
+}
+/* El crédito de la portada de sector se perdía sobre fotos claras (Sofás): pastilla oscura detrás. */
+.sector-cover .credit { background: rgba(18,18,18,.62); padding: 2px 8px; border-radius: var(--r1); text-shadow: none; }
+/* Móvil a una columna: un producto sin foto ya no deja un hueco de 270 px. */
+@media (max-width: 400px) { .ml-main .pcard-media { aspect-ratio: 16 / 7; } }
+/* Placa de datos: un valor largo («Escuadradoras y sierras circulares») pasa a la línea de abajo en vez de
+   partir palabras por la mitad al lado de la etiqueta. */
+.spec { flex-wrap: wrap; row-gap: 2px; }
+.spec dd { max-width: 100%; margin-left: auto; }
+/* Auditoría 08-10: objetivos táctiles de 24 px y textos legibles de 11 px como mínimo. */
+a.tag { min-height: 24px; }
+#olvide { display: inline-block; padding: 5px 0; }
+.hero-photo .credit, .acard .media .orient { font-size: var(--fs-label); }
+/* Acceso y aviso legal tienen la cabecera fija (sin .ml-header): la etiqueta «Maquinaria» con el mismo estilo que en el resto. */
+.cab-oscura .brand-tag { display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; padding: 0 7px; font-family: var(--mono); font-size: var(--fs-label); letter-spacing: .08em; text-transform: uppercase; border-radius: var(--r1); }
+.cab-oscura .brand-tag::before { content: ""; width: 5px; height: 5px; }
+/* Acceso y aviso legal: la cabecera, igual de ancha que en el resto de páginas. */
+@media (min-width: 1101px) { .site-header.cab-oscura .wrap { max-width: 2200px; } }

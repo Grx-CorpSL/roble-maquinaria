@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Usuarios — ROBLE Admin</title>
+  <meta name="description" content="Gestión de usuarios, roles y permisos de ROBLE.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="../assets/roble.css">
+  <link rel="stylesheet" href="../admin/admin.css">
+  <style>@media (max-width: 480px) { .page-title h1 { font-size: 1.375rem; } } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main">
+    <div class="page-title"><div><h1>Usuarios <span class="count" id="count"></span></h1><p>Cuentas del equipo y de las empresas. Las fichas importadas no tienen credenciales hasta que la empresa reclama su cuenta.</p></div><div class="actions"><button class="btn btn-primary" id="btn-new"></button></div></div>
+    <div class="tbar">
+      <div class="input-icon"><svg class="i"><use href="#i-search"/></svg><input class="input" id="q" type="search" placeholder="Buscar por nombre o correo" aria-label="Buscar usuarios"></div>
+      <select class="select" id="f-rol" aria-label="Rol"><option value="">Todos los roles</option><option value="admin">Administración</option><option value="editor">Edición</option><option value="empresa">Empresa</option><option value="profesional">Profesional</option></select>
+      <select class="select" id="f-estado" aria-label="Estado"><option value="">Todos los estados</option><option value="activo">Activos</option><option value="pendiente">Invitados</option><option value="inactivo">Desactivados</option><option value="sin-acceso">Sin acceso</option></select>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-sm" id="f-clear" hidden>Quitar filtros</button>
+    </div>
+    <div id="table"></div>
+
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+      <div class="drawer-head"><h2 id="dr-title">Usuario</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+      <form class="drawer-body" id="dr-form" novalidate></form>
+      <div class="drawer-foot"><span id="dr-status"></span><div class="row"><button class="btn btn-ghost" data-close type="button">Cancelar</button><button class="btn btn-ink" type="submit" form="dr-form" id="dr-save">Guardar</button></div></div>
+    </aside>
+  </main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="../assets/roble.js"></script>
+  <script src="../admin/admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const who = Admin.shell('usuarios'); if (!who) return;
+      const R = ROBLE, S = Admin.Store, $ = s => document.querySelector(s);
+      $('#btn-new').innerHTML = `${R.icon('plus')} Invitar usuario`;
+      const ROL = { admin: 'Administración', editor: 'Edición', empresa: 'Empresa', profesional: 'Profesional' };
+      const rows = () => { const q = R.norm($('#q').value.trim()), rol = $('#f-rol').value, est = $('#f-estado').value; $('#f-clear').hidden = !(q || rol || est); return S.usuarios().filter(u => (!q || R.norm(u.nombre).includes(q) || R.norm(u.email || '').includes(q)) && (!rol || u.rol === rol) && (!est || u.estado === est)); };
+      const t = Admin.table($('#table'), {
+        rows, sort: 'rol', per: 25,
+        cols: [
+          { key: 'nombre', label: 'Usuario', sortable: true, render: u => `<div class="cell-main"><div class="logo-tile">${R.esc(R.iniciales(u.nombre))}</div><div><a href="#" data-edit="${u.id}"><b>${R.esc(u.nombre)}</b></a><span style="text-transform:none;letter-spacing:0">${u.email ? R.esc(u.email) : '<em>sin correo de acceso</em>'}</span></div></div>` },
+          { key: 'rol', label: 'Rol', sortable: true, render: u => `<span class="tag ${u.rol === 'admin' ? 'tag-ink' : ''}">${ROL[u.rol] || u.rol}</span>` },
+          { key: 'empresa', label: 'Empresa vinculada', cls: 'col-opt', render: u => u.empresa_id ? `<a href="empresas.html?id=${u.empresa_id}">${R.esc((S.empresa(u.empresa_id) || {}).nombre || '—')}</a>` : '<span class="muted">—</span>' },
+          { key: 'estado', label: 'Estado', sortable: true, render: u => Admin.status(u.estado) },
+          { key: 'ultimo', label: 'Último acceso', sortable: true, cls: 'col-opt mono muted', render: u => u.ultimo ? Admin.fmtDate(u.ultimo) : 'Nunca' },
+        ],
+        actions: u => Admin.ib('edit', 'Editar', `data-edit="${u.id}"`) + (u.rol !== 'admin' ? Admin.ib(u.estado === 'inactivo' ? 'eye' : 'eye-off', u.estado === 'inactivo' ? 'Activar' : 'Desactivar', `data-toggle="${u.id}"`) : ''),
+        emptyIcon: 'users', emptyTitle: 'Ningún usuario con esos filtros', emptyText: 'Prueba a quitar un filtro.',
+        onRender: () => { $('#count').textContent = rows().length; },
+      });
+      ['#q', '#f-rol', '#f-estado'].forEach(s => $(s).addEventListener('input', () => { t.state.page = 1; t.render(); }));
+      $('#f-clear').addEventListener('click', () => { $('#q').value = ''; $('#f-rol').value = ''; $('#f-estado').value = ''; t.render(); });
+      const dr = R.drawer('drawer'); let editing = null;
+      function open(u) {
+        editing = u; $('#dr-title').textContent = u ? `Editar: ${u.nombre}` : 'Invitar usuario'; $('#dr-save').textContent = u ? 'Guardar' : 'Enviar invitación';
+        $('#dr-form').innerHTML = Admin.form([
+          { name: 'nombre', label: 'Nombre', required: true },
+          { name: 'email', label: 'Correo', type: 'email', required: true, hint: u ? '' : 'Recibirá un enlace para crear su contraseña.' },
+          { name: 'rol', label: 'Rol', type: 'select', options: [['admin', 'Administración: todo'], ['editor', 'Edición: empresas, productos y contenidos'], ['empresa', 'Empresa: solo su ficha'], ['profesional', 'Profesional: guardar y contactar']] },
+          ...(u ? [{ name: 'estado', label: 'Estado', type: 'select', options: [['activo', 'Activo'], ['pendiente', 'Invitado'], ['inactivo', 'Desactivado'], ['sin-acceso', 'Sin acceso']] }] : []),
+        ], u || { rol: 'editor' });
+        $('#dr-status').innerHTML = u ? `<span class="label">${R.esc(u.nota || '')}</span>` : '<span class="label">Invitación por correo</span>';
+        dr.open();
+      }
+      $('#dr-form').addEventListener('submit', ev => {
+        ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return; const v = Admin.read(f);
+        if (editing) { S.setUsuario(editing.id, { nombre: v.nombre, email: v.email, rol: v.rol, estado: v.estado }); S.log(`Usuario editado: ${v.nombre}`); R.toast('Guardado'); }
+        else { S.addUsuario({ nombre: v.nombre, email: v.email, rol: v.rol, estado: 'pendiente', ultimo: null, nota: 'Invitación enviada' }); S.log(`Usuario invitado: ${v.email} (${v.rol})`, 'ok'); R.toast(`Invitación enviada a ${v.email}`); }
+        dr.close(); t.render();
+      });
+      $('#btn-new').addEventListener('click', () => open(null));
+      document.addEventListener('click', ev => {
+        const a = ev.target.closest('[data-edit],[data-toggle]'); if (!a) return;
+        const u = S.usuarios().find(x => x.id === (a.dataset.edit || a.dataset.toggle));
+        if (a.dataset.edit) { ev.preventDefault(); open(u); }
+        else { const off = u.estado !== 'inactivo'; S.setUsuario(u.id, { estado: off ? 'inactivo' : 'activo' }); S.log(`${u.nombre}: ${off ? 'desactivado' : 'activado'}`); R.toast(off ? 'Usuario desactivado' : 'Usuario activado'); t.render(); }
+      });
+    });
+  </script>
+</body>
+</html>

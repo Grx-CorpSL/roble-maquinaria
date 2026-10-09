@@ -1,0 +1,382 @@
+[
+ {
+  "id": "maquinaria",
+  "n": 1,
+  "nombre": "Maquinaria para la Madera nueva",
+  "corto": "Maquinaria para la Madera nueva",
+  "desc": "Fabricantes y distribuidores de maquinaria nueva: CNC, seccionadoras, chapadoras, prensas, lijadoras y aspiración. Los anuncios, en el portal de maquinaria.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "maquinaria-ocasion",
+  "n": 2,
+  "nombre": "Maquinaria para la madera de ocasión",
+  "corto": "Maquinaria para la madera de ocasión",
+  "desc": "Compraventa de maquinaria usada y revisada para carpintería e industria de la madera. Los anuncios, en el portal de maquinaria.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "tecnicos-de-maquinaria",
+  "n": 3,
+  "nombre": "Técnicos de Maquinaria",
+  "corto": "Técnicos de Maquinaria",
+  "desc": "Servicio técnico, postventa, mantenimiento y afilado de útiles.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "tecnologia-software",
+  "n": 4,
+  "nombre": "Programas y Software",
+  "corto": "Programas y Software",
+  "desc": "CAD/CAM, optimización de corte, ERP, configuradores y 3D.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "comunicacion-eventos",
+  "n": 5,
+  "nombre": "Ferias y Eventos",
+  "corto": "Ferias y Eventos",
+  "desc": "Ferias, medios, asociaciones, gremios y consultoría sectorial.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "materias-primas",
+  "n": 6,
+  "nombre": "Almacenes de Madera",
+  "corto": "Almacenes de Madera",
+  "desc": "Madera maciza, laminada, técnica, de exterior, chapas y aserraderos.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "tablero-aglomerado-y-mdf",
+  "n": 7,
+  "nombre": "Fabricantes de Tablero Aglomerado y MDF",
+  "corto": "Fabricantes de Tablero Aglomerado y MDF",
+  "desc": "Aglomerado, MDF, DM, contrachapado, OSB, alistonado, melamínico y compacto.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "almacenes-de-puertas",
+  "n": 8,
+  "nombre": "Almacenes de puertas",
+  "corto": "Almacenes de puertas",
+  "desc": "Distribución de puertas de interior, blindadas, cortafuegos y acústicas.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "puertas-de-cocina",
+  "n": 9,
+  "nombre": "Fabricantes de puertas de cocina",
+  "corto": "Fabricantes de puertas de cocina",
+  "desc": "Frentes y puertas de cocina: lacado, melamina, vidrio y aluminio.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "paneles-decorativos",
+  "n": 10,
+  "nombre": "Fabricantes de Paneles Decorativos",
+  "corto": "Fabricantes de Paneles Decorativos",
+  "desc": "Paneles, revestimientos de pared, molduras y rodapiés.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "encimeras-de-cocina",
+  "n": 11,
+  "nombre": "Fabricantes de encimeras de cocina",
+  "corto": "Fabricantes de encimeras de cocina",
+  "desc": "Laminado, compacto, cuarzo, porcelánico y sólido.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "cantos-para-muebles",
+  "n": 12,
+  "nombre": "Fabricantes de Cantos para Muebles",
+  "corto": "Fabricantes de Cantos para Muebles",
+  "desc": "Cantos y perfiles para mueble: PVC, ABS, melamina y aluminio.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "herrajes-accesorios",
+  "n": 13,
+  "nombre": "Fabricantes de Herrajes para muebles",
+  "corto": "Fabricantes de Herrajes para muebles",
+  "desc": "Bisagras, guías, tiradores, elevables, LED, cierres y organización interior.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "colas-y-liquidos-de-limpieza",
+  "n": 14,
+  "nombre": "Colas y líquidos de limpieza",
+  "corto": "Colas y líquidos de limpieza",
+  "desc": "Colas, adhesivos, selladores, desengrasantes y mantenimiento.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "acabados-tratamientos",
+  "n": 15,
+  "nombre": "Barnices y Lacas",
+  "corto": "Barnices y Lacas",
+  "desc": "Barnices, lacas, aceites, tintes, cabinas y curado UV.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "herramientas-mecanizado",
+  "n": 16,
+  "nombre": "Fabricantes de Herramientas para el mecanizado de la Madera",
+  "corto": "Fabricantes de Herramientas para el mecanizado de la Madera",
+  "desc": "Fresas, brocas, sierras, cuchillas y herramienta eléctrica y manual.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "carpinteria-construccion",
+  "n": 17,
+  "nombre": "Fabricantes de Puertas",
+  "corto": "Fabricantes de Puertas",
+  "desc": "Puertas de interior, blindadas, cortafuegos y acústicas.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "ventanas",
+  "n": 18,
+  "nombre": "Fabricantes de Ventanas",
+  "corto": "Fabricantes de Ventanas",
+  "desc": "Ventanas de madera y mixtas madera-aluminio.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "consumibles-casas-prefabricadas",
+  "n": 19,
+  "nombre": "Consumibles y herrajes para la construcción de casas prefabricadas",
+  "corto": "Consumibles y herrajes para la construcción de casas prefabricadas",
+  "desc": "Herrajes, fijaciones, aislamientos y membranas para construcción modular.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "construccion-madera",
+  "n": 20,
+  "nombre": "Fabricantes de casas prefabricadas de Madera",
+  "corto": "Fabricantes de casas prefabricadas de Madera",
+  "desc": "Casas prefabricadas, CLT, entramado ligero y sistemas estructurales.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "carpinteros",
+  "n": 21,
+  "nombre": "Carpinteros",
+  "corto": "Carpinteros",
+  "desc": "Carpintería y ebanistería a medida, montaje, restauración y servicios a terceros.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "complementos-de-madera",
+  "n": 22,
+  "nombre": "Fabricantes de complementos de madera",
+  "corto": "Fabricantes de complementos de madera",
+  "desc": "Mueble auxiliar, cabeceros, recibidores, mueble de TV, cómodas y estanterías.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "contract-proyectos",
+  "n": 23,
+  "nombre": "Fabricantes de Contract",
+  "corto": "Fabricantes de Contract",
+  "desc": "Hoteles, restauración, residencias, stands, mobiliario urbano e interiorismo.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "amueblamiento-tiendas",
+  "n": 24,
+  "nombre": "Fabricantes de amueblamiento integral para tiendas y franquicias",
+  "corto": "Fabricantes de amueblamiento integral para tiendas y franquicias",
+  "desc": "Amueblamiento integral para retail, tiendas y franquicias.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "armarios",
+  "n": 25,
+  "nombre": "Fabricantes de Armarios",
+  "corto": "Fabricantes de Armarios",
+  "desc": "Armarios, vestidores y frentes de armario.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "muebles-de-cocina",
+  "n": 26,
+  "nombre": "Fabricantes de Muebles de Cocina",
+  "corto": "Fabricantes de Muebles de Cocina",
+  "desc": "Mueble de cocina y diseño de cocinas.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "muebles-de-bano",
+  "n": 27,
+  "nombre": "Fabricantes de Muebles de Baño",
+  "corto": "Fabricantes de Muebles de Baño",
+  "desc": "Mueble de baño.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "muebles-de-oficina",
+  "n": 28,
+  "nombre": "Fabricantes de Muebles de Oficina",
+  "corto": "Fabricantes de Muebles de Oficina",
+  "desc": "Mueble de oficina y operativo.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "mueble-kit",
+  "n": 29,
+  "nombre": "Fabricantes de Mueble Kit",
+  "corto": "Fabricantes de Mueble Kit",
+  "desc": "Mueble kit / RTA, listo para montar.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "mueble-por-ambiente",
+  "n": 30,
+  "nombre": "Fabricantes de Mueble de Hogar",
+  "corto": "Fabricantes de Mueble de Hogar",
+  "desc": "Hogar, salón, dormitorio, exterior, vintage y de estilo.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "mueble-juvenil",
+  "n": 31,
+  "nombre": "Fabricantes de Mueble Juvenil",
+  "corto": "Fabricantes de Mueble Juvenil",
+  "desc": "Mueble juvenil e infantil.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "mesas",
+  "n": 32,
+  "nombre": "Fabricantes de Mesas",
+  "corto": "Fabricantes de Mesas",
+  "desc": "Mesas de comedor, centro y escritorio.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "sillas",
+  "n": 33,
+  "nombre": "Fabricantes de sillas",
+  "corto": "Fabricantes de sillas",
+  "desc": "Sillas, taburetes y banquetas.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "canapes",
+  "n": 34,
+  "nombre": "Fabricantes de canapés",
+  "corto": "Fabricantes de canapés",
+  "desc": "Canapés.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "patas-para-canapes",
+  "n": 35,
+  "nombre": "Fabricantes de patas para Canapés",
+  "corto": "Fabricantes de patas para Canapés",
+  "desc": "Patas, zócalos y niveladores para canapés y mueble.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "somieres",
+  "n": 36,
+  "nombre": "Fabricantes de Somieres",
+  "corto": "Fabricantes de Somieres",
+  "desc": "Somieres y bases.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "sofas",
+  "n": 37,
+  "nombre": "Fabricantes de Sofás",
+  "corto": "Fabricantes de Sofás",
+  "desc": "Sofás, butacas, mueble tapizado, espumas, telas y mecanismos de relax.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ },
+ {
+  "id": "colchones",
+  "n": 38,
+  "nombre": "Fabricantes de Colchones",
+  "corto": "Fabricantes de Colchones",
+  "desc": "Colchones.",
+  "sub": [],
+  "empresas": 0,
+  "productos": 0
+ }
+]

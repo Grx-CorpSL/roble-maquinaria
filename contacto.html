@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Contacto — ROBLE Maquinaria</title>
+  <meta name="description" content="Escribe al equipo de ROBLE Maquinaria: anuncios, paquetes, banners, correcciones o cualquier otra cosa.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/contacto.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/contacto.html">
+  <meta property="og:title" content="Contacto — ROBLE Maquinaria">
+  <meta property="og:description" content="Escribe al equipo de ROBLE Maquinaria: anuncios, paquetes, banners, correcciones o cualquier otra cosa.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, c = ML.shell('contacto');
+      c.innerHTML = `
+        <h1 class="h1">Habla con ROBLE Maquinaria.</h1>
+        <p class="intro">Anuncios, paquetes, banners, correcciones o cualquier otra cosa. Respondemos en horario laboral.</p>
+        <div class="vsplit">
+          <form class="stack" id="cform" action="https://formsubmit.co/roldesluis@gmail.com" method="POST" novalidate style="max-width:560px">
+            <input type="hidden" name="_subject" value="Contacto desde ROBLE Maquinaria"><input type="hidden" name="_template" value="table"><input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" aria-label="No rellenar">
+            <div class="form-row"><div class="field"><label for="k-nombre">Tu nombre <span class="req">*</span></label><input class="input" id="k-nombre" name="nombre" required autocomplete="name"><span class="field-error">Necesitamos tu nombre.</span></div><div class="field"><label for="k-email">Correo <span class="req">*</span></label><input class="input" id="k-email" name="email" type="email" required autocomplete="email"><span class="field-error">Falta el correo. Lo necesitamos para responderte.</span></div></div>
+            <div class="field"><label for="k-asunto">Sobre qué</label><select class="select" id="k-asunto" name="asunto"><option value="anuncio">Publicar o corregir un anuncio</option><option value="planes">Paquetes y facturación</option><option value="banner">Banners y posiciones destacadas</option><option value="solicitud">Una solicitud de maquinaria</option><option value="otro">Otra cosa</option></select></div>
+            <div class="field"><label for="k-msg">Mensaje <span class="req">*</span></label><textarea class="textarea" id="k-msg" name="mensaje" required placeholder="Cuanto más concreto, antes te respondemos."></textarea><span class="field-error">Escríbenos qué necesitas.</span></div>
+            <div class="form-actions"><button class="btn btn-primary btn-lg" type="submit">Enviar mensaje</button></div>
+          </form>
+          <aside class="plate"><div class="plate-head"><span class="label">Datos de contacto</span></div><div class="plate-body"><dl class="specs"><div class="spec"><dt>Correo</dt><dd><a href="mailto:roldesluis@gmail.com" style="color:var(--ink)">roldesluis@gmail.com</a></dd></div><div class="spec"><dt>Respuesta</dt><dd>Días laborables</dd></div><div class="spec"><dt>Zona</dt><dd>España</dd></div></dl></div></aside>
+        </div>`;
+      const a = R.qs().get('asunto'); if (a) document.getElementById('k-asunto').value = a;
+      document.getElementById('cform').addEventListener('submit', e => { if (!R.validate(e.target)) e.preventDefault(); });
+    });
+  </script>
+</body>
+</html>

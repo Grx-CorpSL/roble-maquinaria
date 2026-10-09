@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Panel — Admin maquinaria — ROBLE</title>
+  <meta name="description" content="Administración del portal de maquinaria ROBLE.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="admin/ml-admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const R = ROBLE, S = ML.store, D = ML.D, who = MLA.shell('index'); if (!who) return;
+      const n = MLA.pend(), pubs = ML.publicados(), pend = D.anuncios.filter(a => a.estadoPub === 'pendiente'), sol = ML.solicitudes().filter(s => s.pendiente), ped = S.pedidos().filter(p => p.estado === 'pendiente'), al = S.alertas();
+      const porCat = {}; al.forEach(a => { if (a.cat) porCat[a.cat] = (porCat[a.cat] || 0) + 1; });
+      const topAl = Object.entries(porCat).sort((a, b) => b[1] - a[1]).slice(0, 6);
+      document.getElementById('main').innerHTML = `
+        <div class="page-title"><div><h1>Portal de maquinaria</h1><p>${pubs.length} anuncios publicados · ${D.vendedores.length} vendedores · ${al.length} alertas de compradores</p></div><div class="actions"><a class="btn btn-ink" href="admin/anuncios.html?estado=pendiente">Revisar anuncios${n.anuncios ? ` <span class="mono">${n.anuncios}</span>` : ''}</a></div></div>
+        <div class="kpis">
+          <a class="kpi ${n.anuncios ? 'is-alert' : ''}" href="admin/anuncios.html?estado=pendiente"><span class="label">Anuncios pendientes ${R.icon('arrow-right', 'i-16')}</span><b>${n.anuncios}</b><span class="sub">${pubs.length} publicados · ${pubs.filter(a => a.destacado).length} destacados</span></a>
+          <a class="kpi ${n.solicitudes ? 'is-alert' : ''}" href="admin/solicitudes.html"><span class="label">Solicitudes pendientes ${R.icon('arrow-right', 'i-16')}</span><b>${n.solicitudes}</b><span class="sub">${ML.solicitudes().length} en total</span></a>
+          <a class="kpi ${n.pedidos ? 'is-alert' : ''}" href="admin/pedidos.html"><span class="label">Pedidos por confirmar ${R.icon('arrow-right', 'i-16')}</span><b>${n.pedidos}</b><span class="sub">${S.pedidos().filter(p => p.estado === 'pagado').reduce((a, p) => a + p.anuncios, 0)} anuncios vendidos</span></a>
+          <a class="kpi ${n.leads ? 'is-alert' : ''}" href="admin/leads.html"><span class="label">Contactos nuevos ${R.icon('arrow-right', 'i-16')}</span><b>${n.leads}</b><span class="sub">${MLA.leads().length} en total</span></a>
+        </div>
+        <div class="split">
+          <div class="stack">
+            <div class="card"><div class="card-head"><h2>Pendiente de ti</h2></div><div class="card-body">${pend.length || sol.length || ped.length ? `<div class="list">${pend.slice(0, 4).map(a => `<div class="list-item"><span class="sq sq-wood"></span><div class="t"><b>${R.esc(a.titulo)}</b><span>Anuncio · ${R.esc(a.vendedor)} · ${R.esc((ML.cat(a.cat) || {}).nombre || '')}</span></div><a class="btn btn-sm" href="admin/anuncios.html?estado=pendiente">Revisar</a></div>`).join('')}${sol.slice(0, 3).map(s => `<div class="list-item"><span class="sq sq-wood"></span><div class="t"><b>${R.esc(s.titulo)}</b><span>Solicitud · ${R.esc(s.nombre)} · ${R.esc((ML.cat(s.cat) || {}).nombre || '')}</span></div><a class="btn btn-sm" href="admin/solicitudes.html">Revisar</a></div>`).join('')}${ped.slice(0, 3).map(p => `<div class="list-item"><span class="sq sq-wood"></span><div class="t"><b>${p.anuncios} anuncios · ${R.esc(p.vendedor)}</b><span>Pedido de paquete</span></div><a class="btn btn-sm" href="admin/pedidos.html">Confirmar</a></div>`).join('')}</div>` : `<div class="empty" style="border:0;background:none;padding:32px 8px">${R.icon('check')}<p class="empty-title">Nada pendiente.</p><p>Ni anuncios, ni solicitudes, ni pedidos por revisar.</p></div>`}</div></div>
+            <div class="card"><div class="card-head"><h2>Actividad</h2><span class="label">Este dispositivo</span></div><div class="card-body">${S.logs().length ? `<div class="list">${S.logs().slice(0, 8).map(l => `<div class="list-item"><span class="sq ${l.tipo === 'ok' ? 'sq-ink' : l.tipo === 'error' ? '' : 'sq-ghost'}"></span><div class="t"><span style="color:var(--ink)">${R.esc(l.texto)}</span></div><span class="when">${MLA.fecha(l.fecha)}</span></div>`).join('')}</div>` : '<p class="small muted" style="padding:14px 0">Sin actividad registrada todavía.</p>'}</div></div>
+          </div>
+          <div class="stack">
+            <div class="card"><div class="card-head"><h2>Demanda sin oferta</h2><span class="label">Alertas por categoría</span></div><div class="card-body">${topAl.length ? `<table class="mini"><tbody>${topAl.map(([c, k]) => { const cat = ML.cat(c); return `<tr><td><a href="categoria.html?c=${c}">${R.esc(cat ? cat.nombre : c)}</a><div class="muted" style="font-size:11px">${cat && cat.anuncios ? cat.anuncios + ' anuncios' : 'sin anuncios'}</div></td><td class="num">${k}</td></tr>`; }).join('')}</tbody></table><p class="small muted" style="padding:10px 0">Compradores que piden aviso. Argumento de venta para los vendedores de esas categorías.</p>` : '<p class="small muted" style="padding:14px 0">Ninguna alerta todavía. Aparecen cuando un comprador pide aviso en una categoría o búsqueda vacía.</p>'}</div></div>
+            <div class="card"><div class="card-head"><h2>Anuncios por categoría</h2><a class="link" href="categorias.html">Ver ${R.icon('arrow-right', 'i-16')}</a></div><div class="card-body"><table class="mini"><tbody>${D.categorias.filter(c => c.anuncios).sort((a, b) => b.anuncios - a.anuncios).map(c => `<tr><td><a href="categoria.html?c=${c.id}">${R.esc(c.nombre)}</a></td><td class="num">${c.anuncios}</td></tr>`).join('')}</tbody></table></div></div>
+          </div>
+        </div>`;
+    });
+  </script>
+</body>
+</html>

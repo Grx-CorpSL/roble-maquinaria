@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Guía — ROBLE Maquinaria</title>
+  <meta name="description" content="Guía práctica de ROBLE Maquinaria.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/guia.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/guia.html">
+  <meta property="og:title" content="Guía — ROBLE Maquinaria">
+  <meta property="og:description" content="Guía práctica de ROBLE Maquinaria.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/ml-guias.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, c = ML.shell('guias'), g = ML_GUIAS.find(x => x.id === R.qs().get('id'));
+      if (!g) { document.title = 'Guía no encontrada — ROBLE Maquinaria'; R.noindex(); c.innerHTML = `<div class="empty">${R.icon('file')}<h1 class="empty-title">Esa guía no existe</h1><p>Mira las que tenemos publicadas.</p><a class="btn" href="guias.html">Ver guías</a></div>`; return; }
+      document.title = `${g.titulo} — ROBLE Maquinaria`; R.canon('?id=' + g.id);
+      document.querySelector('meta[name=description]').content = g.lead.slice(0, 158);
+      const otras = ML_GUIAS.filter(x => x.id !== g.id);
+      c.innerHTML = `
+        <nav class="crumbs" aria-label="Migas"><a href="index.html">Inicio</a>${R.icon('chevron-right', 'sep')}<a href="guias.html">Guías</a>${R.icon('chevron-right', 'sep')}<span aria-current="page">${R.esc(g.titulo)}</span></nav>
+        <article class="guia">
+          <p class="label">Guía · ${g.lectura} min de lectura</p>
+          <h1 class="h1" style="margin-top:8px">${R.esc(g.titulo)}</h1>
+          <p class="lead" style="margin-top:12px">${R.esc(g.lead)}</p>
+          <div class="cover">${ML.foto(g.foto) ? `<img src="${ML.foto(g.foto)}" alt="" width="1200" height="673" fetchpriority="high">` : ''}</div>
+          ${g.secciones.map(s => `<h2>${R.esc(s.h)}</h2>${(s.p || []).map(p => `<p>${R.esc(p)}</p>`).join('')}${s.lista ? `<ul>${s.lista.map(l => `<li>${R.esc(l)}</li>`).join('')}</ul>` : ''}`).join('')}
+          <div class="cta"><div><b>¿Buscas una máquina concreta?</b><br><span class="small" style="color:var(--steel-2)">Busca entre los anuncios o publica una solicitud y que los vendedores te encuentren.</span></div><div class="row"><a class="btn btn-primary" href="buscar.html">Buscar máquinas</a><a class="btn btn-on-ink" href="solicitudes.html?nueva">Publicar solicitud</a></div></div>
+        </article>
+        <section class="more" aria-labelledby="h-otras"><div class="section-head"><div><p class="label">Guías</p><h2 class="h2" id="h-otras" style="font-size:1.375rem">Sigue leyendo.</h2></div></div><div class="ggrid">${otras.map(x => `<a class="gcard" href="guia.html?id=${x.id}"><div class="cover">${ML.foto(x.foto) ? `<img src="${ML.foto(x.foto)}" alt="" loading="lazy">` : ''}</div><div class="body"><span class="meta">${x.lectura} min</span><b>${R.esc(x.titulo)}</b></div></a>`).join('')}</div></section>`;
+      const ld = { '@context': 'https://schema.org', '@type': 'Article', headline: g.titulo, description: g.lead, author: { '@type': 'Organization', name: 'ROBLE' } };
+      const sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.textContent = JSON.stringify(ld); document.head.appendChild(sc);
+    });
+  </script>
+</body>
+</html>

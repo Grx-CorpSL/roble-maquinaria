@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Créditos de las fotografías — ROBLE</title>
+  <meta name="description" content="Autoría y licencia de las fotografías orientativas de maquinaria y sectores que usa ROBLE, tomadas de Wikimedia Commons.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/creditos.html">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>
+    .cred-group { margin-top: 32px; }
+    .cred-group h2 { font-size: var(--fs-h3); margin-bottom: 12px; }
+    .cred-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .cred { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+    .cred .cover { aspect-ratio: 4 / 3; border-radius: var(--r2); overflow: hidden; background: var(--warm-2); }
+    .cred .cover img { width: 100%; height: 100%; object-fit: cover; }
+    .cred figcaption { display: flex; flex-direction: column; gap: 4px; }
+    .cred b { font-size: var(--fs-sm); font-weight: 600; line-height: 1.25; }
+    .cred span { font-family: var(--mono); font-size: var(--fs-label); color: var(--text-2); line-height: 1.5; overflow-wrap: anywhere; }
+    .cred a { text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/datos.js"></script>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, c = ML.shell('creditos'), F = ML.FOTOS;
+      const grupos = { cat: [], sec: [], otras: [] };
+      Object.keys(F).forEach(k => {
+        const base = k.replace(/-\d$/, ''), v = k === base ? '' : ' · variante ' + k.slice(-1);
+        const cat = ML.cat(base), s = base.startsWith('s-') ? R.sector(base.slice(2)) : null;
+        if (cat) grupos.cat.push([k, cat.nombre + v, '']);
+        else if (s) grupos.sec.push([k, s.nombre, 'sector.html?s=' + s.id]);
+        else grupos.otras.push([k, k === 'hero' ? 'Portada' : k, '']);
+      });
+      const tarjeta = ([k, nombre, href]) => `<figure class="cred"><div class="cover">${href ? `<a href="${href}" aria-label="${R.esc(nombre)}">` : ''}<img src="${ML.fotoSm(k)}" alt="" loading="lazy" width="640" height="480">${href ? '</a>' : ''}</div><figcaption><b>${R.esc(nombre)}</b><span><a href="${R.esc(F[k].source)}" target="_blank" rel="noopener">${R.esc(F[k].credit)}</a></span></figcaption></figure>`;
+      const grupo = (titulo, lista) => lista.length ? `<section class="cred-group"><h2>${titulo} <span class="muted">(${lista.length})</span></h2><div class="cred-grid">${lista.sort((a, b) => a[1].localeCompare(b[1], 'es')).map(tarjeta).join('')}</div></section>` : '';
+      c.innerHTML = `
+        <h1 class="h1">Créditos de las fotografías</h1>
+        <p class="intro">Las fotos de maquinaria y de los sectores son orientativas: vienen de Wikimedia Commons con licencias libres y se sustituyen por las del vendedor en cuanto las sube. Aquí está la autoría y la licencia de cada una.</p>
+        ${grupo('Maquinaria', grupos.cat)}${grupo('Sectores del directorio', grupos.sec)}${grupo('Otras', grupos.otras)}`;
+    });
+  </script>
+</body>
+</html>

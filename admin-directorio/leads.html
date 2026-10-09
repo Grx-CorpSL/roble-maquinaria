@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Leads — ROBLE Admin</title>
+  <meta name="description" content="Contactos recibidos desde las fichas de empresa y producto de ROBLE.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="../assets/roble.css">
+  <link rel="stylesheet" href="../admin/admin.css">
+  <style>@media (max-width: 480px) { .page-title h1 { font-size: 1.375rem; } } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main">
+    <div class="page-title"><div><h1>Leads <span class="count" id="count"></span></h1><p>Mensajes enviados desde las fichas. Cada uno va a la empresa; aquí se hace el seguimiento.</p></div><div class="actions"><button class="btn" id="btn-export"></button></div></div>
+    <div class="tbar">
+      <div class="input-icon"><svg class="i"><use href="#i-search"/></svg><input class="input" id="q" type="search" placeholder="Buscar por contacto, empresa o producto" aria-label="Buscar contactos"></div>
+      <select class="select" id="f-estado" aria-label="Estado"><option value="">Todos los estados</option><option value="nuevo">Nuevos</option><option value="en-curso">En curso</option><option value="cerrado">Cerrados</option></select>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-sm" id="f-clear" hidden>Quitar filtros</button>
+    </div>
+    <div id="table"></div>
+
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+      <div class="drawer-head"><h2 id="dr-title">Contacto</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+      <form class="drawer-body" id="dr-form" novalidate></form>
+      <div class="drawer-foot"><span id="dr-status"></span><div class="row"><button class="btn btn-ghost" data-close type="button">Cerrar</button><button class="btn btn-ink" type="submit" form="dr-form">Guardar seguimiento</button></div></div>
+    </aside>
+  </main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="../assets/roble.js"></script>
+  <script src="../admin/admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const who = Admin.shell('leads'); if (!who) return;
+      const R = ROBLE, S = Admin.Store, $ = s => document.querySelector(s);
+      $('#btn-export').innerHTML = `${R.icon('download')} Exportar CSV`;
+      const rows = () => { const q = R.norm($('#q').value.trim()), est = $('#f-estado').value; $('#f-clear').hidden = !(q || est); return S.leads().filter(l => (!q || R.norm(l.nombre).includes(q) || R.norm(l.empresa).includes(q) || R.norm(l.producto || '').includes(q) || R.norm(l.email).includes(q)) && (!est || l.estado === est)).sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); };
+      const t = Admin.table($('#table'), {
+        rows, per: 25,
+        cols: [
+          { key: 'fecha', label: 'Fecha', sortable: true, cls: 'mono muted', render: l => Admin.fmtDate(l.fecha) },
+          { key: 'nombre', label: 'Contacto', sortable: true, render: l => `<div class="cell-main"><div><a href="#" data-view="${l.id}"><b>${R.esc(l.nombre)}</b></a><span style="text-transform:none;letter-spacing:0">${R.esc(l.email)}${l.contacto_empresa ? ' · ' + R.esc(l.contacto_empresa) : ''}</span></div></div>` },
+          { key: 'empresa', label: 'Para', sortable: true, render: l => `<a href="empresas.html?id=${l.empresa_id}">${R.esc(l.empresa)}</a>${l.producto ? `<div class="muted" style="font-size:11px;margin-top:2px">${R.esc(l.producto)}</div>` : ''}` },
+          { key: 'mensaje', label: 'Mensaje', cls: 'col-opt muted', render: l => R.esc(l.mensaje.length > 70 ? l.mensaje.slice(0, 70) + '…' : l.mensaje) },
+          { key: 'estado', label: 'Estado', sortable: true, render: l => `<select class="select" style="height:30px;font-size:12px;width:130px" data-estado="${l.id}" aria-label="Estado del contacto"><option value="nuevo" ${l.estado === 'nuevo' ? 'selected' : ''}>Nuevo</option><option value="en-curso" ${l.estado === 'en-curso' ? 'selected' : ''}>En curso</option><option value="cerrado" ${l.estado === 'cerrado' ? 'selected' : ''}>Cerrado</option></select>` },
+        ],
+        actions: l => Admin.ib('eye', 'Ver mensaje', `data-view="${l.id}"`),
+        emptyIcon: 'inbox', emptyTitle: 'Ningún contacto todavía', emptyText: 'Los mensajes que se envíen desde las fichas de empresa y producto aparecerán aquí.',
+        onRender: () => { $('#count').textContent = rows().length; },
+      });
+      ['#q', '#f-estado'].forEach(s => $(s).addEventListener('input', () => { t.state.page = 1; t.render(); }));
+      $('#f-clear').addEventListener('click', () => { $('#q').value = ''; $('#f-estado').value = ''; t.render(); });
+      $('#btn-export').addEventListener('click', () => Admin.csv(rows(), [['Fecha', 'fecha'], ['Nombre', 'nombre'], ['Correo', 'email'], ['Su empresa', 'contacto_empresa'], ['Para', 'empresa'], ['Producto', 'producto'], ['Mensaje', 'mensaje'], ['Estado', 'estado'], ['Notas', 'notas']]));
+      const dr = R.drawer('drawer'); let cur = null;
+      function open(l) {
+        cur = l; $('#dr-title').textContent = `${l.nombre} → ${l.empresa}`;
+        $('#dr-form').innerHTML = `<dl class="specs detail"><div class="spec"><dt>Fecha</dt><dd class="mono">${Admin.fmtDate(l.fecha)}</dd></div><div class="spec"><dt>Correo</dt><dd><a href="mailto:${R.esc(l.email)}">${R.esc(l.email)}</a></dd></div>${l.contacto_empresa ? `<div class="spec"><dt>Su empresa</dt><dd>${R.esc(l.contacto_empresa)}</dd></div>` : ''}<div class="spec"><dt>Para</dt><dd><a href="empresas.html?id=${l.empresa_id}">${R.esc(l.empresa)}</a></dd></div>${l.producto ? `<div class="spec"><dt>Producto</dt><dd>${R.esc(l.producto)}</dd></div>` : ''}</dl><div><span class="label" style="display:block;margin-bottom:6px">Mensaje</span><div class="msg">${R.esc(l.mensaje)}</div></div>` + Admin.form([{ name: 'estado', label: 'Estado', type: 'select', options: [['nuevo', 'Nuevo'], ['en-curso', 'En curso'], ['cerrado', 'Cerrado']] }, { name: 'notas', label: 'Notas internas', type: 'textarea', rows: 3, placeholder: 'Ej.: Reenviado a la empresa el 17/09. Esperan presupuesto.' }], l);
+        $('#dr-status').innerHTML = `<a class="btn btn-sm" href="mailto:${R.esc(l.email)}?subject=${encodeURIComponent('Sobre tu consulta en ROBLE a ' + l.empresa)}">${R.icon('mail')} Responder</a>`; dr.open();
+      }
+      $('#dr-form').addEventListener('submit', ev => { ev.preventDefault(); const v = Admin.read(ev.target); S.setLead(cur.id, { estado: v.estado, notas: v.notas }); S.log(`Lead actualizado: ${cur.nombre} → ${cur.empresa} (${v.estado})`); R.toast('Seguimiento guardado'); dr.close(); t.render(); });
+      document.addEventListener('click', async ev => { const a = ev.target.closest('[data-view],[data-del]'); if (!a) return; const l = S.leads().find(x => String(x.id) === (a.dataset.view || a.dataset.del)); if (a.dataset.view) { ev.preventDefault(); open(l); } else { const ok = await R.confirmDialog({ title: 'Eliminar contacto', html: `Vas a eliminar el mensaje de <strong>${R.esc(l.nombre)}</strong> para ${R.esc(l.empresa)}.`, ok: 'Eliminar', danger: true }); if (ok) { S.setLead(l.id, { _deleted: true }); R.toast('Contacto eliminado'); t.render(); } } });
+      document.addEventListener('change', ev => { const s = ev.target.closest('[data-estado]'); if (!s) return; S.setLead(Number(s.dataset.estado), { estado: s.value }); R.toast('Estado actualizado'); });
+      const id = R.qs().get('id'); if (id) { const l = S.leads().find(x => String(x.id) === id); l && open(l); }
+    });
+  </script>
+</body>
+</html>

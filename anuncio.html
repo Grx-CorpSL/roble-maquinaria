@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Anuncio — ROBLE Maquinaria</title>
+  <meta name="description" content="Ficha de máquina en ROBLE Maquinaria: marca, modelo, año, estado, datos técnicos, vendedor y contacto directo.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/anuncio.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/anuncio.html">
+  <meta property="og:title" content="Anuncio — ROBLE Maquinaria">
+  <meta property="og:description" content="Ficha de máquina en ROBLE Maquinaria: marca, modelo, año, estado, datos técnicos, vendedor y contacto directo.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <aside class="drawer" id="contact-drawer" role="dialog" aria-modal="true" aria-labelledby="cd-title">
+    <div class="drawer-head"><h2 id="cd-title">Pedir información</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <form class="drawer-body" id="contact-form" novalidate>
+      <p class="small muted" id="cd-intro"></p>
+      <div class="form-row"><div class="field"><label for="c-nombre">Tu nombre <span class="req">*</span></label><input class="input" id="c-nombre" name="nombre" required autocomplete="name"><span class="field-error">Necesitamos tu nombre.</span></div><div class="field"><label for="c-empresa">Tu empresa</label><input class="input" id="c-empresa" name="empresa" autocomplete="organization"></div></div>
+      <div class="form-row"><div class="field"><label for="c-email">Correo <span class="req">*</span></label><input class="input" id="c-email" name="email" type="email" required autocomplete="email"><span class="field-error">Falta el correo. Lo necesitamos para que te respondan.</span></div><div class="field"><label for="c-tel">WhatsApp <span class="req">*</span></label><input class="input" id="c-tel" name="telefono" type="tel" required inputmode="tel" autocomplete="tel" placeholder="612 34 56 78" pattern="[+0-9][0-9 ().-]{7,}"><span class="field-error">Falta tu WhatsApp. Es por donde te responden.</span></div></div>
+      <div class="field"><label for="c-ciudad">Ciudad</label><input class="input" id="c-ciudad" name="ciudad" autocomplete="address-level2"></div>
+      <div class="field"><label for="c-msg">Mensaje <span class="req">*</span></label><textarea class="textarea" id="c-msg" name="mensaje" required></textarea><span class="field-error">Cuéntales qué necesitas, aunque sean dos líneas.</span></div>
+      <label class="check"><input type="checkbox" id="c-priv"> Acepto la <a href="legal.html#privacidad" style="text-decoration:underline;text-underline-offset:2px">política de privacidad</a></label>
+      <p class="field-hint">Tu mensaje va directamente al vendedor, que te responde por WhatsApp. ROBLE no lo publica.</p>
+    </form>
+    <div class="drawer-foot"><span class="small muted">Respuesta en horario laboral</span><div class="row"><button class="btn btn-ghost" data-close type="button">Cancelar</button><button class="btn btn-primary" type="submit" form="contact-form">Enviar</button></div></div>
+  </aside>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = ML.D, a = ML.anuncio(R.qs().get('id'));
+      const c = ML.shell('buscar', { cat: a ? a.cat : null });
+      if (!a) { document.title = 'Anuncio no encontrado — ROBLE Maquinaria'; R.noindex(); c.innerHTML = `<div class="empty">${R.icon('box')}<h1 class="empty-title">Ese anuncio ya no está</h1><p>Puede que se haya vendido o retirado.</p><a class="btn" href="buscar.html">Buscar máquinas</a></div>`; return; }
+      const cat = ML.cat(a.cat), v = ML.vend(a.vendedor_id);
+      document.title = `${a.titulo} — ${a.vendedor} — ROBLE Maquinaria`; R.canon('?id=' + a.id);
+      document.querySelector('meta[name=description]').content = `${a.titulo}${cat ? ' (' + cat.nombre + ')' : ''} de ${a.vendedor}${a.zona ? ', ' + a.zona : ''}. ${a.estado ? ML.ESTADO[a.estado] + '. ' : ''}Ficha con datos técnicos y contacto directo en ROBLE Maquinaria.`.slice(0, 158);
+      const dato = (k, val) => `<div class="spec"><dt>${k}</dt><dd>${val}</dd></div>`;
+      const specs = [['Marca', a.marca ? R.esc(a.marca) : ''], ['Modelo', a.modelo ? R.esc(a.modelo) : ''], ['Año', a.anio ? `<span class="mono">${a.anio}</span>` : ''], ['Estado', a.estado ? ML.ESTADO[a.estado] : ''], ['Tipo de máquina', cat ? R.esc(cat.nombre) : '—'], ['Ubicación', R.esc([a.zona, ML.pais[a.pais]].filter(Boolean).join(' · '))], ['Marcado CE', a.ce === true ? 'Sí' : a.ce === false ? 'No' : ''], ['Referencia', `<span class="mono">AN ${String(a.id).padStart(5, '0')}</span>`], ['Publicado', `<span class="mono">${a.fecha}</span>`]];
+      // Solo las filas con dato: cinco «a consultar» seguidos no dicen nada.
+      const filas = specs.filter(([, v]) => v);
+      const mismo = ML.anunciosDe(a.vendedor_id).filter(x => x.id !== a.id).slice(0, 3);
+      const similares = ML.publicados().filter(x => x.id !== a.id && x.cat === a.cat && x.vendedor_id !== a.vendedor_id).slice(0, 6);
+      c.innerHTML = `
+        <nav class="crumbs" aria-label="Migas"><a href="index.html">Inicio</a>${R.icon('chevron-right', 'sep')}<a href="sector.html?s=maquinaria">Maquinaria</a>${R.icon('chevron-right', 'sep')}<span aria-current="page">${R.esc(a.titulo)}</span></nav>
+        <div class="ad">
+          <div><div class="media">${R.icon('s-maquinaria')}<span class="label">${R.esc(cat ? cat.nombre : '')}</span>${(a.fotos[0] || ML.fotoCat(a.cat, a.id)) ? `<img src="${R.esc(a.fotos[0] || ML.fotoCat(a.cat, a.id))}" alt="${R.esc(a.titulo)}" width="1200" height="900" fetchpriority="high" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">` : ''}${!a.fotos[0] && ML.fotoCat(a.cat, a.id) ? '<span class="orient">Imagen orientativa de la categoría</span>' : ''}</div>${a.fotos.length ? '' : '<p class="small muted" style="margin-top:8px">El vendedor no ha añadido fotos de esta máquina todavía. Pídeselas desde el formulario.</p>'}</div>
+          <div class="ad-info">
+            <p class="label">${cat ? R.esc(cat.nombre) : ''}${a.estado ? ` <span class="dot-sep"></span> ${ML.ESTADO[a.estado]}` : ''}${a.anio ? ` <span class="dot-sep"></span> ${a.anio}` : ''}</p>
+            <h1 class="h1">${R.esc(a.titulo)}</h1>
+            <div class="price-box">${a.precio ? `<b>${ML.fmtPrecio(a)}</b><span>IVA no incluido</span>` : `<b style="font-size:1.125rem;font-weight:600">Precio a consultar</b><span>Pide presupuesto al vendedor</span>`}</div>
+            ${v ? `<a class="seller-box" href="vendedor.html?id=${v.id}">${R.tpl.logoTile(v)}<div><b>${R.esc(v.nombre)}</b><span>${v.tipos.map(t => ML.TIPO[t]).join(' · ')}${v.region ? ' · ' + R.esc(v.region) : ''} · ${ML.anunciosDe(v.id).length} máquinas</span></div>${R.icon('arrow-right')}</a>` : ''}
+            <div class="ad-actions"><button class="btn btn-primary btn-lg" id="btn-info" type="button">Pedir información</button><button class="btn btn-lg ${ML.store.esFav(a.id) ? 'btn-ink' : ''}" type="button" data-fav="${a.id}" aria-pressed="${ML.store.esFav(a.id)}">${R.icon('star')} ${ML.store.esFav(a.id) ? 'Guardada' : 'Guardar'}</button>${v && v.telefono ? `<a class="btn btn-lg" href="tel:${R.esc(v.telefono)}">${R.icon('phone')} ${R.esc(v.telefono)}</a>` : ''}${v ? `<a class="btn btn-lg" href="vendedor.html?id=${v.id}">Todas sus máquinas</a>` : ''}</div>
+            <div class="plate"><div class="plate-head"><span class="label">Datos de la máquina</span>${a.destacado ? '<span class="featured">Destacado</span>' : ''}</div><div class="plate-body"><dl class="specs">${filas.map(([k, val]) => dato(k, val)).join('')}</dl></div></div>
+          </div>
+        </div>
+        <section style="margin-top:32px" aria-labelledby="h-desc"><h2 class="h3" id="h-desc" style="margin-bottom:10px">Descripción</h2><div class="ad-desc"><p>${R.esc(a.desc || 'El vendedor no ha añadido descripción.')}</p></div></section>
+        <section style="margin-top:28px" aria-labelledby="h-tec"><h2 class="h3" id="h-tec" style="margin-bottom:10px">Datos técnicos</h2>${a.specs.length ? `<div class="plate"><div class="plate-body"><dl class="specs">${a.specs.map(([k, val]) => dato(R.esc(k), R.esc(val))).join('')}</dl></div></div>` : `<div class="alert"><svg class="i"><use href="#i-info"/></svg><div><strong>Sin datos técnicos publicados.</strong> Pide al vendedor dimensiones de trabajo, potencia, control y peso desde el formulario.</div></div>`}</section>
+        ${mismo.length ? `<section class="more" aria-labelledby="h-mas"><div class="section-head"><div><p class="label">${R.esc(a.vendedor)}</p><h2 class="h2" id="h-mas" style="font-size:1.375rem">Más máquinas de este vendedor.</h2></div><a class="link" href="vendedor.html?id=${a.vendedor_id}">Ver todas ${R.icon('arrow-right', 'i-16')}</a></div><div class="agrid">${mismo.map(ML.tpl.acard).join('')}</div></section>` : ''}
+        ${similares.length ? `<section class="more" aria-labelledby="h-sim"><div class="section-head"><div><p class="label">${R.esc(cat ? cat.nombre : 'Similares')}</p><h2 class="h2" id="h-sim" style="font-size:1.375rem">Similares de otros vendedores.</h2></div><a class="link" href="buscar.html">Ver todas las máquinas ${R.icon('arrow-right', 'i-16')}</a></div><div class="agrid">${similares.map(ML.tpl.acard).join('')}</div></section>` : ''}`;
+      if (a.fotos.length) ML.galeria(c.querySelector('.ad .media'), a.fotos, a.titulo);
+      const dr = R.drawer('contact-drawer');
+      document.getElementById('cd-intro').textContent = `Escribe a ${a.vendedor} sobre «${a.titulo}». Te responden ellos directamente.`;
+      document.getElementById('c-msg').value = `Hola, me interesa «${a.titulo}». `;
+      document.getElementById('btn-info').addEventListener('click', () => dr.open());
+      ML.barraMovil({ label: 'Pedir información', onClick: () => dr.open(), watch: document.getElementById('btn-info'), fav: a.id });
+      document.getElementById('contact-form').addEventListener('submit', ev => {
+        ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return;
+        if (!document.getElementById('c-priv').checked) { R.toast('Necesitamos que aceptes la política de privacidad.', 'error'); document.getElementById('c-priv').focus(); return; }
+        /* La solicitud se guarda en el servidor (contactos del vendedor) y se
+           le avisa por correo; nada queda en localStorage. */
+        const boton = document.querySelector('button[form="' + f.id + '"]') || f.querySelector('button[type=submit]'); if (boton) boton.disabled = true;
+        fetch('/api/contactos', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+          destino_id: a.vendedor_id, producto: a.titulo, nombre: f.nombre.value.trim(), empresa: f.empresa.value.trim(),
+          email: f.email.value.trim(), telefono: f.telefono.value.trim(), ciudad: f.ciudad.value.trim(), mensaje: f.mensaje.value.trim() }) })
+          .then(async r => { const j = await r.json().catch(() => ({})); if (!r.ok) { R.toast(j.error || 'No hemos podido enviar tu solicitud.', 'error'); return; } dr.close(); f.reset(); R.toast('Solicitud enviada. El vendedor te escribe por WhatsApp.'); })
+          .catch(() => R.toast('Sin conexión con el servidor. Inténtalo de nuevo.', 'error'))
+          .finally(() => { if (boton) boton.disabled = false; });
+      });
+      const ld = { '@context': 'https://schema.org', '@type': 'Product', name: a.titulo, description: a.desc || undefined, category: cat ? cat.nombre : undefined, brand: a.marca || undefined, offers: a.precio ? { '@type': 'Offer', price: a.precio, priceCurrency: 'EUR', itemCondition: a.estado === 'nueva' ? 'https://schema.org/NewCondition' : 'https://schema.org/UsedCondition', seller: { '@type': 'Organization', name: a.vendedor } } : undefined };
+      const sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.textContent = JSON.stringify(ld); document.head.appendChild(sc);
+    });
+  </script>
+</body>
+</html>

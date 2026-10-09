@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Mis anuncios — Panel de empresa — ROBLE</title>
+  <meta name="description" content="Gestiona tus anuncios de maquinaria en ROBLE.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>.admin-header .brand-tag { display: inline-flex; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <aside class="drawer wide" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+    <div class="drawer-head"><h2 id="dr-title">Anuncio</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <form class="drawer-body" id="dr-form" novalidate></form>
+    <div class="drawer-foot"><span id="dr-status"></span><div class="row"><button class="btn btn-ghost" data-close type="button">Cancelar</button><button class="btn btn-primary" type="submit" form="dr-form" id="dr-save">Guardar</button></div></div>
+  </aside>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="assets/subir.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="panel/panel.js"></script>
+  <script>
+    ML.auth.ready.then(() => {
+      const R = ROBLE, S = ML.store, v = Panel.shell('anuncios'); if (!v) return;
+      const main = document.getElementById('main');
+      main.innerHTML = `<div class="page-title"><div><h1>Mis anuncios <span class="count" id="count"></span></h1><p>Tus máquinas en venta. Se publican al guardarlas y los interesados te escriben por WhatsApp.</p></div><div class="actions"><button class="btn btn-primary" id="btn-new">${R.icon('plus')} Nuevo anuncio</button></div></div><div id="table"></div>`;
+      const rows = () => Panel.misAnuncios(v);
+      const t = Admin.table(document.getElementById('table'), {
+        rows, per: 20,
+        cols: [
+          { key: 'titulo', label: 'Máquina', sortable: true, render: a => `<div class="cell-main"><div class="logo-tile" style="width:44px;height:33px;border-radius:3px;overflow:hidden">${(a.fotos[0] || ML.fotoCat(a.cat, a.id)) ? `<img src="${R.esc(a.fotos[0] || ML.fotoCat(a.cat, a.id))}" alt="" style="width:100%;height:100%;object-fit:cover">` : ''}</div><div><a href="#" data-edit="${a.id}"><b>${R.esc(a.titulo)}</b></a><span>${R.esc((ML.cat(a.cat) || {}).nombre || '')}${a.marca ? ' · ' + R.esc(a.marca) : ''}${a.anio ? ' · ' + a.anio : ''}</span></div></div>` },
+          { key: 'precio', label: 'Precio', cls: 'num', render: a => a.precio ? ML.fmtPrecio(a) : '<span class="muted">A consultar</span>' },
+          { key: 'fotos', label: 'Fotos', cls: 'col-opt muted', render: a => a.fotos.length || '<span class="muted">orientativa</span>' },
+          { key: 'destacado', label: 'Destacado', render: a => a.destacado ? '<span class="featured">Sí</span>' : '<span class="muted">—</span>' },
+          { key: 'estadoPub', label: 'Estado', sortable: true, render: a => Panel.status(a.estadoPub) + (a.motivo ? `<div class="muted" style="font-size:11px;margin-top:2px">${R.esc(a.motivo)}</div>` : '') },
+          { key: 'fecha', label: 'Fecha', cls: 'col-opt mono muted', render: a => a.fecha },
+        ],
+        actions: a => Admin.ib('edit', 'Editar', `data-edit="${a.id}"`) + (a.estadoPub === 'publicado' ? Admin.ib('external', 'Ver anuncio', `data-view="${a.id}"`) : '') + Admin.ib('trash', 'Eliminar', `data-del="${a.id}"`),
+        emptyIcon: 's-maquinaria', emptyTitle: 'Todavía no has publicado máquinas', emptyText: 'Crea tu primer anuncio: título con marca, modelo y año, categoría, descripción y fotos.',
+        onRender: () => { document.getElementById('count').textContent = rows().length; },
+      });
+      const dr = R.drawer('drawer'); let editing = null;
+      /* Un anuncio es un producto del sector Maquinaria: se guarda en el servidor
+         (/api/productos), que comprueba la membresía; nada en localStorage. La
+         categoría va en el subsector con su nombre exacto. Marca, modelo, año o
+         precio no tienen columna: van en el título y la descripción. */
+      const fields = () => [
+        { name: 'titulo', label: 'Título', required: true, placeholder: 'Ej.: Encoladora de cantos SCM Olimpic K 360 (2019)', hint: 'Categoría, marca, modelo y año: así se busca y se encuentra.' },
+        { name: 'cat', label: 'Tipo de máquina', type: 'select', required: true, options: [['', 'Elige el tipo de máquina'], ...ML.catsAZ().map(c => [c.id, c.nombre])] },
+        { name: 'desc', label: 'Descripción', type: 'textarea', rows: 6, placeholder: 'Estado, precio o «a consultar», qué incluye, datos técnicos, dónde está y quién transporta.' },
+        { name: 'fotos', label: 'Fotos', type: 'fotos', rows: 3, empresa: v.id, hint: 'Sube las fotos desde tu ordenador, o pega una dirección https por línea.' },
+      ];
+      function open(a) {
+        editing = a; document.getElementById('dr-title').textContent = a ? 'Editar anuncio' : 'Nuevo anuncio';
+        const vals = a ? { titulo: a.titulo, cat: a.cat, desc: a.desc || '', fotos: a.fotos.join('\n') } : {};
+        document.getElementById('dr-form').innerHTML = Admin.form(fields(), vals);
+        Admin.activaSubidas(document.getElementById('dr-form'));
+        document.getElementById('dr-status').innerHTML = a ? Panel.status(a.estadoPub) : '<span class="label">Se publica al guardarlo</span>';
+        document.getElementById('dr-save').textContent = a ? 'Guardar cambios' : 'Publicar';
+        dr.open();
+      }
+      const api = async (metodo, id, cuerpo) => {
+        try {
+          const r = await fetch('/api/productos' + (id ? '?id=' + encodeURIComponent(id) : ''), { method: metodo, credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: cuerpo ? JSON.stringify(cuerpo) : undefined });
+          if (r.ok) return true;
+          const j = await r.json().catch(() => ({})); R.toast(j.error || 'No se ha podido guardar.', 'error');
+        } catch (e) { R.toast('Sin conexión con el servidor.', 'error'); }
+        return false;
+      };
+      document.getElementById('dr-form').addEventListener('submit', async ev => {
+        ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return; const x = Admin.read(f);
+        const c = ML.D.categorias.find(k => k.id === x.cat);
+        const cuerpo = { empresa_id: v.id, titulo: x.titulo, sector: 'maquinaria', sub: editing && editing.cat === x.cat && editing.sub ? editing.sub : (c ? c.nombre : ''), desc: x.desc, fotos: x.fotos };
+        const boton = document.getElementById('dr-save'); boton.disabled = true;
+        const ok = editing ? await api('PATCH', editing.id, cuerpo) : await api('POST', null, cuerpo);
+        boton.disabled = false; if (!ok) return;
+        R.toast(editing ? 'Guardado' : 'Anuncio publicado'); dr.close(); location.reload();
+      });
+      document.getElementById('btn-new').addEventListener('click', () => open(null));
+      if (R.qs().has('nuevo')) open(null);
+      document.addEventListener('click', async ev => {
+        const b = ev.target.closest('[data-edit],[data-view],[data-del]'); if (!b) return;
+        const a = ML.D.anuncios.find(x => String(x.id) === (b.dataset.edit || b.dataset.view || b.dataset.del));
+        if (b.dataset.edit) { ev.preventDefault(); open(a); }
+        else if (b.dataset.view) window.open(`anuncio.html?id=${a.id}`, '_blank');
+        else { const ok = await R.confirmDialog({ title: 'Eliminar anuncio', html: `Vas a eliminar <strong>${R.esc(a.titulo)}</strong>. No se puede deshacer.`, ok: 'Eliminar', danger: true }); if (ok && await api('DELETE', a.id)) { R.toast('Anuncio eliminado'); location.reload(); } }
+      });
+    });
+  </script>
+</body>
+</html>

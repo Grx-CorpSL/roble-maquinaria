@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Buscar máquinas — ROBLE Maquinaria</title>
+  <meta name="description" content="Busca maquinaria para la madera por palabra clave, marca, estado, año, precio, país y vendedor.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/buscar.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/buscar.html">
+  <meta property="og:title" content="Buscar máquinas — ROBLE Maquinaria">
+  <meta property="og:description" content="Busca maquinaria para la madera por palabra clave, marca, estado, año, precio, país y vendedor.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = ML.D, c = ML.shell('buscar'); const p = R.qs();
+      const st = { q: p.get('q') || '', cat: p.get('cat') || '', marca: p.get('marca') || '', estado: p.get('estado') || '', anioMin: p.get('anioMin') || '', anioMax: p.get('anioMax') || '', precioMax: p.get('precioMax') || '', pais: p.get('pais') || '', vendedor: p.get('vendedor') || '', pag: 1 };
+      const PER = 24;
+      const marcas = [...new Set(D.anuncios.map(a => a.marca).filter(Boolean))].sort();
+      // Solo se ofrece un filtro si algún anuncio tiene ese dato: un filtro que siempre da cero es peor que ninguno.
+      const hay = { estado: D.anuncios.some(a => a.estado), anio: D.anuncios.some(a => a.anio), precio: D.anuncios.some(a => a.precio), pais: new Set(D.anuncios.map(a => a.pais).filter(Boolean)).size > 1 };
+      c.innerHTML = `
+        <h1 class="h1">Buscar máquinas</h1>
+        <p class="intro">Combina los filtros que necesites. Si no sabes la marca, busca por tipo de máquina o por vendedor.</p>
+        <form class="sform" id="f" role="search">
+          <div class="field wide"><label for="q">Palabra clave</label><div class="input-icon"><svg class="i"><use href="#i-search"/></svg><input class="input" id="q" name="q" type="search" placeholder="Ej.: seccionadora, Biesse, Valencia"></div></div>
+          ${marcas.length ? `<div class="field"><label for="marca">Marca</label><select class="select" id="marca" name="marca"><option value="">Todas</option>${marcas.map(m => `<option>${R.esc(m)}</option>`).join('')}</select></div>` : ''}
+          ${hay.estado ? `<div class="field"><label for="estado">Estado</label><select class="select" id="estado" name="estado"><option value="">Cualquiera</option><option value="nueva">Nueva</option><option value="usada">Segunda mano</option></select></div>` : ''}
+          ${hay.anio ? `<div class="field"><span class="field-label" id="l-anio">Año</span><div class="range" role="group" aria-labelledby="l-anio"><input class="input" name="anioMin" type="number" min="1950" max="${new Date().getFullYear()}" placeholder="Desde" aria-label="Año desde"><input class="input" name="anioMax" type="number" min="1950" max="${new Date().getFullYear()}" placeholder="Hasta" aria-label="Año hasta"></div></div>` : ''}
+          ${hay.precio ? `<div class="field"><label for="precioMax">Precio máximo (€)</label><input class="input" id="precioMax" name="precioMax" type="number" min="0" step="500" placeholder="Sin límite"></div>` : ''}
+          ${hay.pais ? `<div class="field"><label for="pais">País</label><select class="select" id="pais" name="pais"><option value="">Todos</option>${D.paises.map(([k, n]) => `<option value="${k}">${n}</option>`).join('')}</select></div>` : ''}
+          <div class="field wide"><label for="vendedor">Vendedor</label><select class="select" id="vendedor" name="vendedor"><option value="">Todos</option>${[...D.vendedores].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')).map(v => `<option value="${v.id}">${R.esc(v.nombre)}</option>`).join('')}</select></div>
+          <div class="actions"><span class="count" id="count"></span><button class="btn btn-ghost" type="button" id="clear">Limpiar</button><button class="btn btn-primary" type="submit">Buscar</button></div>
+        </form>
+        <div id="results"></div><nav class="pager" id="pager" aria-label="Paginación" hidden style="margin-top:24px"></nav>`;
+      const f = document.getElementById('f');
+      Object.keys(st).forEach(k => { const el = f.elements[k]; if (el && st[k]) el.value = st[k]; });
+      function read() { ['q', 'cat', 'marca', 'estado', 'anioMin', 'anioMax', 'precioMax', 'pais', 'vendedor'].forEach(k => st[k] = (f.elements[k] ? f.elements[k].value : '').trim()); }
+      function write() { const u = new URLSearchParams(); Object.keys(st).forEach(k => { if (st[k] && k !== 'pag') u.set(k, st[k]); }); history.replaceState(null, '', 'buscar.html' + (u.toString() ? '?' + u : '')); }
+      function render() {
+        const list = ML.buscar({ q: st.q, cat: st.cat, marca: st.marca, estado: st.estado, anioMin: Number(st.anioMin) || 0, anioMax: Number(st.anioMax) || 0, precioMax: Number(st.precioMax) || 0, pais: st.pais, vendedor: st.vendedor });
+        const pages = Math.max(1, Math.ceil(list.length / PER)); if (st.pag > pages) st.pag = pages;
+        document.getElementById('count').innerHTML = `<b>${list.length}</b> ${list.length === 1 ? 'máquina' : 'máquinas'}${pages > 1 ? ` · página ${st.pag} de ${pages}` : ''}`;
+        const slice = list.slice((st.pag - 1) * PER, st.pag * PER);
+        document.getElementById('results').innerHTML = slice.length ? `<div class="agrid">${slice.map(ML.tpl.acard).join('')}</div>` : `<div class="empty">${R.icon('search')}<p class="empty-title">${st.q ? `Nada con «${R.esc(st.q)}»` : 'Nada con esos filtros'}</p><p>Prueba con menos filtros, o publica una solicitud y que los vendedores te encuentren.</p><div class="row" style="justify-content:center"><button class="btn" type="button" id="clear2">Quitar filtros</button><a class="btn btn-ink" href="solicitudes.html?nueva${ML.cat(st.cat) ? '&cat=' + encodeURIComponent(st.cat) : ''}">Publicar solicitud</a></div></div>`;
+        const c2 = document.getElementById('clear2'); c2 && c2.addEventListener('click', clear);
+        const pg = document.getElementById('pager'); pg.hidden = pages <= 1;
+        if (pages > 1) { pg.innerHTML = Array.from({ length: pages }, (_, i) => `<button type="button" data-p="${i + 1}" ${i + 1 === st.pag ? 'aria-current="page"' : ''}>${i + 1}</button>`).join(''); pg.querySelectorAll('[data-p]').forEach(b => b.addEventListener('click', () => { st.pag = Number(b.dataset.p); render(); window.scrollTo({ top: 0, behavior: 'auto' }); })); }
+      }
+      function clear() { f.reset(); read(); st.pag = 1; write(); render(); }
+      f.addEventListener('submit', e => { e.preventDefault(); read(); st.pag = 1; write(); render(); });
+      f.addEventListener('change', () => { read(); st.pag = 1; write(); render(); });
+      document.getElementById('clear').addEventListener('click', clear);
+      render();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Guías de compra de maquinaria — ROBLE Maquinaria</title>
+  <meta name="description" content="Guías prácticas de maquinaria para la madera: qué comprobar en una máquina de segunda mano, qué necesita un taller y cómo publicar un anuncio.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/guias.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/guias.html">
+  <meta property="og:title" content="Guías de compra de maquinaria — ROBLE Maquinaria">
+  <meta property="og:description" content="Guías prácticas de maquinaria para la madera: qué comprobar en una máquina de segunda mano, qué necesita un taller y cómo publicar un anuncio.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/ml-guias.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, c = ML.shell('guias');
+      c.innerHTML = `
+        <h1 class="h1">Guías de compra</h1>
+        <p class="intro">Lo que conviene saber antes de comprar, vender o montar un taller. Directo, con listas de comprobación y sin relleno.</p>
+        <div class="ggrid">${ML_GUIAS.map(g => `<a class="gcard" href="guia.html?id=${g.id}"><div class="cover">${ML.foto(g.foto) ? `<img src="${ML.fotoSm(g.foto)}" alt="" loading="lazy" width="640" height="359">` : ''}</div><div class="body"><span class="meta">${g.lectura} min de lectura</span><b>${R.esc(g.titulo)}</b><p>${R.esc(g.lead)}</p></div></a>`).join('')}</div>
+        <div class="alert" style="margin-top:24px"><svg class="i"><use href="#i-info"/></svg><div><strong>¿Tienes una pregunta que no está aquí?</strong> Publica una <a href="solicitudes.html" style="text-decoration:underline;text-underline-offset:2px">solicitud de maquinaria</a> o <a href="contacto.html" style="text-decoration:underline;text-underline-offset:2px">escríbenos</a>: las dudas frecuentes acaban en guía.</div></div>`;
+    });
+  </script>
+</body>
+</html>

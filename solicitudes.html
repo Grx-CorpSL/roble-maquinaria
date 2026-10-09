@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Solicitudes de maquinaria — ROBLE Maquinaria</title>
+  <meta name="description" content="Compradores que buscan una máquina concreta: publica lo que necesitas y que los vendedores te encuentren.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/solicitudes.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/solicitudes.html">
+  <meta property="og:title" content="Solicitudes de maquinaria — ROBLE Maquinaria">
+  <meta property="og:description" content="Compradores que buscan una máquina concreta: publica lo que necesitas y que los vendedores te encuentren.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <aside class="drawer" id="req-drawer" role="dialog" aria-modal="true" aria-labelledby="rd-title">
+    <div class="drawer-head"><h2 id="rd-title">Publicar una solicitud</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <form class="drawer-body" id="req-form" novalidate>
+      <div class="field"><label for="r-titulo">Qué buscas <span class="req">*</span></label><input class="input" id="r-titulo" name="titulo" required placeholder="Ej.: Encoladora de cantos con retestado, hasta 45 mm"><span class="field-error">Escribe qué máquina buscas.</span></div>
+      <div class="form-row"><div class="field"><label for="r-cat">Tipo de máquina <span class="req">*</span></label><select class="select" id="r-cat" name="cat" required><option value="">Elige el tipo de máquina</option></select><span class="field-error">Elige el tipo de máquina.</span></div><div class="field"><label for="r-estado">Estado</label><select class="select" id="r-estado" name="estado"><option value="">Nueva o segunda mano</option><option value="nueva">Nueva</option><option value="usada">Segunda mano</option></select></div></div>
+      <div class="form-row"><div class="field"><label for="r-cant">Cantidad</label><input class="input" id="r-cant" name="cantidad" type="number" min="1" value="1"></div><div class="field"><label for="r-pais">País <span class="req">*</span></label><select class="select" id="r-pais" name="pais"><option value="ES">España</option><option value="PT">Portugal</option><option value="IT">Italia</option><option value="FR">Francia</option></select></div></div>
+      <div class="field"><label for="r-desc">Detalles</label><textarea class="textarea" id="r-desc" name="desc" placeholder="Marca preferida, años, medidas, presupuesto orientativo, plazo."></textarea></div>
+      <div class="form-row"><div class="field"><label for="r-nombre">Tu nombre <span class="req">*</span></label><input class="input" id="r-nombre" name="nombre" required><span class="field-error">Necesitamos tu nombre.</span></div><div class="field"><label for="r-email">Correo <span class="req">*</span></label><input class="input" id="r-email" name="email" type="email" required><span class="field-hint">Solo lo ven los vendedores que respondan.</span><span class="field-error">Falta el correo.</span></div></div>
+      <label class="check"><input type="checkbox" id="r-priv"> Acepto la <a href="legal.html#privacidad" style="text-decoration:underline;text-underline-offset:2px">política de privacidad</a></label>
+    </form>
+    <div class="drawer-foot"><span class="status status-pending">Se revisa antes de publicarse</span><div class="row"><button class="btn btn-ghost" data-close type="button">Cancelar</button><button class="btn btn-primary" type="submit" form="req-form">Publicar solicitud</button></div></div>
+  </aside>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = ML.D, c = ML.shell('buscar'); const p = R.qs();
+      let cat = p.get('cat') || '', pais = '', estado = '';
+      const sel = document.getElementById('r-cat'); ML.catsAZ().forEach(x => sel.add(new Option(x.nombre, x.id))); if (cat) sel.value = cat;
+      function render() {
+        const all = ML.solicitudes(); const list = all.filter(s => (!cat || s.cat === cat) && (!pais || s.pais === pais) && (!estado || s.estado === estado));
+        c.innerHTML = `
+          <div class="between" style="margin-bottom:6px"><h1 class="h1" style="margin:0">Solicitudes de maquinaria</h1><button class="btn btn-primary" id="btn-new" type="button">${R.icon('plus')} Publicar solicitud</button></div>
+          <p class="intro">Quien busca una máquina concreta la pide aquí. Los vendedores la ven y responden directamente. Las solicitudes se revisan antes de publicarse.</p>
+          <form class="vfilters" onsubmit="return false" style="grid-template-columns:repeat(3,1fr) auto"><div class="field"><label for="f-cat">Tipo de máquina</label><select class="select" id="f-cat"><option value="">Todas</option>${ML.catsAZ().map(x => `<option value="${x.id}" ${cat === x.id ? 'selected' : ''}>${R.esc(x.nombre)}</option>`).join('')}</select></div><div class="field"><label for="f-pais">País</label><select class="select" id="f-pais"><option value="">Todos</option>${D.paises.slice(0, 4).map(([k, n]) => `<option value="${k}" ${pais === k ? 'selected' : ''}>${n}</option>`).join('')}</select></div><div class="field"><label for="f-estado">Estado</label><select class="select" id="f-estado"><option value="">Cualquiera</option><option value="nueva" ${estado === 'nueva' ? 'selected' : ''}>Nueva</option><option value="usada" ${estado === 'usada' ? 'selected' : ''}>Segunda mano</option></select></div><button class="btn btn-ghost" type="button" id="clear" ${cat || pais || estado ? '' : 'hidden'}>Quitar filtros</button></form>
+          ${list.length ? `<div class="rows">${list.map(s => `<article class="rrow" id="s-${s.id}"><div><b>${R.esc(s.titulo)}</b><div class="meta"><span>${R.esc((ML.cat(s.cat) || {}).nombre || '')}</span><span>${ML.pais[s.pais] || s.pais}</span>${s.estado ? `<span>${ML.ESTADO[s.estado]}</span>` : ''}<span>${s.cantidad} ud.</span></div>${s.desc ? `<p>${R.esc(s.desc)}</p>` : ''}</div><div class="side">${s.pendiente ? '<span class="status status-pending">Pendiente</span>' : '<span class="status status-live">Publicada</span>'}<span class="label">${s.fecha.slice(0, 10)}</span><a class="btn btn-sm" href="acceso.html">Responder</a></div></article>`).join('')}</div>` : `<div class="empty">${R.icon('inbox')}<p class="empty-title">${all.length ? 'Ninguna solicitud con esos filtros' : 'Todavía no hay solicitudes'}</p><p>${all.length ? 'Prueba a quitar un filtro.' : 'Sé el primero: cuenta qué máquina buscas y los vendedores te escribirán.'}</p><button class="btn btn-ink" type="button" id="btn-new2">Publicar solicitud</button></div>`}`;
+        c.querySelectorAll('#btn-new,#btn-new2').forEach(b => b.addEventListener('click', () => dr.open()));
+        c.querySelector('#f-cat').addEventListener('change', e => { cat = e.target.value; render(); });
+        c.querySelector('#f-pais').addEventListener('change', e => { pais = e.target.value; render(); });
+        c.querySelector('#f-estado').addEventListener('change', e => { estado = e.target.value; render(); });
+        const cl = c.querySelector('#clear'); cl && cl.addEventListener('click', () => { cat = pais = estado = ''; render(); });
+      }
+      const dr = R.drawer('req-drawer');
+      document.getElementById('req-form').addEventListener('submit', ev => {
+        ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return;
+        if (!document.getElementById('r-priv').checked) { R.toast('Necesitamos que aceptes la política de privacidad.', 'error'); return; }
+        ML.addSolicitud({ id: Date.now(), fecha: new Date().toISOString(), titulo: f.titulo.value.trim(), cat: f.cat.value, estado: f.estado.value, cantidad: Number(f.cantidad.value) || 1, pais: f.pais.value, desc: f.desc.value.trim(), nombre: f.nombre.value.trim(), email: f.email.value.trim(), pendiente: true });
+        dr.close(); f.reset(); R.toast('Solicitud enviada. La publicamos en cuanto la revisemos.'); render();
+      });
+      render();
+      if (p.has('nueva')) dr.open();
+    });
+  </script>
+</body>
+</html>

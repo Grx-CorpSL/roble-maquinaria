@@ -1,0 +1,1175 @@
+{
+  "categorias": [
+    {
+      "id": "afiladoras",
+      "nombre": "Afiladoras",
+      "principal": true,
+      "orden": 20
+    },
+    {
+      "id": "alimentadores-y-transportadores",
+      "nombre": "Alimentadores y transportadores",
+      "principal": true,
+      "orden": 22
+    },
+    {
+      "id": "bancos-de-carpintero",
+      "nombre": "Bancos de carpintero",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "bancos-de-montaje-de-herrajes",
+      "nombre": "Bancos de montaje de herrajes",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "bisagradoras",
+      "nombre": "Bisagradoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "biseladoras-y-achaflanadoras",
+      "nombre": "Biseladoras y achaflanadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "briquetadoras",
+      "nombre": "Briquetadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "cepilladoras-a-cuatro-caras",
+      "nombre": "Cepilladoras a cuatro caras",
+      "principal": true,
+      "orden": 29
+    },
+    {
+      "id": "desdobladoras",
+      "nombre": "Desdobladoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "encoladoras-de-rodillos",
+      "nombre": "Encoladoras de rodillos",
+      "principal": true,
+      "orden": 28
+    },
+    {
+      "id": "escopleadoras-de-punta",
+      "nombre": "Escopleadoras de punta",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "escuadradoras-canteadoras",
+      "nombre": "Escuadradoras-canteadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "fresadoras",
+      "nombre": "Fresadoras",
+      "principal": true,
+      "orden": 15
+    },
+    {
+      "id": "generadores-de-aire-caliente",
+      "nombre": "Generadores de aire caliente",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "lijadoras-de-cepillo",
+      "nombre": "Lijadoras de cepillo",
+      "principal": true,
+      "orden": 17
+    },
+    {
+      "id": "maquinas-para-ventanas-y-puertas",
+      "nombre": "Máquinas para ventanas y puertas",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "recortadoras-de-cantos",
+      "nombre": "Recortadoras de cantos",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "sierras-caladoras-de-mesa",
+      "nombre": "Sierras caladoras de mesa",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "sierras-de-cinta",
+      "nombre": "Sierras de cinta",
+      "principal": true,
+      "orden": 7
+    },
+    {
+      "id": "sierras-de-cinta-para-troncos",
+      "nombre": "Sierras de cinta para troncos",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "sistemas-de-aspiracion",
+      "nombre": "Sistemas de aspiración",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "mesas-elevadoras",
+      "nombre": "Mesas elevadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "taladros-multiples",
+      "nombre": "Taladros múltiples",
+      "principal": true,
+      "orden": 6
+    },
+    {
+      "id": "varios",
+      "nombre": "Varios",
+      "principal": true,
+      "orden": 26
+    },
+    {
+      "id": "estanterias",
+      "nombre": "Estanterías",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "grapadoras-y-clavadoras",
+      "nombre": "Grapadoras y clavadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "lijadoras-de-cantos",
+      "nombre": "Lijadoras de cantos",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "lijadoras-de-banda",
+      "nombre": "Lijadoras de banda",
+      "principal": true,
+      "orden": 16
+    },
+    {
+      "id": "escuadradoras-y-sierras-circulares",
+      "nombre": "Escuadradoras y sierras circulares",
+      "principal": true,
+      "orden": 10
+    },
+    {
+      "id": "escopleadoras-de-cadena",
+      "nombre": "Escopleadoras de cadena",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "tupis",
+      "nombre": "Tupís",
+      "principal": true,
+      "orden": 8
+    },
+    {
+      "id": "persianeras",
+      "nombre": "Persianeras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "vias-de-rodillos",
+      "nombre": "Vías de rodillos",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "peletizadoras",
+      "nombre": "Peletizadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "maquinas-para-parquet",
+      "nombre": "Máquinas para parquet",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "maquinas-de-embalaje",
+      "nombre": "Máquinas de embalaje",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "sierras-multiples",
+      "nombre": "Sierras múltiples",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "pulidoras-y-abrillantadoras",
+      "nombre": "Pulidoras y abrillantadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "prensas",
+      "nombre": "Prensas",
+      "principal": true,
+      "orden": 4
+    },
+    {
+      "id": "seccionadoras-de-tablero-macizo",
+      "nombre": "Seccionadoras de tablero macizo",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "sierras-radiales",
+      "nombre": "Sierras radiales",
+      "principal": true,
+      "orden": 23
+    },
+    {
+      "id": "perfiladoras",
+      "nombre": "Perfiladoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "sistemas-de-carga-y-descarga",
+      "nombre": "Sistemas de carga y descarga",
+      "principal": true,
+      "orden": 14
+    },
+    {
+      "id": "cepilladoras",
+      "nombre": "Cepilladoras",
+      "principal": true,
+      "orden": 18
+    },
+    {
+      "id": "tornos-para-madera",
+      "nombre": "Tornos para madera",
+      "principal": true,
+      "orden": 27
+    },
+    {
+      "id": "pantografos",
+      "nombre": "Pantógrafos",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "trituradoras-de-madera",
+      "nombre": "Trituradoras de madera",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "sistemas-de-barnizado",
+      "nombre": "Sistemas de barnizado",
+      "principal": true,
+      "orden": 5
+    },
+    {
+      "id": "lijadoras-calibradoras",
+      "nombre": "Lijadoras-calibradoras",
+      "principal": true,
+      "orden": 3
+    },
+    {
+      "id": "herramientas",
+      "nombre": "Herramientas",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "regruesadoras",
+      "nombre": "Regruesadoras",
+      "principal": true,
+      "orden": 21
+    },
+    {
+      "id": "sierras-tupi-escuadradoras",
+      "nombre": "Sierras-tupí escuadradoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "espigadoras",
+      "nombre": "Espigadoras",
+      "principal": true,
+      "orden": 30
+    },
+    {
+      "id": "secaderos-de-madera",
+      "nombre": "Secaderos de madera",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "seccionadoras-verticales",
+      "nombre": "Seccionadoras verticales",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "juntadoras-de-chapa",
+      "nombre": "Juntadoras de chapa",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "cizallas-y-guillotinas-de-chapa",
+      "nombre": "Cizallas y guillotinas de chapa",
+      "principal": true,
+      "orden": 31
+    },
+    {
+      "id": "moldureras",
+      "nombre": "Moldureras",
+      "principal": true,
+      "orden": 13
+    },
+    {
+      "id": "mortajadoras",
+      "nombre": "Mortajadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "replantilladoras",
+      "nombre": "Replantilladoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "compresores",
+      "nombre": "Compresores",
+      "principal": true,
+      "orden": 19
+    },
+    {
+      "id": "combinadas",
+      "nombre": "Combinadas",
+      "principal": true,
+      "orden": 25
+    },
+    {
+      "id": "bancos-de-armar",
+      "nombre": "Bancos de armar",
+      "principal": true,
+      "orden": 11
+    },
+    {
+      "id": "tronzadoras",
+      "nombre": "Tronzadoras",
+      "principal": true,
+      "orden": 2
+    },
+    {
+      "id": "colectores-de-polvo",
+      "nombre": "Colectores de polvo",
+      "principal": true,
+      "orden": 12
+    },
+    {
+      "id": "taladros-de-columna",
+      "nombre": "Taladros de columna",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "enlazadoras",
+      "nombre": "Enlazadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "escopleadoras-de-bedano",
+      "nombre": "Escopleadoras de bedano",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "fresadoras-copiadoras",
+      "nombre": "Fresadoras copiadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "lijadoras-de-banda-larga",
+      "nombre": "Lijadoras de banda larga",
+      "principal": true,
+      "orden": 24
+    },
+    {
+      "id": "seccionadoras-horizontales",
+      "nombre": "Seccionadoras horizontales",
+      "principal": true,
+      "orden": 9
+    },
+    {
+      "id": "encoladoras-de-cantos",
+      "nombre": "Encoladoras de cantos",
+      "principal": true,
+      "orden": 1
+    },
+    {
+      "id": "centros-de-mecanizado-cnc",
+      "nombre": "Centros de mecanizado CNC",
+      "principal": true,
+      "orden": 0
+    },
+    {
+      "id": "impregnadoras",
+      "nombre": "Impregnadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "carretillas-elevadoras",
+      "nombre": "Carretillas elevadoras",
+      "principal": false,
+      "orden": 999
+    },
+    {
+      "id": "anubadoras",
+      "nombre": "Anubadoras",
+      "principal": false,
+      "orden": 999
+    }
+  ],
+  "fotos": {
+    "colectores-de-polvo": {
+      "file": "img/fotos/colectores-de-polvo.jpg",
+      "credit": "RICHI Manufacture · CC BY 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3APulse%20Dust%20Collector.jpg"
+    },
+    "tornos-para-madera": {
+      "file": "img/fotos/tornos-para-madera.jpg",
+      "credit": "Hubsing 10:00, 30. Apr. 2010 (CEST) · Public domain · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AHolzdrehbank.jpg"
+    },
+    "bisagradoras": {
+      "file": "img/fotos/bisagradoras.jpg",
+      "credit": "Asurnipal, recorte de Westbahnhof · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Flexipress-Grass-01%20zoom.jpg"
+    },
+    "lijadoras-calibradoras": {
+      "file": "img/fotos/lijadoras-calibradoras.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Breitbandschleifmaschine-Paul%20Ott-01a.jpg"
+    },
+    "lijadoras-de-banda": {
+      "file": "img/fotos/lijadoras-de-banda.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Bandschleifmaschine-Langzauner-01.jpg"
+    },
+    "escuadradoras-y-sierras-circulares": {
+      "file": "img/fotos/escuadradoras-y-sierras-circulares.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Kreissaege-Altendorf-12.jpg"
+    },
+    "hero": {
+      "file": "img/fotos/hero.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Kreissaege-Altendorf-02.jpg"
+    },
+    "regruesadoras": {
+      "file": "img/fotos/regruesadoras.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Dickenhobelmaschine-Schelling-04.jpg"
+    },
+    "prensas": {
+      "file": "img/fotos/prensas.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Furnierpresse-Langzauner-05.jpg"
+    },
+    "cepilladoras": {
+      "file": "img/fotos/cepilladoras.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Hobelmaschine-Hofmann-11.jpg"
+    },
+    "encoladoras-de-cantos": {
+      "file": "img/fotos/encoladoras-de-cantos.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Kantenleimmaschine-Paul%20Ott-01.jpg"
+    },
+    "cepilladoras-a-cuatro-caras": {
+      "file": "img/fotos/cepilladoras-a-cuatro-caras.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Vierkantenhobelmaschine-H%2BK-03.jpg"
+    },
+    "tronzadoras": {
+      "file": "img/fotos/tronzadoras.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Kappsaege-Reinhardt-06.jpg"
+    },
+    "moldureras": {
+      "file": "img/fotos/moldureras.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Kehlmaschine-Hofmann-11.jpg"
+    },
+    "escopleadoras-de-punta": {
+      "file": "img/fotos/escopleadoras-de-punta.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Langlochbohrmaschine-Schelling-01.jpg"
+    },
+    "seccionadoras-horizontales": {
+      "file": "img/fotos/seccionadoras-horizontales.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Plattenaufteilsaege-Schelling-05.jpg"
+    },
+    "seccionadoras-verticales": {
+      "file": "img/fotos/seccionadoras-verticales.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Plattenaufteils%C3%A4ge-02.jpg"
+    },
+    "sierras-de-cinta": {
+      "file": "img/fotos/sierras-de-cinta.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File:Bands%C3%A4ge_Karl_Kr%C3%B6ss.jpg"
+    },
+    "centros-de-mecanizado-cnc": {
+      "file": "img/fotos/centros-de-mecanizado-cnc.jpg",
+      "credit": "Rickwashburn1 · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File:ShopBot_PRS_Alpha_CNC_Router.jpg"
+    },
+    "tupis": {
+      "file": "img/fotos/tupis.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File:Dornbirn-Kehlmaschine-Schelling-03.jpg"
+    },
+    "sierras-radiales": {
+      "file": "img/fotos/sierras-radiales.jpg",
+      "credit": "S.J. de Waard · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File:Damen_machinery_at_open_day_09-11-2013_(35).JPG"
+    },
+    "taladros-multiples": {
+      "file": "img/fotos/taladros-multiples.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File:Dornbirn-Langlochbohrmaschine-Panhans-01.jpg"
+    },
+    "fresadoras": {
+      "file": "img/fotos/fresadoras.jpg",
+      "credit": "Foto: WEINIG Group",
+      "source": "https://www.weinig.com/en/weinig-group/press-portal/press-photos.html"
+    },
+    "alimentadores-y-transportadores": {
+      "file": "img/fotos/alimentadores-y-transportadores.jpg",
+      "credit": "Foto: WEINIG Group",
+      "source": "https://www.weinig.com/en/weinig-group/press-portal/press-photos.html"
+    },
+    "sierras-multiples": {
+      "file": "img/fotos/sierras-multiples.jpg",
+      "credit": "Foto: WEINIG Group",
+      "source": "https://www.weinig.com/en/weinig-group/press-portal/press-photos.html"
+    },
+    "afiladoras": {
+      "file": "img/fotos/afiladoras.jpg",
+      "credit": "FMS/PTS Wien 3 (Aulona Selmani) · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AFMS%20PTS%20Wien%203%20int%2010.jpg"
+    },
+    "bancos-de-carpintero": {
+      "file": "img/fotos/bancos-de-carpintero.jpg",
+      "credit": "Shixart1985 · CC BY 2.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ACarpenters%20workbench%20in%20a%20shop.jpg"
+    },
+    "bancos-de-montaje-de-herrajes": {
+      "file": "img/fotos/bancos-de-montaje-de-herrajes.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Hobelbank-02.jpg"
+    },
+    "briquetadoras": {
+      "file": "img/fotos/briquetadoras.jpg",
+      "credit": "Deutsche Gesellschaft für Internationale Zusammenarbeit (GIZ) - Bush Control and · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ACompressed%20wood%20briquettes%20from%20bush%20biomass%20Namibia.jpg"
+    },
+    "desdobladoras": {
+      "file": "img/fotos/desdobladoras.jpg",
+      "credit": "Billbeee (Uploads) · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABandsaw-resaw.jpg"
+    },
+    "escuadradoras-canteadoras": {
+      "file": "img/fotos/escuadradoras-canteadoras.jpg",
+      "credit": "© 1971markus · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AGLAM%20on%20Tour%20-%20APX%20Xanten%20-%20Die%20Schiffswerft%20-%20Werkstatt%20%2824%29.jpg"
+    },
+    "generadores-de-aire-caliente": {
+      "file": "img/fotos/generadores-de-aire-caliente.jpg",
+      "credit": "Don Williams · CC BY 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ATent%20Heater.JPG"
+    },
+    "lijadoras-de-cepillo": {
+      "file": "img/fotos/lijadoras-de-cepillo.jpg",
+      "credit": "S.J. de Waard · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADamen%20machinery%20at%20open%20day%2009-11-2013%20%2845%29.JPG"
+    },
+    "maquinas-para-ventanas-y-puertas": {
+      "file": "img/fotos/maquinas-para-ventanas-y-puertas.jpg",
+      "credit": "Ahmet Düz, Dreiländer- &amp; Oberrheinfotograf · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3A2024-09-28%20ORM%20Offenburg%20010.jpg"
+    },
+    "recortadoras-de-cantos": {
+      "file": "img/fotos/recortadoras-de-cantos.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Breitbandschleifmaschine-Paul%20Ott-01a.jpg"
+    },
+    "sierras-caladoras-de-mesa": {
+      "file": "img/fotos/sierras-caladoras-de-mesa.jpg",
+      "credit": "Haeferl · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AAu%C3%9Fervillgraten%20-%20Wurzerhof%20-%2020%20-%20Machlkammer%20-%20Laubs%C3%A4ge.jpg"
+    },
+    "sierras-de-cinta-para-troncos": {
+      "file": "img/fotos/sierras-de-cinta-para-troncos.jpg",
+      "credit": "Jakethrelkeld · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ACutting%20wood%20with%20a%20portable%20sawmill.jpg"
+    },
+    "sistemas-de-aspiracion": {
+      "file": "img/fotos/sistemas-de-aspiracion.jpg",
+      "credit": "RICHI Manufacture · CC BY 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3APulse%20Dust%20Collector.jpg"
+    },
+    "mesas-elevadoras": {
+      "file": "img/fotos/mesas-elevadoras.jpg",
+      "credit": "Edmolift AB · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ATL%202000%20scissor%20lift.jpg"
+    },
+    "varios": {
+      "file": "img/fotos/varios.jpg",
+      "credit": "Kambai Akau · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ACarpenter%20working%20on%20an%20item%204.jpg"
+    },
+    "estanterias": {
+      "file": "img/fotos/estanterias.jpg",
+      "credit": "PEO ACWA · CC BY 2.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABlue%20Grass%20Chemical%20Agent-Destruction%20Pilot%20Plant%20Maintenance%20Building%20%2812816657014%29.jpg"
+    },
+    "grapadoras-y-clavadoras": {
+      "file": "img/fotos/grapadoras-y-clavadoras.jpg",
+      "credit": "Luk~commonswiki · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3A03nailgun.JPG"
+    },
+    "lijadoras-de-cantos": {
+      "file": "img/fotos/lijadoras-de-cantos.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Bandschleifmaschine-Langzauner-01.jpg"
+    },
+    "escopleadoras-de-cadena": {
+      "file": "img/fotos/escopleadoras-de-cadena.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Kehlmaschine-Hofmann-11.jpg"
+    },
+    "persianeras": {
+      "file": "img/fotos/persianeras.jpg",
+      "credit": "Jernej Furman from Slovenia · CC BY 2.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AWindow%20with%20closed%20blue%20wooden%20window%20shutters%20%2852828690387%29.jpg"
+    },
+    "vias-de-rodillos": {
+      "file": "img/fotos/vias-de-rodillos.jpg",
+      "credit": "Kay-Uwe Rosseburg · CC BY 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AAccumulation%20Roller%20Conveyor%20for%20Cartons%20Totes.jpg"
+    },
+    "peletizadoras": {
+      "file": "img/fotos/peletizadoras.jpg",
+      "credit": "RICHI Manufacture · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AWood%20pellet%20mill.jpg"
+    },
+    "maquinas-para-parquet": {
+      "file": "img/fotos/maquinas-para-parquet.jpg",
+      "credit": "Dearmaswood · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AHardwood%20floor%20finish.jpg"
+    },
+    "maquinas-de-embalaje": {
+      "file": "img/fotos/maquinas-de-embalaje.jpg",
+      "credit": "Imsquare22 · Public domain · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AStretch%20Wrap%20Freedom%207525.jpg"
+    },
+    "pulidoras-y-abrillantadoras": {
+      "file": "img/fotos/pulidoras-y-abrillantadoras.jpg",
+      "credit": "Markus Willimann · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AAlte%20Zangenfabrik%20Schleif-%20und%20Poliermaschine.jpg"
+    },
+    "seccionadoras-de-tablero-macizo": {
+      "file": "img/fotos/seccionadoras-de-tablero-macizo.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Plattenaufteils%C3%A4ge-02.jpg"
+    },
+    "perfiladoras": {
+      "file": "img/fotos/perfiladoras.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Kehlmaschine-Hofmann-01.jpg"
+    },
+    "sistemas-de-carga-y-descarga": {
+      "file": "img/fotos/sistemas-de-carga-y-descarga.jpg",
+      "credit": "PEO ACWA · CC BY 2.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABlue%20Grass%20Chemical%20Agent-Destruction%20Pilot%20Plant%20Rocket%20Non-Destruction%20Examination%20Equipment%20%2851175291605%29.jpg"
+    },
+    "pantografos": {
+      "file": "img/fotos/pantografos.jpg",
+      "credit": "Cncsupport · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADynamicsTwinHead.jpg"
+    },
+    "trituradoras-de-madera": {
+      "file": "img/fotos/trituradoras-de-madera.jpg",
+      "credit": "Lisa Nix · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AHolzhacker%20Heizohack%20mit%20Verbrennungsmotor.jpg"
+    },
+    "sistemas-de-barnizado": {
+      "file": "img/fotos/sistemas-de-barnizado.jpg",
+      "credit": "U.S. Navy photo by Gary Nichols. · Public domain · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AUS%20Navy%20040413-N-5328N-029%20A%20U.S.%20Air%20Force%20Airman%20spray%20paints%20a%20piece%20of%20equipment%20in%20a%20paint%20booth%20at%20Naval%20Air%20Technical%20Training%20Command%20%28NATTC%29.jpg"
+    },
+    "herramientas": {
+      "file": "img/fotos/herramientas.jpg",
+      "credit": "D-Platoon · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AOberfraese%20Fraeser%202.jpg"
+    },
+    "sierras-tupi-escuadradoras": {
+      "file": "img/fotos/sierras-tupi-escuadradoras.jpg",
+      "credit": "Leo Miregalitheo · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABaukreiss%C3%A4ge%20mit%20Schalungsresten.jpg"
+    },
+    "espigadoras": {
+      "file": "img/fotos/espigadoras.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Plattenaufteilsaege-Schelling-05.jpg"
+    },
+    "secaderos-de-madera": {
+      "file": "img/fotos/secaderos-de-madera.jpg",
+      "credit": "Johann Jaritz · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AVelden%20Augsdorf%20Oberer%20Kirchenweg%205%20Bretterstapel%200906202%203961.jpg"
+    },
+    "juntadoras-de-chapa": {
+      "file": "img/fotos/juntadoras-de-chapa.jpg",
+      "credit": "Cartoffel · CC0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABintangor%20veneer%20A.jpg"
+    },
+    "cizallas-y-guillotinas-de-chapa": {
+      "file": "img/fotos/cizallas-y-guillotinas-de-chapa.jpg",
+      "credit": "Fotograf: Philipp Zinger · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AAhorn-Maser%20Holz.JPG"
+    },
+    "mortajadoras": {
+      "file": "img/fotos/mortajadoras.jpg",
+      "credit": "File:Dornbirn-Langlochbohrmaschine-Panhans-02.jpg: Asurnipal derivate work: User · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Langlochbohrmaschine-Panhans-02%20zoom.jpg"
+    },
+    "replantilladoras": {
+      "file": "img/fotos/replantilladoras.jpg",
+      "credit": "D-Platoon · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AOberfraese%20Tauchkorb%201.jpg"
+    },
+    "compresores": {
+      "file": "img/fotos/compresores.jpg",
+      "credit": "Work With Sounds · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AAir%20compressor%20at%20Diesel%20House.JPG"
+    },
+    "combinadas": {
+      "file": "img/fotos/combinadas.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Langlochbohrmaschine-Schelling-01.jpg"
+    },
+    "bancos-de-armar": {
+      "file": "img/fotos/bancos-de-armar.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADafins-Osangweg-old%20woodworking%20workbench-01ASD.jpg"
+    },
+    "taladros-de-columna": {
+      "file": "img/fotos/taladros-de-columna.jpg",
+      "credit": "S.J. de Waard · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADamen%20machinery%20at%20open%20day%2009-11-2013%20%2824%29.JPG"
+    },
+    "enlazadoras": {
+      "file": "img/fotos/enlazadoras.jpg",
+      "credit": "Yofangga · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ALokameru.jpg"
+    },
+    "escopleadoras-de-bedano": {
+      "file": "img/fotos/escopleadoras-de-bedano.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Langlochbohrmaschine-Panhans-01.jpg"
+    },
+    "fresadoras-copiadoras": {
+      "file": "img/fotos/fresadoras-copiadoras.jpg",
+      "credit": "Impressionmanufacturer · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ACNC%20milling%20machine.jpg"
+    },
+    "lijadoras-de-banda-larga": {
+      "file": "img/fotos/lijadoras-de-banda-larga.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Bandschleifmaschine-03.jpg"
+    },
+    "impregnadoras": {
+      "file": "img/fotos/impregnadoras.jpg",
+      "credit": "US Fish and Wildlife Service - Recovery Act Team · Public domain · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ARachel%20Carson%20National%20Wildlife%20Refuge%20%285515568816%29.jpg"
+    },
+    "carretillas-elevadoras": {
+      "file": "img/fotos/carretillas-elevadoras.jpg",
+      "credit": "Photograph by Mike Peel (www.mikepeel.net). · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AAt%20Tenerife%202023%20653.jpg"
+    },
+    "anubadoras": {
+      "file": "img/fotos/anubadoras.jpg",
+      "credit": "The Finishing Company Richmond Va from Richmond,Virginia, United States · CC BY 2.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AWooden%20balusters%20with%20dowels%20%285015959180%29.jpg"
+    },
+    "biseladoras-y-achaflanadoras": {
+      "file": "img/fotos/biseladoras-y-achaflanadoras.jpg",
+      "credit": "D-Platoon · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AOberfraese%20Fraestisch.jpg"
+    },
+    "escuadradoras-y-sierras-circulares-2": {
+      "file": "img/fotos/escuadradoras-y-sierras-circulares-2.jpg",
+      "credit": "FMS/PTS Wien 3 (Aulona Selmani) · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AFMS%20PTS%20Wien%203%20int%2015.jpg"
+    },
+    "escuadradoras-y-sierras-circulares-3": {
+      "file": "img/fotos/escuadradoras-y-sierras-circulares-3.jpg",
+      "credit": "4028mdk09 · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AMafell%20Tischkreiss%C3%A4ge.JPG"
+    },
+    "encoladoras-de-cantos-2": {
+      "file": "img/fotos/encoladoras-de-cantos-2.jpg",
+      "credit": "Akpeski · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AEdge%20banding%20a%20workpiece%20on%20the%20edge%20banding%20machine.jpg"
+    },
+    "encoladoras-de-cantos-3": {
+      "file": "img/fotos/encoladoras-de-cantos-3.jpg",
+      "credit": "Akpeski · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AEdge%20banding%20a%20workpiece%20using%20the%20edge%20banding%20machine.jpg"
+    },
+    "seccionadoras-horizontales-2": {
+      "file": "img/fotos/seccionadoras-horizontales-2.jpg",
+      "credit": "Rupertmaesglas · CC0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AGweithdy%20Melin%20Goed%20Ystwyth%20Sawmill%20Workshop.jpg"
+    },
+    "seccionadoras-horizontales-3": {
+      "file": "img/fotos/seccionadoras-horizontales-3.jpg",
+      "credit": "Parvathisri · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AA-wood%20logs%20in%20saw%20mill.jpg"
+    },
+    "regruesadoras-2": {
+      "file": "img/fotos/regruesadoras-2.jpg",
+      "credit": "Dschamal Berger · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3APlaner%20combi%20cubico%20at%20work1.jpg"
+    },
+    "regruesadoras-3": {
+      "file": "img/fotos/regruesadoras-3.jpg",
+      "credit": "S.J. de Waard · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADamen%20machinery%20at%20open%20day%2009-11-2013%20%2834%29.JPG"
+    },
+    "centros-de-mecanizado-cnc-2": {
+      "file": "img/fotos/centros-de-mecanizado-cnc-2.jpg",
+      "credit": "Rhododendrites · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADMS%20CNC%20router%20at%20SITU%20Fabrication%20%2812480%29.jpg"
+    },
+    "centros-de-mecanizado-cnc-3": {
+      "file": "img/fotos/centros-de-mecanizado-cnc-3.jpg",
+      "credit": "Vivian Guerra Moreira · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AFresadora%20de%20Precis%C3%A3o%20-%20Fab%20LAB%20Newton.jpg"
+    },
+    "herramientas-2": {
+      "file": "img/fotos/herramientas-2.jpg",
+      "credit": "Shixart1985 · CC BY 2.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AA%20circular%20saw%20is%20actively%20cutting%20through%20a%20wooden%20plank%20in%20a%20workshop.jpg"
+    },
+    "herramientas-3": {
+      "file": "img/fotos/herramientas-3.jpg",
+      "credit": "D-Platoon · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AOberfraese%20Fraeser%201.jpg"
+    },
+    "s-maquinaria": {
+      "file": "img/fotos/s-maquinaria.jpg",
+      "credit": "Asurnipal · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADornbirn-Kehlmaschine-Schelling-03.jpg"
+    },
+    "s-tecnicos-de-maquinaria": {
+      "file": "img/fotos/s-tecnicos-de-maquinaria.jpg",
+      "credit": "U.S. Navy photo by Mass Communication Specialist Seaman Leah C. Allen · Public domain · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AUS%20Navy%20070206-N-4973A-021%20Electronics%20Technician%202nd%20Class%20Franklin%20performs%20routine%20maintenance%20on%20an%20MK-38%2C%2025mm%20machine%20gun%20aboard%20guided%20missile%20destroyer%20USS%20O%27Kane%20%28DDG%2077%29.jpg"
+    },
+    "s-tecnologia-software": {
+      "file": "img/fotos/s-tecnologia-software.jpg",
+      "credit": "Cadvilla · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABenutzeroberfl%C3%A4che%20von%20cadvilla.jpg"
+    },
+    "s-comunicacion-eventos": {
+      "file": "img/fotos/s-comunicacion-eventos.jpg",
+      "credit": "Shagun Wedding &amp; Events · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AHemani%20at%20trade%20show.jpg"
+    },
+    "s-materias-primas": {
+      "file": "img/fotos/s-materias-primas.jpg",
+      "credit": "Adam Jones from Kelowna, BC, Canada · CC BY-SA 2.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ALumber%20Stacked%20in%20Yard%20-%20Biei%20-%20Hokkaido%20-%20Japan%20%2848028560446%29.jpg"
+    },
+    "s-tablero-aglomerado-y-mdf": {
+      "file": "img/fotos/s-tablero-aglomerado-y-mdf.jpg",
+      "credit": "Андрей Перцев 1967 · CC0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AFibreboard%2007880.jpg"
+    },
+    "s-almacenes-de-puertas": {
+      "file": "img/fotos/s-almacenes-de-puertas.jpg",
+      "credit": "Marcin Konsek · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3A2016%20Phnom%20Penh%2C%20Wat%20Botum%20%2811%29.jpg"
+    },
+    "s-puertas-de-cocina": {
+      "file": "img/fotos/s-puertas-de-cocina.jpg",
+      "credit": "Plannerce · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AClassic%20cabin.jpg"
+    },
+    "s-paneles-decorativos": {
+      "file": "img/fotos/s-paneles-decorativos.jpg",
+      "credit": "Thomas Hummel · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ASt.%20Roch%20%28Bilstain%29%20014.jpg"
+    },
+    "s-encimeras-de-cocina": {
+      "file": "img/fotos/s-encimeras-de-cocina.jpg",
+      "credit": "Donovan Nimmo · CC0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AKitchen%20Countertop%20Installation%20%26%20Custom%20Stone%20Fitting.jpg"
+    },
+    "s-cantos-para-muebles": {
+      "file": "img/fotos/s-cantos-para-muebles.jpg",
+      "credit": "Андрей Перцев 1967 · CC0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AFibreboard%2007889.jpg"
+    },
+    "s-herrajes-accesorios": {
+      "file": "img/fotos/s-herrajes-accesorios.jpg",
+      "credit": "Markmons · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AScharnier%20um%201980.jpg"
+    },
+    "s-colas-y-liquidos-de-limpieza": {
+      "file": "img/fotos/s-colas-y-liquidos-de-limpieza.jpg",
+      "credit": "Jacek Halicki · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3A2023%20Kleje.jpg"
+    },
+    "s-acabados-tratamientos": {
+      "file": "img/fotos/s-acabados-tratamientos.jpg",
+      "credit": "Simon A. Eugster · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3APiece01-LinseedOil.jpg"
+    },
+    "s-herramientas-mecanizado": {
+      "file": "img/fotos/s-herramientas-mecanizado.jpg",
+      "credit": "Yehud830 · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3A%D7%91%D7%99%D7%98%D7%99%20%D7%9B%D7%A8%D7%A1%D7%95%D7%9D%20%D7%A8%D7%95%D7%98%D7%A8.jpg"
+    },
+    "s-carpinteria-construccion": {
+      "file": "img/fotos/s-carpinteria-construccion.jpg",
+      "credit": "Johannes Reimer · CC BY 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABraunschweig%20St.%20Aegidien%20Dachstuhl%20Mittelschiff.jpg"
+    },
+    "s-ventanas": {
+      "file": "img/fotos/s-ventanas.jpg",
+      "credit": "Arif Permana Putra · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADetail%20Dua%20Jendela%20Kayu%20Rumah%20Dinas%20Bupati%20Lebak.jpg"
+    },
+    "s-consumibles-casas-prefabricadas": {
+      "file": "img/fotos/s-consumibles-casas-prefabricadas.jpg",
+      "credit": "Poliwerker · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AAlte%20Schrauben.jpg"
+    },
+    "s-construccion-madera": {
+      "file": "img/fotos/s-construccion-madera.jpg",
+      "credit": "Christian Boss 1965 · CC BY 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AGerlafingen%2C%20Gewerbestrasse%2014%2C%20altes%20Fachwerkhaus.jpg"
+    },
+    "s-carpinteros": {
+      "file": "img/fotos/s-carpinteros.jpg",
+      "credit": "Minette Lontsie · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ACarpenter%20at%20work%201.jpg"
+    },
+    "s-complementos-de-madera": {
+      "file": "img/fotos/s-complementos-de-madera.jpg",
+      "credit": "Tangerineduel · CC BY 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AEnglish%20Teak%20Sideboard.jpg"
+    },
+    "s-contract-proyectos": {
+      "file": "img/fotos/s-contract-proyectos.jpg",
+      "credit": "Sdkb · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ATribe%20Hotel%20lobby.jpg"
+    },
+    "s-amueblamiento-tiendas": {
+      "file": "img/fotos/s-amueblamiento-tiendas.jpg",
+      "credit": "Brodos AG · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ALadenbau-vernetzter-laden-solingen.jpg"
+    },
+    "s-armarios": {
+      "file": "img/fotos/s-armarios.jpg",
+      "credit": "Donald Trung · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABaby-Dump%2C%20Groningen%20%282018%29%2012.jpg"
+    },
+    "s-muebles-de-cocina": {
+      "file": "img/fotos/s-muebles-de-cocina.jpg",
+      "credit": "NeONBRAND neonbrand · CC0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABlue%20white%20kitchen%20interior%20%28Unsplash%29.jpg"
+    },
+    "s-muebles-de-bano": {
+      "file": "img/fotos/s-muebles-de-bano.jpg",
+      "credit": "Juliros · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AChrome%20concept.JPG"
+    },
+    "s-muebles-de-oficina": {
+      "file": "img/fotos/s-muebles-de-oficina.jpg",
+      "credit": "Ausi TCHEm Lamiw · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AHK%20%E9%8A%85%E9%91%BC%E7%81%A3%20CWB%20%E5%AE%9C%E5%AE%B6%E5%AE%B6%E5%B1%85%20IKEA%20shop%20office%20furniture%20table%20n%20chairs%20July%202017%20IX1%2004.jpg"
+    },
+    "s-mueble-kit": {
+      "file": "img/fotos/s-mueble-kit.jpg",
+      "credit": "GACWLUBOR HAMUIG · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AHK%20KTD%20%E4%B9%9D%E9%BE%8D%E7%81%A3%20Kln%20Bay%20MegaBox%20mall%20shop%20%E5%AE%9C%E5%AE%B6%E5%82%A2%E4%BF%AC%20IKEA%20furniture%20in%20April%202022%20Px3%2020.jpg"
+    },
+    "s-mueble-por-ambiente": {
+      "file": "img/fotos/s-mueble-por-ambiente.jpg",
+      "credit": "ChrisCaparro · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABrier%20Living%20Room.jpg"
+    },
+    "s-mueble-juvenil": {
+      "file": "img/fotos/s-mueble-juvenil.jpg",
+      "credit": "Matti Blume · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AAccra%20Park%2C%20Ayawaso%20West%20%28P1090912%29.jpg"
+    },
+    "s-mesas": {
+      "file": "img/fotos/s-mesas.jpg",
+      "credit": "Acabashi · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3APrinknash%20Abbey%20Walled%20Garden%20outdoor%20table%20and%20chairs%20Upton%20St%20Leonards%20Gloucestershire%20England.jpg"
+    },
+    "s-sillas": {
+      "file": "img/fotos/s-sillas.jpg",
+      "credit": "Basile Morin · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AWooden%20table%20and%20chairs%20over%20the%20Mekong%20at%20sunrise%20in%20Don%20Det%20Si%20Phan%20Don%20Laos.jpg"
+    },
+    "s-canapes": {
+      "file": "img/fotos/s-canapes.jpg",
+      "credit": "Nenad Stojkovic · CC BY 2.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABed%20with%20modern%20wooden%20frame%20in%20a%20hotel.%20%2851536557243%29.jpg"
+    },
+    "s-patas-para-canapes": {
+      "file": "img/fotos/s-patas-para-canapes.jpg",
+      "credit": "Emanuel Mörk · CC0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AM%C3%B6beltass.jpg"
+    },
+    "s-somieres": {
+      "file": "img/fotos/s-somieres.jpg",
+      "credit": "abhiriksh · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AOld%20iron%20bed.jpg"
+    },
+    "s-sofas": {
+      "file": "img/fotos/s-sofas.jpg",
+      "credit": "Belizesofa · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ABelizesofa.jpg"
+    },
+    "s-colchones": {
+      "file": "img/fotos/s-colchones.jpg",
+      "credit": "Photograph by Mike Peel (www.mikepeel.net). · CC BY-SA 4.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3AAt%20Fuerteventura%202022%20042.jpg"
+    },
+    "s-maquinaria-ocasion": {
+      "file": "img/fotos/s-maquinaria-ocasion.jpg",
+      "credit": "S.J. de Waard · CC BY-SA 3.0 · Wikimedia Commons",
+      "source": "https://commons.wikimedia.org/wiki/File%3ADamen%20machinery%20at%20open%20day%2009-11-2013%20%2801%29.JPG"
+    }
+  },
+  "paises": [
+    [
+      "ES",
+      "España"
+    ],
+    [
+      "PT",
+      "Portugal"
+    ],
+    [
+      "IT",
+      "Italia"
+    ],
+    [
+      "FR",
+      "Francia"
+    ],
+    [
+      "DE",
+      "Alemania"
+    ],
+    [
+      "AT",
+      "Austria"
+    ],
+    [
+      "BE",
+      "Bélgica"
+    ],
+    [
+      "NL",
+      "Países Bajos"
+    ],
+    [
+      "CH",
+      "Suiza"
+    ],
+    [
+      "PL",
+      "Polonia"
+    ]
+  ],
+  "tiposVendedor": [
+    [
+      "comercio",
+      "Comercio"
+    ],
+    [
+      "produccion",
+      "Producción"
+    ],
+    [
+      "asistencia",
+      "Asistencia"
+    ]
+  ],
+  "paquetes": [
+    [
+      3,
+      null
+    ],
+    [
+      15,
+      null
+    ],
+    [
+      30,
+      null
+    ],
+    [
+      100,
+      null
+    ],
+    [
+      200,
+      null
+    ],
+    [
+      500,
+      null
+    ]
+  ],
+  "whatsapp": ""
+}

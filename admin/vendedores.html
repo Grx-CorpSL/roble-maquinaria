@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Vendedores y banners — Admin maquinaria — ROBLE</title>
+  <meta name="description" content="Vendedores del portal y orden de los banners laterales.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>.banners-list .list-item { gap: 10px; } .banners-list .logo-tile { width: 36px; height: 36px; font-size: 11px; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="admin/ml-admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const R = ROBLE, S = ML.store, D = ML.D, who = MLA.shell('vendedores'); if (!who) return; const $ = s => document.querySelector(s);
+      const banners = () => { const cfg = ML.extras().banners; return (cfg && cfg.length ? cfg : D.vendedores.filter(v => v.destacado).concat(D.vendedores.filter(v => !v.destacado)).slice(0, 5).map(v => v.id)); };
+      const saveBanners = ids => { const x = ML.extras(); x.banners = ids; ML.saveExtras(x); };
+      function render() {
+        const ids = banners();
+        document.getElementById('main').innerHTML = `<div class="page-title"><div><h1>Vendedores y banners</h1><p>Los vendedores son empresas del directorio con anuncios. Los banners laterales salen en todo el portal en este orden.</p></div><div class="actions"><a class="btn" href="admin-directorio/empresas.html?sector=maquinaria">Empresas de maquinaria en el directorio ${R.icon('external', 'i-16')}</a></div></div>
+          <div class="split">
+            <div class="card"><div class="card-head"><h2>Vendedores</h2><span class="label">${D.vendedores.length}</span></div><div class="card-body" style="padding:0"><div id="table"></div></div></div>
+            <div class="card"><div class="card-head"><h2>Banners laterales</h2><span class="label">Orden de arriba abajo · máx. 5</span></div><div class="card-body banners-list"><div class="list">${ids.map((id, i) => { const v = ML.vend(id); return v ? `<div class="list-item">${R.tpl.logoTile(v)}<div class="t"><b>${R.esc(v.nombre)}</b><span>${ML.fotoVend(v) ? 'Con foto de categoría' : 'Sin foto: banner tipográfico'}</span></div><span class="row" style="gap:2px">${Admin.ib('chevron-down', 'Subir', `data-up="${i}" ${i === 0 ? 'disabled' : ''} style="transform:rotate(180deg)"`)}${Admin.ib('chevron-down', 'Bajar', `data-down="${i}" ${i === ids.length - 1 ? 'disabled' : ''}`)}${Admin.ib('x', 'Quitar', `data-rm="${i}"`)}</span></div>` : ''; }).join('')}</div><form class="row" id="add" style="padding:12px 0;flex-wrap:nowrap"><select class="select" id="add-sel" aria-label="Añadir vendedor al banner" style="flex:1"><option value="">Añadir vendedor…</option>${D.vendedores.filter(v => !ids.includes(v.id)).map(v => `<option value="${v.id}">${R.esc(v.nombre)}</option>`).join('')}</select><button class="btn btn-sm" type="submit" ${ids.length >= 5 ? 'disabled' : ''}>Añadir</button></form><p class="small muted">En producción cada posición de banner es un espacio vendible (ver Paquetes).</p></div></div>
+          </div>`;
+        Admin.table($('#table'), {
+          rows: () => [...D.vendedores].sort((a, b) => b.destacado - a.destacado || a.nombre.localeCompare(b.nombre, 'es')), per: 20,
+          cols: [
+            { key: 'nombre', label: 'Vendedor', render: v => `<div class="cell-main">${R.tpl.logoTile(v)}<div><a href="vendedor.html?id=${v.id}" target="_blank" rel="noopener"><b>${R.esc(v.nombre)}</b></a><span>${v.tipos.map(t => ML.TIPO[t]).join(' · ')}${v.region ? ' · ' + R.esc(v.region) : ''}</span></div></div>` },
+            { key: 'n', label: 'Anuncios', cls: 'num', render: v => ML.anunciosDe(v.id).length },
+            { key: 'saldo', label: 'Saldo', cls: 'num col-opt', render: v => S.saldo(v.id).disponibles },
+            { key: 'destacado', label: 'Destacado', render: v => Admin.sw(v.destacado, `data-feat="${v.id}" aria-label="Destacar ${R.esc(v.nombre)}"`) },
+          ],
+          actions: v => `<a class="btn btn-ghost btn-icon btn-sm" href="admin-directorio/empresas.html?id=${v.id}" aria-label="Editar en el directorio" title="Editar en el directorio">${R.icon('edit', 'i-16')}</a>`,
+        });
+        document.querySelectorAll('[data-up],[data-down],[data-rm]').forEach(b => b.addEventListener('click', () => { const ids2 = banners(); if (b.dataset.rm) ids2.splice(Number(b.dataset.rm), 1); else { const i = Number(b.dataset.up !== undefined ? b.dataset.up : b.dataset.down), j = b.dataset.up !== undefined ? i - 1 : i + 1; [ids2[i], ids2[j]] = [ids2[j], ids2[i]]; } saveBanners(ids2); S.log('Orden de banners actualizado'); render(); }));
+        $('#add').addEventListener('submit', e => { e.preventDefault(); const id = Number($('#add-sel').value); if (!id) return; const ids2 = banners(); if (ids2.length >= 5) return; ids2.push(id); saveBanners(ids2); S.log(`Banner añadido: ${ML.vend(id).nombre}`, 'ok'); R.toast('Banner añadido'); render(); });
+      }
+      render();
+      document.addEventListener('click', ev => { const b = ev.target.closest('[data-feat]'); if (!b) return; const on = b.getAttribute('aria-checked') === 'true'; S.setVendedor(Number(b.dataset.feat), { destacado: on }); S.log(`${ML.vend(b.dataset.feat).nombre}: ${on ? 'destacado' : 'sin destacar'}`); R.toast(on ? 'Destacado' : 'Sin destacar'); });
+    });
+  </script>
+</body>
+</html>

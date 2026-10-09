@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Sector — Directorio ROBLE</title>
+  <meta name="description" content="Empresas y productos del sector en el directorio profesional de la madera ROBLE.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/sector.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/sector.html">
+  <meta property="og:title" content="Sector — Directorio ROBLE">
+  <meta property="og:description" content="Empresas y productos del sector en el directorio profesional de la madera ROBLE.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/datos.js"></script>
+  <script src="assets/faq-sectores.js"></script>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = R.D, s = R.sector(R.qs().get('s'));
+      const c = ML.shell('directorio', { dir: true, sector: s ? s.id : null });
+      if (!s) { document.title = 'Sector no encontrado — ROBLE'; R.noindex(); c.innerHTML = `<div class="empty">${R.icon('grid')}<h1 class="empty-title">Ese sector no existe</h1><p>Elige uno de los ${D.sectores.length} sectores del directorio.</p><a class="btn" href="directorio.html">Ver los sectores</a></div>`; return; }
+      document.title = `${s.nombre} — Directorio ROBLE`; R.canon('?s=' + s.id);
+      document.querySelector('meta[name=description]').content = `${s.nombre}: ${s.desc} Empresas y productos del sector en ROBLE.`.slice(0, 158);
+      let sub = s.sub.length ? (R.qs().get('sub') || '') : '';
+      const faq = (window.ROBLE_FAQ || {})[s.id] || [];
+      function render() {
+        const r = R.buscar({ sector: s.id, sub }), E = r.empresas, P = r.productos;
+        c.innerHTML = `
+          <nav class="crumbs" aria-label="Migas"><a href="index.html">Inicio</a>${R.icon('chevron-right', 'sep')}<a href="directorio.html">Directorio</a>${R.icon('chevron-right', 'sep')}<span aria-current="page">${R.esc(s.corto)}</span></nav>
+          <p class="label" style="margin-bottom:8px">${R.pad2(s.n)} / ${R.pad2(D.sectores.length)}</p>
+          <h1 class="h1">${R.esc(s.nombre)}</h1>
+          <p class="intro">${R.esc(s.desc)}</p>
+          ${ML.foto('s-' + s.id) ? `<div class="sector-cover"><img src="${ML.foto('s-' + s.id)}" alt="" width="1200" height="675" fetchpriority="high"><span class="credit">${R.esc(ML.FOTOS['s-' + s.id].credit)}</span></div>` : ''}
+          ${s.sub.length ? `<div class="dir-tabs" role="group" aria-label="Subsectores" style="margin-top:18px"><button type="button" class="chip ${sub ? '' : 'is-on'}" data-sub="">Todo el sector</button>${s.sub.map(x => `<button type="button" class="chip ${sub === x ? 'is-on' : ''}" data-sub="${R.esc(x)}">${R.esc(x)}</button>`).join('')}</div>` : ''}
+          <p class="count-line"><b>${E.length}</b> ${E.length === 1 ? 'empresa' : 'empresas'} · <b>${P.length}</b> ${P.length === 1 ? 'producto' : 'productos'}${sub ? ' en «' + R.esc(sub) + '»' : ''}</p>
+          ${E.length ? `<div class="vgrid">${E.map(ML.tpl.empCard).join('')}</div>` : `<div class="empty">${R.icon('building')}<p class="empty-title">Ninguna empresa en este sector todavía</p><p>Si tu empresa es de este sector, <a href="para-empresas.html" style="text-decoration:underline;text-underline-offset:2px">dala de alta</a>.</p><div class="row" style="justify-content:center"><button class="btn" type="button" data-sub="">Ver todo el sector</button><a class="btn btn-ink" href="para-empresas.html">Dar de alta mi empresa</a></div></div>`}
+          ${P.length ? `<section class="sec-block" aria-labelledby="h-prod"><div class="section-head"><div><p class="label">${R.esc(s.corto)}</p><h2 class="h2" id="h-prod">Productos del sector.</h2></div>${P.length > 9 ? `<a class="link" href="productos.html?sector=${s.id}${sub ? '&subsector=' + encodeURIComponent(sub) : ''}">Ver los ${P.length} ${R.icon('arrow-right', 'i-16')}</a>` : ''}</div><div class="pgrid">${P.slice(0, 9).map(R.tpl.productoCard).join('')}</div></section>` : ''}
+          ${faq.length ? `<section class="sec-block" id="preguntas" aria-labelledby="h-faq"><div class="section-head"><div><p class="label">${R.esc(s.corto)}</p><h2 class="h2" id="h-faq">Preguntas frecuentes.</h2></div></div><div class="faq">${faq.map((x, i) => `<details ${i === 0 && location.hash === '#preguntas' ? 'open' : ''}><summary>${R.esc(x.q)}${R.icon('plus')}</summary><div class="faq-a">${x.a.map(p => `<p>${R.esc(p)}</p>`).join('')}</div></details>`).join('')}</div></section>` : ''}`;
+        c.querySelectorAll('[data-sub]').forEach(b => b.addEventListener('click', () => { sub = b.dataset.sub; history.replaceState(null, '', 'sector.html?s=' + s.id + (sub ? '&sub=' + encodeURIComponent(sub) : '')); render(); }));
+      }
+      render();
+      if (faq.length) { const sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.textContent = JSON.stringify({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(x => ({ '@type': 'Question', name: x.q, acceptedAnswer: { '@type': 'Answer', text: x.a.join(' ') } })) }); document.head.appendChild(sc); }
+      if (location.hash === '#preguntas') { const el = document.getElementById('preguntas'); if (el) el.scrollIntoView(); }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "roble-maquinaria",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ROBLE — portal de maquinaria y directorio del sector de la madera. Capa de identidad: usuarios, empresas, membresías y permisos.",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@vercel/blob": "^2.0.0",
+    "bcryptjs": "^3.0.3"
+  },
+  "devDependencies": {
+    "pg": "^8.23.0"
+  },
+  "scripts": {
+    "test": "node scripts/qa-panel-api.mjs && node scripts/qa-guardadas.mjs && node scripts/qa-reclasifica.mjs && node scripts/qa-subir.mjs",
+    "sitemap": "node scripts/sitemap.mjs"
+  }
+}

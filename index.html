@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>ROBLE — Maquinaria para la madera y directorio del sector</title>
+  <meta name="description" content="Maquinaria para la madera, nueva y de segunda mano, y el directorio profesional del sector de la madera y el mueble en España: fabricantes, distribuidores y servicios por sector.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/">
+  <meta property="og:title" content="ROBLE — Maquinaria para la madera y directorio del sector">
+  <meta property="og:description" content="Maquinaria para la madera, nueva y de segunda mano, y el directorio profesional del sector de la madera y el mueble en España: fabricantes, distribuidores y servicios por sector.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="image" href="assets/img/fotos/hero.jpg" imagesrcset="assets/img/fotos/sm/hero.jpg 640w, assets/img/fotos/hero-800.jpg 800w, assets/img/fotos/hero-1000.jpg 1000w, assets/img/fotos/hero.jpg 1200w" imagesizes="(max-width: 800px) calc(100vw - 32px), (max-width: 1100px) 640px, 900px" fetchpriority="high">
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>
+    .intro-box { display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; padding: 22px 24px; background: var(--paper); border: 1px solid var(--stone); border-radius: var(--r3); box-shadow: var(--sh-1); margin-bottom: 28px; }
+    .intro-box .h1 { font-size: clamp(1.5rem, 3vw, 2.125rem); max-width: 18ch; }
+    .intro-box p { color: var(--text-2); margin-top: 8px; max-width: 58ch; font-size: var(--fs-sm); }
+    .intro-box .cifras { display: flex; gap: 16px; margin-top: 12px; font-family: var(--mono); font-size: var(--fs-xs); color: var(--text-2); flex-wrap: wrap; }
+    .intro-box .cifras b { color: var(--ink); font-weight: 600; }
+    .sec { margin-top: 36px; }
+    .sec .section-head { margin-bottom: 16px; }
+    .sec .section-head .h2 { font-size: 1.375rem; }
+    .dgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .dtile { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--paper); border: 1px solid var(--border); border-radius: var(--r2); font-size: var(--fs-xs); font-weight: 600; color: var(--ink); min-height: 56px; transition: transform var(--t1) var(--ease), box-shadow var(--t1) var(--ease), border-color var(--t1); }
+    .dtile:hover { transform: translateY(-1px); box-shadow: var(--sh-2); border-color: var(--stone); }
+    .dtile .logo-tile { width: 32px; height: 32px; font-size: 10px; }
+    @media (max-width: 800px) { .intro-box { grid-template-columns: 1fr; } .dgrid { grid-template-columns: repeat(2, 1fr); } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/datos.js?home=1"></script>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = ML.D, c = ML.shell('index');
+      const ult = [...ML.publicados()].sort((a, b) => String(b.fecha || '').localeCompare(String(a.fecha || '')) || b.destacado - a.destacado).slice(0, 6);
+      c.innerHTML = `
+        <section class="hero-photo" aria-labelledby="t">${ML.foto('hero') ? `<img src="${ML.foto('hero')}" srcset="assets/img/fotos/sm/hero.jpg 640w, assets/img/fotos/hero-800.jpg 800w, assets/img/fotos/hero-1000.jpg 1000w, assets/img/fotos/hero.jpg 1200w" sizes="(max-width: 800px) calc(100vw - 32px), (max-width: 1100px) 640px, 900px" alt="" width="1200" height="673" fetchpriority="high">` : ''}<span class="credit">${ML.FOTOS.hero ? R.esc(ML.FOTOS.hero.credit) : ''}</span><div class="in"><p class="kicker"><span class="sq"></span> ${ML.publicados().length} máquinas · ${D.vendedores.length} vendedores · ${R.D.sectores.length} sectores</p><h1 class="h1" id="t">Maquinaria para la madera, nueva y de segunda mano.</h1><form class="search" action="buscar.html" role="search"><div class="search-box"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg><input class="input" type="search" name="q" placeholder="Ej.: seccionadora, Altendorf, Valencia" aria-label="Qué máquina buscas"><button class="btn btn-primary" type="submit">Buscar</button></div></form></div></section>
+        <section class="sec" aria-labelledby="h-ult"><div class="section-head"><div><p class="label">Anuncios</p><h2 class="h2" id="h-ult">Últimas máquinas publicadas.</h2></div><a class="link" href="buscar.html">Ver todas ${R.icon('arrow-right', 'i-16')}</a></div><div class="agrid">${ult.map(ML.tpl.acard).join('')}</div></section>
+        <section class="sec" aria-labelledby="h-vend"><div class="section-head"><div><p class="label">Fabricantes y distribuidores</p><h2 class="h2" id="h-vend">Quién vende en ROBLE.</h2></div><a class="link" href="vendedores.html">Ver todos ${R.icon('arrow-right', 'i-16')}</a></div><div class="dgrid">${D.vendedores.map(v => `<a class="dtile" href="vendedor.html?id=${v.id}">${R.tpl.logoTile(v)}<span>${R.esc(v.nombre)}</span></a>`).join('')}</div></section>
+        <section class="sec" aria-labelledby="h-dir"><div class="section-head"><div><p class="label">Directorio del sector</p><h2 class="h2" id="h-dir">Los ${R.D.sectores.length} sectores.</h2></div><a class="link" href="directorio.html">Ver el directorio ${R.icon('arrow-right', 'i-16')}</a></div><div class="cgrid">${R.D.sectores.map(ML.tpl.stile).join('')}</div></section>
+        <section class="sec" aria-labelledby="h-emp"><div class="section-head"><div><p class="label">${R.D.total ? R.D.total.empresas : R.D.empresas.length} empresas</p><h2 class="h2" id="h-emp">Empresas destacadas.</h2></div><a class="link" href="empresas.html">Ver todas ${R.icon('arrow-right', 'i-16')}</a></div><div class="vgrid">${(R.D.lite ? R.D.empresas : R.D.empresas.filter(e => e.plan === 'premium' && e.desc)).slice(0, 3).map(ML.tpl.empCard).join('')}</div></section>
+        <p class="credits" style="margin-top:32px">Fotografías de Wikimedia Commons, con sus autores en <a href="creditos.html">créditos</a>. Imágenes orientativas hasta que cada vendedor suba las suyas.</p>`;
+    });
+  </script>
+</body>
+</html>

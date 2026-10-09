@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <base href="../">
+  <title>Paquetes — Panel de empresa — ROBLE</title>
+  <meta name="description" content="Compra paquetes de anuncios para publicar máquinas en ROBLE.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <link rel="stylesheet" href="admin/admin.css">
+  <style>.admin-header .brand-tag { display: inline-flex; } .packs { margin-bottom: 24px; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main"></main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="/api/maquinaria.js?panel=1"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script src="admin/admin.js"></script>
+  <script src="panel/panel.js"></script>
+  <script>
+    ML.auth.ready.then(() => {
+      const R = ROBLE, S = ML.store, D = ML.D, v = Panel.shell('paquetes'); if (!v) return;
+      const main = document.getElementById('main');
+      function render() {
+        main.innerHTML = `
+          <div class="page-title"><div><h1>Paquetes de anuncios</h1><p>Pagas por anuncios, no por meses. Los anuncios no caducan hasta que vendes la máquina.</p></div></div>
+          <div class="packs">${D.paquetes.map(([n, precio], i) => `<div class="pack ${i === 2 ? 'is-best' : ''}"><span class="n">${n}<small>${n === 1 ? 'anuncio' : 'anuncios'}</small></span><span class="price">${precio ? new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(precio) : 'A consultar'}</span><span class="per">${precio ? (precio / n).toFixed(2).replace('.', ',') + ' € por anuncio' : ''}${i === 2 ? ' · el más elegido' : ''}</span><a class="btn ${i === 2 ? 'btn-ink' : ''} btn-block" href="${ML.wa(`Hola, soy ${v.nombre} y quiero el paquete de ${n} ${n === 1 ? 'anuncio' : 'anuncios'} en ROBLE Maquinaria.`)}"${ML.waAttrs()}>${D.whatsapp ? `${R.icon('whatsapp', 'i-16')} Pedir por WhatsApp` : 'Pedir'}</a></div>`).join('')}</div>
+          <div class="alert"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><div><strong>Se pide por WhatsApp.</strong> Elige el paquete, nos llega tu mensaje con el nombre de tu empresa y te confirmamos por ahí mismo.</div></div>`;
+      }
+      render();
+    });
+  </script>
+</body>
+</html>

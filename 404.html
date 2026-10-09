@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Página no encontrada — ROBLE</title>
+  <meta name="description" content="Esta página no existe o ha cambiado de sitio. Busca máquinas o empresas desde aquí.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="/assets/roble.css">
+  <link rel="stylesheet" href="/assets/ml.css">
+  <link rel="stylesheet" href="/assets/ml-visual.css">
+  <style>
+    .nf { padding: 8px 0 24px; }
+    .nf .code { font-family: var(--mono); font-size: var(--fs-label); letter-spacing: .08em; text-transform: uppercase; color: var(--text-2); display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .nf .h1 { max-width: 16ch; }
+    .nf .intro { margin-top: 10px; }
+    .nf-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; margin-top: 28px; border-top: 1px solid var(--stone); }
+    .nf-links a { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); font-weight: 600; color: var(--ink); transition: padding var(--t1) var(--ease), color var(--t1); }
+    .nf-links a:hover { padding-left: 6px; color: var(--red-press); }
+    .nf-links a span { display: block; font-weight: 400; font-size: var(--fs-xs); color: var(--text-2); margin-top: 2px; }
+    @media (max-width: 600px) { .nf-links { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/maquinaria.js"></script>
+  <script src="/assets/roble.js"></script>
+  <script src="/assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, c = ML.shell('');
+      const enlaces = [['buscar.html', 'Buscar máquinas', `${ML.publicados().length} anuncios, nuevas y de segunda mano`], ['directorio.html', 'Los 38 sectores', 'Toda la madera, de la maquinaria a los colchones'], ['directorio.html', 'Directorio del sector', 'Empresas, productos y sectores'], ['vendedores.html', 'Vendedores', 'Fabricantes, distribuidores y asistencia técnica'], ['guias.html', 'Guías de compra', 'Qué mirar antes de comprar o vender'], ['contacto.html', 'Contacto', 'Si el enlace venía de ROBLE, dínoslo']];
+      c.innerHTML = `<section class="nf" aria-labelledby="t">
+        <p class="code"><span class="sq"></span> Error 404</p>
+        <h1 class="h1" id="t">Esta página no existe.</h1>
+        <p class="intro">Puede que la máquina se haya vendido, que la ficha haya cambiado o que el enlace esté mal escrito. Busca desde aquí.</p>
+        <form class="dir-search" action="buscar.html" role="search"><input class="input" type="search" name="q" placeholder="Ej.: seccionadora, Altendorf, Valencia" aria-label="Buscar máquinas"><button class="btn btn-primary" type="submit">Buscar máquinas</button></form>
+        <nav class="nf-links" aria-label="Por dónde seguir">${enlaces.map(([h, t, s]) => `<a href="${h}"><div>${t}<span>${s}</span></div>${R.icon('arrow-right', 'i-16')}</a>`).join('')}</nav>
+      </section>`;
+    });
+  </script>
+</body>
+</html>

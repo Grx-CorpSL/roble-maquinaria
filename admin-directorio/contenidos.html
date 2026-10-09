@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Contenidos — ROBLE Admin</title>
+  <meta name="description" content="Gestión de páginas, SEO y destacados de portada de ROBLE.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="../assets/roble.css">
+  <link rel="stylesheet" href="../admin/admin.css">
+  <style>
+    .seo-len { font-family: var(--mono); font-size: 10px; color: var(--text-2); }
+    .seo-len.is-bad { color: var(--red); }
+    @media (max-width: 480px) { .page-title h1 { font-size: 1.375rem; } } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <main id="main" class="admin-main">
+    <div class="page-title"><div><h1>Contenidos</h1><p>Páginas de la web, sus textos SEO y lo que sale destacado en portada.</p></div></div>
+    <div class="split">
+      <div class="card"><div class="card-head"><h2>Páginas</h2><span class="label" id="n-pag"></span></div><div class="card-body" style="padding:0"><div id="table"></div></div></div>
+      <div class="stack">
+        <div class="card"><div class="card-head"><h2>Destacadas en portada</h2><span class="label">Máx. 4</span></div><div class="card-body">
+          <div class="list" id="dest"></div>
+          <form class="row" id="dest-add" style="padding:12px 0;gap:8px;flex-wrap:nowrap"><select class="select" id="dest-sel" aria-label="Añadir empresa destacada" style="flex:1"></select><button class="btn btn-sm" type="submit">Añadir</button></form>
+        </div></div>
+        <div class="card"><div class="card-head"><h2>Productos destacados</h2><a class="link" href="productos.html">Gestionar</a></div><div class="card-body pad"><p class="small muted" id="n-prod"></p></div></div>
+      </div>
+    </div>
+
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+      <div class="drawer-head"><h2 id="dr-title">Página</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+      <form class="drawer-body" id="dr-form" novalidate></form>
+      <div class="drawer-foot"><span id="dr-status"></span><div class="row"><button class="btn btn-ghost" data-close type="button">Cancelar</button><button class="btn btn-ink" type="submit" form="dr-form">Guardar</button></div></div>
+    </aside>
+  </main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="../assets/roble.js"></script>
+  <script src="../admin/admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const who = Admin.shell('contenidos'); if (!who) return;
+      const R = ROBLE, S = Admin.Store, $ = s => document.querySelector(s);
+      const t = Admin.table($('#table'), {
+        rows: () => S.contenidos(), per: 20,
+        cols: [
+          { key: 'pagina', label: 'Página', render: c => `<div class="cell-main"><div><a href="#" data-edit="${c.id}"><b>${R.esc(c.pagina)}</b></a><span style="text-transform:none;letter-spacing:0">/${R.esc(c.url)}</span></div></div>` },
+          { key: 'titulo', label: 'Título SEO', cls: 'col-opt', render: c => `<span class="muted">${R.esc(c.titulo.length > 48 ? c.titulo.slice(0, 48) + '…' : c.titulo)}</span> <span class="seo-len ${c.titulo.length > 60 ? 'is-bad' : ''}">${c.titulo.length}</span>` },
+          { key: 'estado', label: 'Estado', render: c => Admin.status(c.estado) },
+        ],
+        actions: c => Admin.ib('edit', 'Editar', `data-edit="${c.id}"`) + Admin.ib('external', 'Ver página', `data-view="${c.url}"`),
+        onRender: () => { $('#n-pag').textContent = S.contenidos().length + ' páginas'; },
+      });
+      const dr = R.drawer('drawer'); let editing = null;
+      function open(c) {
+        editing = c; $('#dr-title').textContent = `Editar: ${c.pagina}`;
+        $('#dr-form').innerHTML = Admin.form([
+          { name: 'titulo', label: 'Título SEO', required: true, hint: 'Hasta 60 caracteres. Lo que se ve en Google y en la pestaña.' },
+          { name: 'desc', label: 'Descripción SEO', type: 'textarea', rows: 3, required: true, hint: 'Hasta 158 caracteres.' },
+          { name: 'h1', label: 'Titular (H1)', required: true },
+          { name: 'estado', label: 'Estado', type: 'select', options: [['publicada', 'Publicada'], ['borrador', 'Borrador']] },
+        ], c);
+        const upd = () => { const tt = $('#dr-form [name=titulo]').value.length, dd = $('#dr-form [name=desc]').value.length; $('#dr-status').innerHTML = `<span class="seo-len ${tt > 60 ? 'is-bad' : ''}">Título ${tt}/60</span> · <span class="seo-len ${dd > 158 ? 'is-bad' : ''}">Descripción ${dd}/158</span>`; };
+        $('#dr-form').addEventListener('input', upd); upd(); dr.open();
+      }
+      $('#dr-form').addEventListener('submit', ev => { ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return; const v = Admin.read(f); S.setContenido(editing.id, { titulo: v.titulo, desc: v.desc, h1: v.h1, estado: v.estado }); S.log(`Página editada: ${editing.pagina}`); R.toast('Guardado'); dr.close(); t.render(); });
+      document.addEventListener('click', ev => { const a = ev.target.closest('[data-edit],[data-view],[data-rm]'); if (!a) return; if (a.dataset.edit) { ev.preventDefault(); open(S.contenidos().find(c => c.id === a.dataset.edit)); } else if (a.dataset.view) window.open('../' + a.dataset.view, '_blank'); else if (a.dataset.rm) { const d = S.destacados(); d.empresas = d.empresas.filter(id => id !== Number(a.dataset.rm)); S.setDestacados(d); S.log('Destacadas de portada actualizadas'); renderDest(); } });
+      function renderDest() {
+        const d = S.destacados(); const list = d.empresas.map(id => S.empresa(id)).filter(Boolean);
+        $('#dest').innerHTML = list.length ? list.map(e => `<div class="list-item">${R.tpl.logoTile(e, 'logo-tile-sm')}<div class="t"><b>${R.esc(e.nombre)}</b><span>${R.esc((R.sector(e.sector) || {}).corto || '')}${e.destacada ? ' · Destacada' : ' · Ficha básica'}</span></div>${Admin.ib('x', 'Quitar de portada', `data-rm="${e.id}"`)}</div>`).join('') : '<p class="small muted" style="padding:12px 0">La portada mostrará las empresas con ficha completa.</p>';
+        const sel = $('#dest-sel'); sel.innerHTML = '<option value="">Añadir empresa…</option>'; S.empresas().filter(e => e.estado === 'publicada' && !d.empresas.includes(e.id)).sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')).forEach(e => sel.add(new Option(e.nombre, e.id)));
+        $('#dest-add').querySelector('button').disabled = list.length >= 4;
+        $('#n-prod').textContent = `${S.productos().filter(p => p.destacado).length} productos destacados salen primero en los listados y en la portada. Se activan con el interruptor de cada producto.`;
+      }
+      $('#dest-add').addEventListener('submit', ev => { ev.preventDefault(); const id = Number($('#dest-sel').value); if (!id) return; const d = S.destacados(); if (d.empresas.length >= 4) { R.toast('Máximo 4 empresas en portada. Quita una primero.', 'error'); return; } d.empresas.push(id); S.setDestacados(d); S.log(`Destacada en portada: ${S.empresa(id).nombre}`, 'ok'); R.toast('Añadida a portada'); renderDest(); });
+      renderDest();
+    });
+  </script>
+</body>
+</html>

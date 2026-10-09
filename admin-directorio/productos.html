@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Productos — ROBLE Admin</title>
+  <meta name="description" content="Gestión de productos y maquinaria del directorio ROBLE.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="../assets/roble.css">
+  <link rel="stylesheet" href="../admin/admin.css">
+  <style>@media (max-width: 480px) { .page-title h1 { font-size: 1.375rem; } } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main" class="admin-main">
+    <div class="page-title"><div><h1>Productos <span class="count" id="count"></span></h1><p>Productos y maquinaria de las empresas. Destaca los que deben salir primero.</p></div><div class="actions"><button class="btn btn-primary" id="btn-new"></button></div></div>
+    <div class="tbar">
+      <div class="input-icon"><svg class="i"><use href="#i-search"/></svg><input class="input" id="q" type="search" placeholder="Buscar por producto, empresa o subsector" aria-label="Buscar productos"></div>
+      <select class="select" id="f-sector" aria-label="Sector"><option value="">Todos los sectores</option></select>
+      <select class="select" id="f-estado" aria-label="Estado"><option value="">Todos los estados</option><option value="publicado">Publicados</option><option value="borrador">Borrador</option><option value="pendiente">Pendientes</option></select>
+      <label class="check"><input type="checkbox" id="f-dest"> Solo destacados</label>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-sm" id="f-clear" hidden>Quitar filtros</button>
+    </div>
+    <div class="bulk" id="bulk"><b id="bulk-n"></b><span>seleccionados</span><button class="btn" data-bulk="destacar">Destacar</button><button class="btn" data-bulk="nodestacar">Quitar destacado</button><button class="btn" data-bulk="publicar">Publicar</button><button class="btn" data-bulk="borrador">Pasar a borrador</button><button class="btn btn-danger" data-bulk="eliminar">Eliminar</button><button class="btn x" data-bulk="x">Quitar selección</button></div>
+    <div id="table"></div>
+
+    <aside class="drawer wide" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">
+      <div class="drawer-head"><h2 id="dr-title">Producto</h2><button class="btn btn-ghost btn-icon btn-sm" data-close aria-label="Cerrar"><svg class="i"><use href="#i-x"/></svg></button></div>
+      <form class="drawer-body" id="dr-form" novalidate></form>
+      <div class="drawer-foot"><span id="dr-status"></span><div class="row"><button class="btn btn-ghost" data-close type="button">Cancelar</button><button class="btn btn-ink" type="submit" form="dr-form">Guardar</button></div></div>
+    </aside>
+  </main>
+  <script src="/api/datos.js?panel=1"></script>
+  <script src="../assets/roble.js"></script>
+  <script src="../admin/admin.js"></script>
+  <script>
+    Admin.ready.then(() => {
+      const who = Admin.shell('productos'); if (!who) return;
+      const R = ROBLE, D = R.D, S = Admin.Store, $ = s => document.querySelector(s);
+      $('#btn-new').innerHTML = `${R.icon('plus')} Nuevo producto`;
+      D.sectores.forEach(s => $('#f-sector').add(new Option(s.corto, s.id)));
+      const p = R.qs(); if (p.get('sector')) $('#f-sector').value = p.get('sector'); if (p.get('estado')) $('#f-estado').value = p.get('estado');
+      const rows = () => {
+        const q = R.norm($('#q').value.trim()), sec = $('#f-sector').value, est = $('#f-estado').value, dest = $('#f-dest').checked;
+        $('#f-clear').hidden = !(q || sec || est || dest);
+        return S.productos().filter(x => (!q || R.norm(x.titulo).includes(q) || R.norm(x.empresa).includes(q) || R.norm(x.sub).includes(q)) && (!sec || x.sector === sec) && (!est || x.estado === est) && (!dest || x.destacado));
+      };
+      const t = Admin.table($('#table'), {
+        rows, select: true, sort: 'titulo', per: 25,
+        cols: [
+          { key: 'titulo', label: 'Producto', sortable: true, render: x => `<div class="cell-main"><div><a href="#" data-edit="${x.id}"><b>${R.esc(x.titulo)}</b></a><span>${R.esc(x.sub || '—')}</span></div></div>` },
+          { key: 'empresa', label: 'Empresa', sortable: true, render: x => `<a href="empresas.html?id=${x.empresa_id}">${R.esc(x.empresa)}</a>` },
+          { key: 'sector', label: 'Sector', sortable: true, cls: 'col-opt', val: x => (R.sector(x.sector) || {}).corto || '', render: x => R.esc((R.sector(x.sector) || {}).corto || '—') },
+          { key: 'foto', label: 'Foto', cls: 'col-opt muted', render: x => x.fotos && x.fotos.length ? `${x.fotos.length}` : '—' },
+          { key: 'destacado', label: 'Destacado', render: x => Admin.sw(x.destacado, `data-feat="${x.id}" aria-label="Destacar ${R.esc(x.titulo)}"`) },
+          { key: 'estado', label: 'Estado', sortable: true, render: x => Admin.status(x.estado) },
+        ],
+        actions: x => Admin.ib('edit', 'Editar', `data-edit="${x.id}"`) + Admin.ib('external', 'Ver ficha pública', `data-view="${x.id}"`) + Admin.ib('trash', 'Eliminar', `data-del="${x.id}"`),
+        emptyIcon: 'box', emptyTitle: 'Ningún producto con esos filtros', emptyText: 'Prueba a quitar un filtro o crea el producto.',
+        onSelect: sel => { $('#bulk').classList.toggle('is-on', sel.length > 0); $('#bulk-n').textContent = sel.length; },
+        onRender: () => { $('#count').textContent = rows().length; },
+      });
+      ['#q', '#f-sector', '#f-estado'].forEach(s => $(s).addEventListener('input', () => { t.state.page = 1; t.render(); }));
+      $('#f-dest').addEventListener('change', () => { t.state.page = 1; t.render(); });
+      $('#f-clear').addEventListener('click', () => { $('#q').value = ''; $('#f-sector').value = ''; $('#f-estado').value = ''; $('#f-dest').checked = false; t.render(); });
+
+      const dr = R.drawer('drawer'); let editing = null;
+      const empresasOpts = () => S.empresas().sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')).map(e => [e.id, e.nombre]);
+      const fields = x => [
+        { group: 'Producto' },
+        { name: 'titulo', label: 'Nombre del producto', required: true, placeholder: 'Ej.: Chapadora de cantos automática' },
+        { name: 'empresa_id', label: 'Empresa', type: 'select', required: true, options: [['', 'Elige la empresa'], ...empresasOpts()] },
+        { name: 'sector', label: 'Sector', type: 'select', required: true, options: [['', 'Elige un sector'], ...D.sectores.map(s => [s.id, s.corto])] },
+        { name: 'sub', label: 'Subsector', type: 'select', options: [['', 'Primero elige el sector']] },
+        { name: 'desc', label: 'Descripción', type: 'textarea', rows: 4, placeholder: 'Qué es, para qué sirve, medidas o capacidades si las hay.' },
+        { name: 'fotos', label: 'Fotos (una URL por línea)', type: 'textarea', rows: 3, hint: 'La subida de archivos se conecta al almacenamiento en producción.' },
+        { group: 'Publicación' },
+        { name: 'destacado', label: 'Destacado', type: 'switch', hint: 'Sale primero en los listados y en portada.' },
+        { name: 'estado', label: 'Estado', type: 'select', options: [['publicado', 'Publicado'], ['borrador', 'Borrador'], ['pendiente', 'Pendiente de revisión']] },
+      ];
+      function subsFor(sec, current) { const s = R.sector(sec); const sel = $('#f-sub'); sel.innerHTML = s ? '<option value="">Sin subsector</option>' : '<option value="">Primero elige el sector</option>'; if (s) s.sub.forEach(x => sel.add(new Option(x, x))); sel.disabled = !s; if (current) sel.value = current; }
+      function open(x) {
+        editing = x; $('#dr-title').textContent = x ? `Editar: ${x.titulo}` : 'Nuevo producto';
+        const vals = x ? Object.assign({}, x, { fotos: (x.fotos || []).join('\n') }) : { estado: 'publicado', destacado: false };
+        $('#dr-form').innerHTML = Admin.form(fields(x), vals);
+        subsFor(vals.sector, vals.sub);
+        $('#f-sector', $('#dr-form')); document.querySelector('#dr-form [name=sector]').addEventListener('change', ev => subsFor(ev.target.value));
+        $('#dr-status').innerHTML = x ? `<span class="label">PRD ${String(x.id).padStart(4, '0')}</span>` : '<span class="label">Nuevo</span>';
+        dr.open();
+      }
+      $('#dr-form').addEventListener('submit', ev => {
+        ev.preventDefault(); const f = ev.target; if (!R.validate(f)) return;
+        const v = Admin.read(f); const emp = S.empresa(v.empresa_id);
+        const patch = { titulo: v.titulo, empresa_id: Number(v.empresa_id), empresa: emp ? emp.nombre : '', sector: v.sector, sub: v.sub, desc: v.desc, fotos: v.fotos ? v.fotos.split(/\n+/).map(s => s.trim()).filter(Boolean) : [], destacado: !!v.destacado, estado: v.estado };
+        if (editing) { S.setProducto(editing.id, patch); S.log(`Producto editado: ${patch.titulo}`); R.toast('Guardado'); }
+        else { const n = S.addProducto(patch); S.log(`Producto creado: ${n.titulo} (${n.empresa})`, 'ok'); R.toast(`${n.titulo} creado`); }
+        dr.close(); t.render();
+      });
+      $('#btn-new').addEventListener('click', () => open(null));
+      if (p.get('id')) { const x = S.producto(p.get('id')); x && open(x); }
+
+      document.addEventListener('click', async ev => {
+        const a = ev.target.closest('[data-edit],[data-view],[data-del],[data-feat],[data-bulk]'); if (!a) return;
+        if (a.dataset.edit) { ev.preventDefault(); open(S.producto(a.dataset.edit)); }
+        else if (a.dataset.view) window.open(`../producto.html?id=${a.dataset.view}`, '_blank');
+        else if (a.dataset.feat) { const x = S.producto(a.dataset.feat); const on = a.getAttribute('aria-checked') === 'true'; S.setProducto(x.id, { destacado: on }); R.toast(on ? 'Destacado' : 'Sin destacar'); }
+        else if (a.dataset.del) { const x = S.producto(a.dataset.del); const ok = await R.confirmDialog({ title: 'Eliminar producto', html: `Vas a eliminar <strong>${R.esc(x.titulo)}</strong> de ${R.esc(x.empresa)}. No se puede deshacer.`, ok: 'Eliminar', danger: true }); if (ok) { S.setProducto(x.id, { _deleted: true }); S.log(`Producto eliminado: ${x.titulo}`, 'error'); R.toast('Producto eliminado'); t.render(); } }
+        else if (a.dataset.bulk) {
+          const ids = [...t.state.sel], k = a.dataset.bulk; if (k === 'x') { t.clearSel(); return; }
+          if (k === 'eliminar') { const ok = await R.confirmDialog({ title: 'Eliminar productos', html: `Vas a eliminar <strong>${ids.length} productos</strong>. No se puede deshacer.`, ok: 'Eliminar', danger: true }); if (!ok) return; ids.forEach(id => S.setProducto(id, { _deleted: true })); }
+          else ids.forEach(id => S.setProducto(id, k === 'destacar' ? { destacado: true } : k === 'nodestacar' ? { destacado: false } : k === 'publicar' ? { estado: 'publicado' } : { estado: 'borrador' }));
+          S.log(`${ids.length} productos: ${k}`); R.toast(`${ids.length} productos actualizados`); t.clearSel();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

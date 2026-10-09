@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F6F4EF">
+  <title>Empresa — Directorio ROBLE</title>
+  <meta name="description" content="Ficha de empresa en el directorio profesional de la madera ROBLE.">
+  <link rel="canonical" href="https://roble-maquinaria.vercel.app/empresa.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://roble-maquinaria.vercel.app/empresa.html">
+  <meta property="og:title" content="Empresa — Directorio ROBLE">
+  <meta property="og:description" content="Ficha de empresa en el directorio profesional de la madera ROBLE.">
+  <meta property="og:image" content="https://roble-maquinaria.vercel.app/assets/img/fotos/hero.jpg">
+  <meta property="og:site_name" content="ROBLE">
+  <meta property="og:locale" content="es_ES">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="stylesheet" href="assets/roble.css">
+  <link rel="stylesheet" href="assets/ml.css">
+  <link rel="stylesheet" href="assets/ml-visual.css">
+  <style>@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }</style>
+</head>
+<body>
+  <main id="main"></main>
+  <script src="/api/datos.js"></script>
+  <script src="/api/maquinaria.js"></script>
+  <script src="assets/roble.js"></script>
+  <script src="assets/ml.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const R = ROBLE, D = R.D, e = R.empresa(R.qs().get('id'));
+      const c = ML.shell('directorio', { dir: true, sector: e ? e.sector : null, excluir: e ? e.id : null });
+      if (!e) { document.title = 'Empresa no encontrada — ROBLE'; R.noindex(); c.innerHTML = `<div class="empty">${R.icon('building')}<h1 class="empty-title">Esa empresa ya no está en el directorio</h1><p>Puede que haya cambiado de ficha o se haya dado de baja.</p><a class="btn" href="empresas.html">Buscar empresas</a></div>`; return; }
+      const s = R.sector(e.sector), z = R.zona(e), prods = R.productosDe(e.id), prem = e.plan === 'premium', v = ML.vend(e.id), ads = v ? ML.anunciosDe(v.id) : [];
+      const web = e.web ? e.web.replace(/^https?:\/\//, '').replace(/\/$/, '') : '';
+      document.title = `${e.nombre} — ${s ? s.corto : 'Empresa'} — ROBLE`; R.canon('?id=' + e.id);
+      document.querySelector('meta[name=description]').content = (e.desc || `${e.nombre}, empresa de ${s ? s.nombre.toLowerCase() : 'la madera'}${z ? ' en ' + z : ''}. Ficha, productos y contacto directo en ROBLE.`).slice(0, 158);
+      const dato = (k, val) => `<div class="spec"><dt>${k}</dt><dd>${val}</dd></div>`;
+      c.innerHTML = `
+        <nav class="crumbs" aria-label="Migas"><a href="index.html">Inicio</a>${R.icon('chevron-right', 'sep')}<a href="directorio.html">Directorio</a>${R.icon('chevron-right', 'sep')}${s ? `<a href="sector.html?s=${s.id}">${R.esc(s.corto)}</a>${R.icon('chevron-right', 'sep')}` : ''}<span aria-current="page">${R.esc(e.nombre)}</span></nav>
+        <header class="vhead emp">${R.tpl.logoTile(e, 'logo-tile-lg')}<div><h1 class="h1">${R.esc(e.nombre)}</h1><div class="meta">${e.sectores.map(id => { const x = R.sector(id); return x ? `<a class="tag" href="sector.html?s=${x.id}">${R.esc(x.corto)}</a>` : ''; }).join('')}${prem ? '<span class="featured">Destacada</span>' : ''}<span class="label">${R.esc(z || ML.pais[e.pais] || '')}</span></div></div><div class="actions"><button class="btn btn-primary" type="button" id="btn-contact">Contactar</button>${e.web ? `<a class="btn" href="${R.esc(e.web)}" target="_blank" rel="noopener">Ver web ${R.icon('external', 'i-16')}</a>` : ''}</div></header>
+        <div class="vsplit emp">
+          <div>
+            <h2 class="h3" style="margin-bottom:8px">Actividad</h2>
+            <p class="ad-desc">${R.esc(e.desc || 'Esta empresa todavía no ha descrito su actividad.')}</p>
+            <div class="alert" style="margin-top:20px"><svg class="i"><use href="#i-info"/></svg><div><strong>¿Es tu empresa?</strong> Completa la ficha con teléfono, fotos y especialidades. <a href="para-empresas.html" style="text-decoration:underline;text-underline-offset:2px">Cómo funciona</a></div></div>
+          </div>
+          <aside class="plate" aria-label="Datos de la empresa"><div class="plate-head"><span class="label">Placa de características</span></div><div class="plate-body"><dl class="specs">
+              ${s ? dato('Sector', `<a href="sector.html?s=${s.id}">${R.esc(s.corto)}</a>`) : ''}
+              ${z ? dato('Zona', R.esc(z)) : ''}
+              ${dato('País', ML.pais[e.pais] || R.esc(e.pais))}
+              ${e.anio ? dato('Fundada', `<span class="mono">${e.anio}</span>`) : ''}
+              ${web ? dato('Web', `<a href="${R.esc(e.web)}" target="_blank" rel="noopener">${R.esc(web)}</a>`) : ''}
+              ${e.telefono ? dato('Teléfono', `<a href="tel:${R.esc(e.telefono)}">${R.esc(e.telefono)}</a>`) : ''}
+              ${dato('Productos', `<span class="mono">${prods.length}</span>`)}
+              ${ads.length ? dato("Máquinas", `<a href="vendedor.html?id=${v.id}">${ads.length} ${ads.length === 1 ? "anunciada" : "anunciadas"}</a>`) : ''}
+            </dl><button class="btn btn-ink btn-block" type="button" id="btn-contact2" style="margin-top:14px">Contactar con ${R.esc(e.nombre)}</button></div><div class="plate-foot"><span class="label">${R.ref(e)} · ${prem ? 'Ficha completa' : 'Ficha básica'}</span></div></aside>
+        </div>
+        <div>
+          <div style="margin-top:32px">
+            ${ads.length ? `<div class="section-head" style="margin-bottom:12px"><h2 class="h3">Máquinas anunciadas <span class="mono muted small">${ads.length}</span></h2><a class="link" href="vendedor.html?id=${v.id}">Ver todas ${R.icon('arrow-right', 'i-16')}</a></div><div class="agrid" style="margin-bottom:32px">${ads.slice(0, 4).map(ML.tpl.acard).join('')}</div>` : ''}
+            <div class="section-head" style="margin-bottom:12px"><h2 class="h3">Productos y servicios ${prods.length ? `<span class="mono muted small">${prods.length}</span>` : ''}</h2></div>
+            ${prods.length ? `<div class="pgrid">${prods.map(R.tpl.productoCard).join('')}</div>` : `<div class="alert"><svg class="i"><use href="#i-info"/></svg><div><strong>Sin productos publicados.</strong> Pregunta directamente a la empresa por lo que necesitas.</div></div>`}
+          </div>
+        </div>`;
+      const abrir = () => ML.contacto({ empresa_id: e.id, empresa: e.nombre, origen: 'directorio', intro: `Escribe a ${e.nombre}. Te responden ellos directamente.`, mensaje: '' });
+      c.querySelectorAll('#btn-contact,#btn-contact2').forEach(b => b.addEventListener('click', abrir));
+      ML.barraMovil({ label: 'Contactar', onClick: abrir, watch: document.getElementById('btn-contact') });
+      const ld = { '@context': 'https://schema.org', '@type': 'Organization', name: e.nombre, description: e.desc || undefined, url: e.web || undefined, foundingDate: e.anio ? String(e.anio) : undefined, address: { '@type': 'PostalAddress', addressLocality: e.ciudad || undefined, addressRegion: e.region || undefined, addressCountry: e.pais } };
+      const sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.textContent = JSON.stringify(ld); document.head.appendChild(sc);
+    });
+  </script>
+</body>
+</html>
