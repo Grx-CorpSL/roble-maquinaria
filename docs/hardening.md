@@ -1134,3 +1134,14 @@ Comprobado en producción a 1280 y 390 px: la cuenta pendiente recibe el 403 y e
 el correo sale como pendiente y el envío avisa, 6 paquetes con botón de WhatsApp, portada/lateral/pie enlazan, sin
 errores de consola; QA 113/113. Las comprobaciones que entran como administración (33 de §22 y E2E) no se han
 podido pasar: la contraseña de la cuenta de administración ya no es la que tenía (cambiada después de entregarla).
+
+## 35. «Pedir» un paquete: WhatsApp o Gmail (9 de octubre de 2026)
+
+El cliente no quería el botón de WhatsApp suelto en la cabecera de la página de paquetes: el botón va en cada
+paquete y, al pulsarlo, ofrece las dos vías. `ML.tpl.pack(paquete, i, quien)` es la única plantilla de paquete
+(portada, `paquetes.html`, `vender.html` y `panel/paquetes.html`); su botón «Pedir» es un `<details>` que al abrirse
+se convierte en dos enlaces: WhatsApp (`ML.wa`, con el mensaje del paquete y el nombre de la empresa en el panel) y
+Gmail (`ML.gmail`: `mail.google.com/mail/?view=cm` con asunto y cuerpo; el destinatario sale de
+`api/_maquinaria.json` → `correo`, hoy vacío y marcado como `[CORREO DE CONTACTO]`). Sin JavaScript propio y
+accesible con teclado. Comprobado a 1920/1280/390 px en las tres páginas públicas: cada paquete con «Pedir», las
+dos opciones al pulsar, nada se sale de la tarjeta, sin errores; QA 113/113.

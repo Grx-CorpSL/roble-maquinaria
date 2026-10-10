@@ -377,3 +377,12 @@ a.tag { min-height: 24px; }
 @media (min-width: 1500px) { .ml-main .packs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 480px) { .ml-main .packs { grid-template-columns: 1fr; } }
 .pack .btn { white-space: normal; height: auto; min-height: 40px; padding-top: 8px; padding-bottom: 8px; line-height: 1.2; }
+/* «Pedir» un paquete: el botón se convierte en las dos opciones, WhatsApp o Gmail. */
+.pedir { margin-top: auto; }
+.pedir summary { list-style: none; cursor: pointer; }
+.pedir summary::-webkit-details-marker { display: none; }
+.pedir[open] summary { display: none; }
+.pedir-opciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pedir-opciones .btn { white-space: normal; height: auto; min-height: 40px; padding: 8px 6px; line-height: 1.2; font-size: var(--fs-xs); }
+.btn-whatsapp { background: #25D366; border-color: #25D366; color: #fff; }
+.btn-whatsapp:hover { background: #1DB954; border-color: #1DB954; color: #fff; }

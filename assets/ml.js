@@ -116,6 +116,13 @@ window.ML = (function () {
   /* Paquetes y banners se piden por WhatsApp. Sin número configurado, el enlace lleva a la página de contacto. */
   const wa = texto => D.whatsapp ? `https://wa.me/${D.whatsapp}?text=${encodeURIComponent(texto)}` : 'contacto.html?asunto=planes';
   const waAttrs = () => D.whatsapp ? ' target="_blank" rel="noopener"' : '';
+  /* Un paquete se pide por WhatsApp o por Gmail: el botón «Pedir» del paquete abre las dos opciones. */
+  const gmail = (asunto, texto) => `https://mail.google.com/mail/?view=cm&fs=1${D.correo ? '&to=' + encodeURIComponent(D.correo) : ''}&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(texto)}`;
+  const pedirPaquete = (n, quien, destacado) => {
+    const unidad = n === 1 ? 'anuncio' : 'anuncios';
+    const texto = `Hola, ${quien ? `soy ${quien} y ` : ''}quiero el paquete de ${n} ${unidad} en ROBLE Maquinaria.`;
+    return `<details class="pedir"><summary class="btn ${destacado ? 'btn-ink' : ''} btn-block">Pedir</summary><div class="pedir-opciones"><a class="btn btn-whatsapp" href="${wa(texto)}"${waAttrs()}>${icon('whatsapp', 'i-16')} WhatsApp</a><a class="btn" href="${gmail(`Paquete de ${n} ${unidad} — ROBLE Maquinaria`, texto)}" target="_blank" rel="noopener">${icon('mail', 'i-16')} Gmail</a></div></details>`;
+  };
 
   function header(section, dir) {
     const nav = [['index.html', 'Inicio', 'index'], ['buscar.html', 'Máquinas', 'buscar'], ['vendedores.html', 'Vendedores', 'vendedores'], ['directorio.html', 'Directorio', 'directorio'], ['guias.html', 'Guías', 'guias'], ['vender.html', 'Vender', 'vender']];
@@ -285,6 +292,8 @@ window.ML = (function () {
     dr.open();
   }
 
+  tpl.pack = ([n, precio], i, quien) => `<div class="pack ${i === 2 ? 'is-best' : ''}"><span class="n">${n}<small>${n === 1 ? 'anuncio' : 'anuncios'}</small></span><span class="price">${precio ? new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(precio) : 'A consultar'}</span><span class="per">${precio ? (precio / n).toFixed(2).replace('.', ',') + ' € por anuncio' : ''}${i === 2 ? (precio ? ' · ' : '') + 'el más elegido' : ''}</span>${pedirPaquete(n, quien, i === 2)}</div>`;
+
   function shell(section, opts) {
     opts = opts || {};
     document.body.insertAdjacentHTML('afterbegin', header(section, !!opts.dir));
@@ -318,5 +327,5 @@ window.ML = (function () {
     return document.getElementById('content');
   }
 
-  return { contacto, galeria, barraMovil, D, cat, vend, anuncio, anunciosDe, publicados, TIPO, ESTADO, pais, fmtPrecio, catsAZ, tpl, buscar, shell, solicitudes, addSolicitud, foto, fotoCat, fotoVend, fotoSm, FOTOS, store, extras, saveExtras, auth, salir, elegirEmpresa, wa, waAttrs };
+  return { contacto, galeria, barraMovil, D, cat, vend, anuncio, anunciosDe, publicados, TIPO, ESTADO, pais, fmtPrecio, catsAZ, tpl, buscar, shell, solicitudes, addSolicitud, foto, fotoCat, fotoVend, fotoSm, FOTOS, store, extras, saveExtras, auth, salir, elegirEmpresa, wa, waAttrs, gmail };
 })();

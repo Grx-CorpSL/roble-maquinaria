@@ -81,7 +81,7 @@ async function maquinaria(opc) {
 
   return { generado: d.generado, categorias, vendedores, anuncios,
            paises: FIJO.paises, tiposVendedor: FIJO.tiposVendedor, paquetes: FIJO.paquetes, fotos: FIJO.fotos,
-           whatsapp: FIJO.whatsapp || '',
+           whatsapp: FIJO.whatsapp || '', correo: FIJO.correo || '',
            sectores: SECTORES.map(x => ({ id: x.id, n: x.n, nombre: x.nombre, corto: x.corto, empresas: d.empresas.filter(e => e.sectores.includes(x.id)).length })) };
 }
 

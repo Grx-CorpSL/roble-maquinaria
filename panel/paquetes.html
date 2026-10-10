@@ -33,8 +33,8 @@
       function render() {
         main.innerHTML = `
           <div class="page-title"><div><h1>Paquetes de anuncios</h1><p>Pagas por anuncios, no por meses. Los anuncios no caducan hasta que vendes la máquina.</p></div></div>
-          <div class="packs">${D.paquetes.map(([n, precio], i) => `<div class="pack ${i === 2 ? 'is-best' : ''}"><span class="n">${n}<small>${n === 1 ? 'anuncio' : 'anuncios'}</small></span><span class="price">${precio ? new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(precio) : 'A consultar'}</span><span class="per">${precio ? (precio / n).toFixed(2).replace('.', ',') + ' € por anuncio' : ''}${i === 2 ? ' · el más elegido' : ''}</span><a class="btn ${i === 2 ? 'btn-ink' : ''} btn-block" href="${ML.wa(`Hola, soy ${v.nombre} y quiero el paquete de ${n} ${n === 1 ? 'anuncio' : 'anuncios'} en ROBLE Maquinaria.`)}"${ML.waAttrs()}>${D.whatsapp ? `${R.icon('whatsapp', 'i-16')} Pedir por WhatsApp` : 'Pedir'}</a></div>`).join('')}</div>
-          <div class="alert"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><div><strong>Se pide por WhatsApp.</strong> Elige el paquete, nos llega tu mensaje con el nombre de tu empresa y te confirmamos por ahí mismo.</div></div>`;
+          <div class="packs">${D.paquetes.map((p, i) => ML.tpl.pack(p, i, v.nombre)).join('')}</div>
+          <div class="alert"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><div><strong>Se pide por WhatsApp o por Gmail.</strong> Pulsa «Pedir» en el paquete y elige cómo escribirnos: el mensaje ya lleva el nombre de tu empresa y te confirmamos por ahí mismo.</div></div>`;
       }
       render();
     });
