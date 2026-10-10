@@ -110,16 +110,9 @@ window.ROBLE = (function () {
 
   /* ---------- DATOS ---------- */
   const D = window.ROBLE_DATA || { sectores: [], empresas: [], productos: [] };
-  if (!/\/(admin|admin-directorio|panel)\//.test(location.pathname)) {
-    let ov = {}; try { ov = JSON.parse(localStorage.getItem('roble_admin_v1') || '{}'); } catch (e) {}
-    const pe = ov.empresas || {}, pp = ov.productos || {};
-    // La base dice 'activa'; 'publicada' era el nombre del prototipo y puede
-    // seguir en parches locales antiguos. Cualquier otro estado no se lista.
-    D.empresas = [...(ov.nuevosE || []), ...D.empresas.map(e => Object.assign(e, pe[e.id] || {}))].filter(e => !e._deleted && (!e.estado || e.estado === 'activa' || e.estado === 'publicada'));
-    const vivas = new Set(D.empresas.map(e => e.id));
-    D.productos = [...(ov.nuevosP || []), ...D.productos.map(p => Object.assign(p, pp[p.id] || {}))].filter(p => !p._deleted && (!p.estado || p.estado === 'publicado') && vivas.has(p.empresa_id));
-    D.productos.forEach(p => { p.fotos = p.fotos || []; }); D.empresas.forEach(e => { e.sectores = e.sectores && e.sectores.length ? e.sectores : [e.sector]; });
-  }
+  /* Lo que ve el público viene solo de la API. Antes se fundían parches guardados en el navegador (prototipo):
+     en el navegador de quien lo usó podían aparecer empresas fantasma o faltar reales. */
+  D.productos.forEach(p => { p.fotos = p.fotos || []; }); D.empresas.forEach(e => { e.sectores = e.sectores && e.sectores.length ? e.sectores : [e.sector]; });
   const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const pad2 = n => String(n).padStart(2, '0');

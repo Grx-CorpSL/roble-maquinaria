@@ -25,26 +25,17 @@ window.ML = (function () {
   const saveExtras = x => { try { localStorage.setItem('roble_ml_v1', JSON.stringify(x)); } catch (e) {} };
   const solicitudes = () => extras().solicitudes || [];
   const addSolicitud = s => { const x = extras(); x.solicitudes = [s, ...(x.solicitudes || [])]; saveExtras(x); };
-  const X0 = extras();
   const now = () => new Date().toISOString();
-  const nextId = () => { const x = extras(); x.nextId = (x.nextId || 900000) + 1; saveExtras(x); return x.nextId; };
+  /* Los anuncios, vendedores y precios vienen solo de la API: nada de parches del navegador (eran del prototipo). */
   (function merge() {
-    const nuevos = (X0.anuncios || []).filter(a => !a._deleted);
-    D.anuncios = [...nuevos, ...D.anuncios.filter(a => !(X0.patches && X0.patches[a.id] && X0.patches[a.id]._deleted)).map(a => Object.assign(a, (X0.patches || {})[a.id] || {}))];
     D.anuncios.forEach(a => { if (!a.estadoPub) a.estadoPub = 'publicado'; });
     D.anuncios.forEach(a => { if (D.vendedores.some(v => v.id === a.vendedor_id)) return; const e = (R.D.empresas || []).find(x => x.id === a.vendedor_id); D.vendedores.push({ id: a.vendedor_id, nombre: e ? e.nombre : a.vendedor, tipos: [], ciudad: e ? e.ciudad || '' : '', region: e ? e.region || '' : '', pais: a.pais || (e ? e.pais : 'ES'), desc: e ? e.desc || '' : '', web: e ? e.web || '' : '', telefono: e ? e.telefono || '' : '', anio: e ? e.anio || null : null, destacado: false, servicios: [], derivado: true }); });
-    (X0.vendPatches ? Object.keys(X0.vendPatches) : []).forEach(id => { const v = D.vendedores.find(v => v.id === Number(id)); if (v) Object.assign(v, X0.vendPatches[id]); });
     D.categorias.forEach(c => c.anuncios = D.anuncios.filter(a => a.cat === c.id && a.estadoPub === 'publicado').length);
-    if (X0.precios) D.paquetes.forEach(p => { if (X0.precios[p[0]]) p[1] = X0.precios[p[0]]; });
   })();
   const publicados = () => D.anuncios.filter(a => a.estadoPub === 'publicado');
   const store = {
     log(texto, tipo) { const x = extras(); x.log = [{ fecha: now(), texto, tipo: tipo || 'info' }, ...(x.log || [])].slice(0, 80); saveExtras(x); },
     logs: () => extras().log || [],
-    addAnuncio(a) { const x = extras(); a.id = nextId(); a.fecha = now().slice(0, 10); a.fotos = a.fotos || []; a.specs = a.specs || []; a.estadoPub = a.estadoPub || 'pendiente'; x.anuncios = [a, ...(x.anuncios || [])]; saveExtras(x); return a; },
-    setAnuncio(id, patch) { const x = extras(); id = Number(id); const n = (x.anuncios || []).find(a => a.id === id); if (n) Object.assign(n, patch); else { x.patches = x.patches || {}; x.patches[id] = Object.assign(x.patches[id] || {}, patch); } saveExtras(x); },
-    delAnuncio(id) { store.setAnuncio(id, { _deleted: true }); },
-    setVendedor(id, patch) { const x = extras(); x.vendPatches = x.vendPatches || {}; x.vendPatches[id] = Object.assign(x.vendPatches[id] || {}, patch); saveExtras(x); },
     /* Guardadas: siempre en localStorage, para que funcione sin cuenta y pinte
        al instante. Con sesión, además se copia al servidor (/api/guardadas) y
        al entrar se funde lo de aquí con lo de la cuenta. La fuente local manda
@@ -74,11 +65,7 @@ window.ML = (function () {
         return ids.length !== antes.length || ids.some((v, k) => v !== antes[k]);
       } catch (e) { return false; }
     },
-    alertas: () => extras().alertas || [],
-    addAlerta(al) { const x = extras(); al.id = Date.now(); al.fecha = now(); x.alertas = [al, ...(x.alertas || [])]; saveExtras(x); return al; },
-    delAlerta(id) { const x = extras(); x.alertas = (x.alertas || []).filter(a => a.id !== id); saveExtras(x); },
     pedidos: () => extras().pedidos || [],
-    addPedido(p) { const x = extras(); p.id = Date.now(); p.fecha = now(); p.estado = p.estado || 'pendiente'; x.pedidos = [p, ...(x.pedidos || [])]; saveExtras(x); return p; },
     setPedido(id, patch) { const x = extras(); const p = (x.pedidos || []).find(p => p.id === id); if (p) Object.assign(p, patch); saveExtras(x); },
     setSolicitud(id, patch) { const x = extras(); const s = (x.solicitudes || []).find(s => s.id === id); if (s) Object.assign(s, patch); saveExtras(x); },
     saldo(vid) { const comprados = store.pedidos().filter(p => p.vendedor_id === Number(vid) && p.estado === 'pagado').reduce((a, p) => a + p.anuncios, 0); const usados = D.anuncios.filter(a => a.vendedor_id === Number(vid) && a.origen === 'panel').length; return { comprados, usados, disponibles: Math.max(0, comprados - usados) }; },
@@ -180,14 +167,14 @@ window.ML = (function () {
   const tpl = {
     banner(v) {
       const f = fotoVend(v); const n = anunciosDe(v.id).length;
-      return `<a class="banner ${f ? '' : 'no-photo'}" href="vendedor.html?id=${v.id}">${f ? `<img src="${sm(f)}" srcset="${sm(f)} 640w, ${f} 1200w" sizes="(min-width: 801px) 1200px, 50vw" alt="" loading="lazy" decoding="async" fetchpriority="low" width="640" height="359">` : `<span class="bg">${icon('s-maquinaria')}</span>`}<span class="head">${R.tpl.logoTile(v)}${v.destacado ? '<span class="featured">Destacado</span>' : ''}</span><span class="foot"><b>${esc(v.nombre)}</b><span>${v.tipos.map(t => TIPO[t]).join(' · ')}${v.region ? ' · ' + esc(v.region) : ''}</span><span class="cta">${n ? `${n} ${n === 1 ? 'máquina' : 'máquinas'}` : 'Ver ficha'} ${icon('arrow-right')}</span></span></a>`;
+      return `<a class="banner ${f ? '' : 'no-photo'}" href="vendedor.html?id=${v.id}">${f ? `<img src="${sm(f)}" srcset="${sm(f)} 640w, ${f} 1200w" sizes="(min-width: 801px) 1200px, 50vw" alt="" loading="lazy" decoding="async" fetchpriority="low" width="640" height="359">` : `<span class="bg">${icon('s-maquinaria')}</span>`}<span class="head">${R.tpl.logoTile(v)}${v.destacado ? '<span class="featured">Destacado</span>' : ''}</span><span class="foot"><b>${esc(v.nombre)}</b><span>${v.tipos.map(t => TIPO[t]).filter(Boolean).join(' · ')}${v.region ? ' · ' + esc(v.region) : ''}</span><span class="cta">${n ? `${n} ${n === 1 ? 'máquina' : 'máquinas'}` : 'Ver ficha'} ${icon('arrow-right')}</span></span></a>`;
     },
     bannerEmp(e) {
       const v = vend(e.id), f = v ? fotoVend(v) : null, s = R.sector(e.sector), n = R.productosDe(e.id).length;
       return `<a class="banner ${f ? '' : 'no-photo'}" href="empresa.html?id=${e.id}">${f ? `<img src="${sm(f)}" srcset="${sm(f)} 640w, ${f} 1200w" sizes="(min-width: 801px) 1200px, 50vw" alt="" loading="lazy" decoding="async" fetchpriority="low" width="640" height="359">` : `<span class="bg">${icon('s-' + (s ? s.id : 'maquinaria'))}</span>`}<span class="head">${R.tpl.logoTile(e)}${e.plan === 'premium' ? '<span class="featured">Destacada</span>' : ''}</span><span class="foot"><b>${esc(e.nombre)}</b><span>${esc([s ? s.corto : '', R.zona(e)].filter(Boolean).join(' · '))}</span><span class="cta">${n ? n + (n === 1 ? ' producto' : ' productos') : 'Ver ficha'} ${icon('arrow-right')}</span></span></a>`;
     },
-    vendPlate: v => `<a class="vend-plate" href="vendedor.html?id=${v.id}"><div class="top">${R.tpl.logoTile(v)}<div><b>${esc(v.nombre)}</b><span class="m">${anunciosDe(v.id).length} máquinas${v.region ? ' · ' + esc(v.region) : ''}</span></div></div>${v.desc ? `<p>${esc(v.desc)}</p>` : ''}<div class="tags">${v.tipos.map(t => `<span class="tag">${TIPO[t]}</span>`).join('')}${v.destacado ? '<span class="tag tag-red">Destacado</span>' : ''}</div></a>`,
-    vendCard: v => `<a class="vend-plate ${fotoVend(v) ? 'has-photo' : ''}" href="vendedor.html?id=${v.id}">${fotoVend(v) ? `<div class="cover"><img src="${sm(fotoVend(v))}" alt="" loading="lazy" width="640" height="359"></div>` : ''}<div class="top">${R.tpl.logoTile(v)}<div><b>${esc(v.nombre)}</b><span class="m">${[v.ciudad, v.region].filter(Boolean).join(', ') || 'España'}</span></div></div>${v.desc ? `<p>${esc(v.desc)}</p>` : ''}<div class="tags">${v.tipos.map(t => `<span class="tag">${TIPO[t]}</span>`).join('')}<span class="tag">${anunciosDe(v.id).length} máquinas</span></div></a>`,
+    vendPlate: v => `<a class="vend-plate" href="vendedor.html?id=${v.id}"><div class="top">${R.tpl.logoTile(v)}<div><b>${esc(v.nombre)}</b><span class="m">${anunciosDe(v.id).length} máquinas${v.region ? ' · ' + esc(v.region) : ''}</span></div></div>${v.desc ? `<p>${esc(v.desc)}</p>` : ''}<div class="tags">${v.tipos.filter(t => TIPO[t]).map(t => `<span class="tag">${TIPO[t]}</span>`).join('')}${v.destacado ? '<span class="tag tag-red">Destacado</span>' : ''}</div></a>`,
+    vendCard: v => `<a class="vend-plate ${fotoVend(v) ? 'has-photo' : ''}" href="vendedor.html?id=${v.id}">${fotoVend(v) ? `<div class="cover"><img src="${sm(fotoVend(v))}" alt="" loading="lazy" width="640" height="359"></div>` : ''}<div class="top">${R.tpl.logoTile(v)}<div><b>${esc(v.nombre)}</b><span class="m">${esc([v.ciudad, v.region].filter(Boolean).join(', ') || 'España')}</span></div></div>${v.desc ? `<p>${esc(v.desc)}</p>` : ''}<div class="tags">${v.tipos.filter(t => TIPO[t]).map(t => `<span class="tag">${TIPO[t]}</span>`).join('')}<span class="tag">${anunciosDe(v.id).length} máquinas</span></div></a>`,
     acard(a) {
       const c = cat(a.cat); const v = vend(a.vendedor_id);
       const fc = a.fotos[0] || fotoCat(a.cat, a.id);

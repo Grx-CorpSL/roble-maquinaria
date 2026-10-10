@@ -32,7 +32,7 @@
         const hoy = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
         const cats = S.categorias().filter(c => c.activo); const maxE = Math.max(...cats.map(c => c.empresas), 1);
         main.innerHTML = `
-          <div class="page-title"><div><h1>Panel</h1><p>${hoy.charAt(0).toUpperCase() + hoy.slice(1)} · ${who.nombre}</p></div><div class="actions"><a class="btn" href="empresas.html?nueva">${R.icon('plus')} Nueva empresa</a><a class="btn btn-ink" href="moderacion.html">Revisar pendientes${pend ? ` <span class="mono">${pend}</span>` : ''}</a></div></div>
+          <div class="page-title"><div><h1>Panel</h1><p>${hoy.charAt(0).toUpperCase() + hoy.slice(1)} · ${R.esc(who.nombre)}</p></div><div class="actions"><a class="btn" href="empresas.html?nueva">${R.icon('plus')} Nueva empresa</a><a class="btn btn-ink" href="moderacion.html">Revisar pendientes${pend ? ` <span class="mono">${pend}</span>` : ''}</a></div></div>
           <div class="kpis">
             <a class="kpi" href="empresas.html"><span class="label">Empresas publicadas ${R.icon('arrow-right', 'i-16')}</span><b>${E.filter(e => e.estado === 'publicada').length}</b><span class="sub">${E.filter(e => e.destacada).length} destacadas · ${E.length - E.filter(e => e.estado === 'publicada').length} sin publicar</span></a>
             <a class="kpi ${pend ? 'is-alert' : ''}" href="moderacion.html"><span class="label">Pendientes de revisar ${R.icon('arrow-right', 'i-16')}</span><b>${pend}</b><span class="sub">${altasP.length} altas · ${E.filter(e => e.estado === 'pendiente').length} empresas · ${P.filter(p => p.estado === 'pendiente').length} productos</span></a>

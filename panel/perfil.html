@@ -41,7 +41,6 @@
             { name: 'pais', label: 'País', type: 'select', options: ML.D.paises.slice(0, 4) },
             { name: 'web', label: 'Web', type: 'url', placeholder: 'https://' }, { name: 'telefono', label: 'Teléfono', type: 'tel' }, { name: 'email', label: 'Correo de contacto', type: 'email', hint: 'Recibe los contactos de tus anuncios.' },
             { group: 'Como vendedor de maquinaria' },
-            { name: 'tipos', label: 'Tipo de vendedor', type: 'checks', options: ML.D.tiposVendedor },
             { name: 'servicios', label: 'Marcas y especialidades', hint: 'Separadas por comas. Se muestran como etiquetas.' },
           ], vals)}</div><div class="plate-foot between"><span class="label">REF ${String(v.id).padStart(4, '0')}</span><button class="btn btn-ink" type="submit">Guardar perfil</button></div></div></form>
           <div class="stack">
@@ -59,8 +58,6 @@
             body: JSON.stringify(Object.assign({ sectores: sect, servicios: x.servicios }, comunes)) });
           const j = await r.json().catch(() => ({}));
           if (!r.ok) { R.toast(j.error || 'No se ha podido guardar el perfil.', 'error'); return; }
-          // Lo de vendedor de maquinaria (tipos) sigue siendo del prototipo local.
-          if (!v.derivado || Panel.misAnuncios(v).length) S.setVendedor(v.id, Object.assign({ tipos: x.tipos && x.tipos.length ? x.tipos : v.tipos, servicios: x.servicios ? x.servicios.split(',').map(s => s.trim()).filter(Boolean) : [] }, comunes));
           R.toast('Perfil guardado'); setTimeout(() => location.reload(), 500);
         } catch (err) {
           R.toast('Sin conexión con el servidor. Inténtalo de nuevo.', 'error');

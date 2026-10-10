@@ -1188,3 +1188,19 @@ título de cada sección; subrayado rojo en el menú; «Destacado» con latido; 
 pasar. Con «reducir movimiento» queda solo el fundido de aparición. El hero y los contadores se adornan cuando la
 página los pinta (MutationObserver), no solo al arrancar: la v1 no los animaba nunca. `efectos_check.py` ahora exige
 que el contador haya corrido (`data-contado=fin`), el título por palabras y la raya bajo el título.
+
+## 38. Bucle de revisión, iteración 1: `roble.js` y `ml.js` línea a línea (10 de octubre de 2026)
+
+- **Datos fantasma del navegador.** Las páginas públicas seguían fundiendo lo que hubiera en `localStorage` de la
+  época del prototipo: empresas y productos añadidos o «borrados» (`roble_admin_v1`), anuncios locales, parches con
+  `_deleted`, nombres de vendedor y hasta precios de los paquetes (`roble_ml_v1`). En el navegador de quien usó el
+  prototipo (el cliente) podían verse empresas o anuncios que no existen, faltar reales o salir otro precio. Fuera:
+  el público ve solo la API. Se quedan en local lo que es local a propósito: guardadas, solicitudes, el registro
+  de actividad y el orden de banners del admin. Comprobado con un navegador «envenenado»
+  (`scratchpad/local_check.py`): nada fantasma aparece, lo real sigue, guardadas sigue funcionando.
+- Métodos muertos del almacén local fuera (`addAnuncio`, `setAnuncio`, `delAnuncio`, `setVendedor`, alertas,
+  `addPedido`). El perfil del panel ya no tiene el campo «Tipo de vendedor»: solo se guardaba en ese navegador; los
+  tipos los deduce el servidor de la descripción.
+- Escape: ciudad y región en la tarjeta de vendedor (`vendCard`) y el nombre del administrador en su panel. Un tipo
+  de vendedor desconocido ya no pinta «undefined». Rastreo automático de campos sin escapar en todas las plantillas:
+  el resto son títulos de documento, `textContent` o toasts, que no interpretan HTML.
