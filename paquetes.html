@@ -22,13 +22,13 @@
     .wa-box .i { width: 28px; height: 28px; color: #25D366; flex-shrink: 0; }
     .wa-box b { display: block; font-size: var(--fs-base); }
     .wa-box span { font-size: var(--fs-sm); color: var(--text-2); }
-    .wa-box .btn { margin-left: auto; }
+    .wa-box > div { flex: 1 1 0; min-width: 220px; }
     .pasos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
     .paso { padding: 16px; background: var(--paper); border: 1px solid var(--border); border-radius: var(--r3); }
     .paso .n { font-family: var(--mono); font-size: var(--fs-label); color: var(--red); letter-spacing: .08em; }
     .paso b { display: block; margin: 6px 0 4px; }
     .paso p { font-size: var(--fs-sm); color: var(--text-2); line-height: 1.45; }
-    @media (max-width: 700px) { .pasos { grid-template-columns: 1fr; } .wa-box .btn { margin-left: 0; width: 100%; } }
+    @media (max-width: 700px) { .pasos { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
