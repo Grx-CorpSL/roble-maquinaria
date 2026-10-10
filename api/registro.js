@@ -1,14 +1,14 @@
 /* Alta de cuenta en la web nueva.
  *
- *   POST /api/registro  { email, password, nombre, rol: 'empresa'|'comprador', empresa? }
+ *   POST /api/registro  { email, password, nombre, rol: 'empresa', empresa }
  *   → 201 + Set-Cookie roble_sesion + identidad (user, companies, permissions)
  *
  * Mismas reglas, mismo coste de bcrypt y misma tabla `usuarios` que el sistema
  * actual: la cuenta creada aquí vale en los dos sitios. Además crea la ficha de
  * identidad: una empresa con el MISMO id que la cuenta (como en la migración:
  * una empresa por cuenta, sin renumerar nada), origen 'alta' y estado
- * 'pendiente', y la membresía de propietario. Las cuentas de comprador no
- * tienen empresa.
+ * 'pendiente', y la membresía de propietario. Solo cuentas de empresa: la
+ * autorización de administración (Moderación) se hace sobre la empresa.
  *
  * No manda correo: el sistema actual tampoco lo hace en el alta normal.
  */
@@ -40,7 +40,7 @@ function valida({ email, password, nombre, rol }) {
   if (!password || password.length < 8) e.push('La contraseña debe tener al menos 8 caracteres.');
   if (password && password.length > 200) e.push('La contraseña es demasiado larga.');
   if (!nombre) e.push('Falta tu nombre.');
-  if (rol !== 'empresa' && rol !== 'comprador') e.push('Elige un tipo de cuenta.');
+  if (rol !== 'empresa') e.push('Solo se pueden crear cuentas de empresa.');   // 10-10: toda cuenta pasa por la autorización de administración, y eso se hace sobre la empresa
   return e;
 }
 

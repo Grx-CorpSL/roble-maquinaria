@@ -1145,3 +1145,17 @@ Gmail (`ML.gmail`: `mail.google.com/mail/?view=cm` con asunto y cuerpo; el desti
 `api/_maquinaria.json` → `correo`, hoy vacío y marcado como `[CORREO DE CONTACTO]`). Sin JavaScript propio y
 accesible con teclado. Comprobado a 1920/1280/390 px en las tres páginas públicas: cada paquete con «Pedir», las
 dos opciones al pulsar, nada se sale de la tarjeta, sin errores; QA 113/113.
+
+## 36. Última revisión antes de entregar al socio (10 de octubre de 2026)
+
+- Repaso línea a línea de los cambios del 8 al 10 (`api/auth.js`, `api/sesion.js`, `api/registro.js`, `assets/ml.js`,
+  páginas de acceso, contacto y paquetes). Un hueco cerrado: `/api/registro` seguía aceptando `rol: 'comprador'`,
+  y una cuenta así (sin empresa) habría entrado sin pasar por la autorización; ahora solo se crean cuentas de empresa.
+- Pasada visual completa (25 páginas públicas × 390/1280/1920 px): sin desbordes, sin violaciones de axe, sin errores
+  de consola. Los únicos avisos eran enlaces dentro de texto corrido con 14-20 px de alto (créditos, «Crear cuenta»,
+  «aviso legal»…): un relleno vertical de 5 px en los enlaces en línea los sube a 24 px sin mover el texto. Las
+  iniciales de los logotipos a 9-10 px se quedan: son decorativas.
+- WhatsApp siempre abre WhatsApp (`https://wa.me/?text=…` sin número; con número, al chat). Pedir un paquete abre las
+  dos vías, WhatsApp y Gmail, desde el propio paquete.
+- Las comprobaciones que entran como administración (33 de §22, E2E, páginas privadas de la pasada visual) siguen sin
+  poder pasarse: la contraseña de administración cambió el 09-10 y no está en ningún sitio al alcance de las pruebas.

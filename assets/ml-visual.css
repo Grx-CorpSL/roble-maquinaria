@@ -386,3 +386,6 @@ a.tag { min-height: 24px; }
 .pedir-opciones .btn { white-space: normal; height: auto; min-height: 40px; padding: 8px 6px; line-height: 1.2; font-size: var(--fs-xs); }
 .btn-whatsapp { background: #25D366; border-color: #25D366; color: #fff; }
 .btn-whatsapp:hover { background: #1DB954; border-color: #1DB954; color: #fff; }
+/* Enlaces dentro de texto corrido: el área pulsable sube a 24 px sin mover el texto (el relleno vertical de un
+   elemento en línea no cambia la altura de la línea). */
+p a, span a, li a, dd a, figcaption a, label a, b a, h3 a { padding-top: 5px; padding-bottom: 5px; }
