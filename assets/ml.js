@@ -294,6 +294,38 @@ window.ML = (function () {
 
   tpl.pack = ([n, precio], i, quien) => `<div class="pack ${i === 2 ? 'is-best' : ''}"><span class="n">${n}<small>${n === 1 ? 'anuncio' : 'anuncios'}</small></span><span class="price">${precio ? new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(precio) : 'A consultar'}</span><span class="per">${precio ? (precio / n).toFixed(2).replace('.', ',') + ' € por anuncio' : ''}${i === 2 ? (precio ? ' · ' : '') + 'el más elegido' : ''}</span>${pedirPaquete(n, quien, i === 2)}</div>`;
 
+  /* Efectos (10-10): aparición escalonada al entrar en pantalla, cabecera con sombra al hacer scroll y
+     contadores del hero. Con «reducir movimiento» no se hace nada; sin JavaScript no se oculta nada
+     (las reglas CSS cuelgan de html.js y de [data-reveal], que solo pone este código). */
+  function efectos() {
+    document.documentElement.classList.add('js');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const SEL = '.acard, .ctile, .vend-plate, .pcard, .banner, .pack, .gcard, .paso, .razon, .plan, .dtile, .sector-row, .stile, .cred, .plate, .result';
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target; io.unobserve(el); el.classList.add('is-in');
+      el.addEventListener('transitionend', ev => { if (ev.target === el && ev.propertyName === 'opacity') { el.removeAttribute('data-reveal'); el.style.removeProperty('--d'); } }, { once: true });
+    }), { rootMargin: '0px 0px -4% 0px', threshold: 0.05 });
+    const marca = root => {
+      const lista = root.matches && root.matches(SEL) ? [root] : [];
+      lista.push(...root.querySelectorAll(SEL));
+      lista.forEach(el => {
+        if (el.dataset.reveal || el.classList.contains('is-in')) return;
+        const i = [...el.parentElement.children].indexOf(el);
+        el.dataset.reveal = '1'; el.style.setProperty('--d', Math.min(i, 9) * 55 + 'ms'); io.observe(el);
+      });
+    };
+    marca(document);
+    new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) marca(n); }))).observe(document.getElementById('main'), { childList: true, subtree: true });
+    const h = document.querySelector('.site-header'); const sombra = () => h && h.classList.toggle('is-scrolled', scrollY > 8);
+    addEventListener('scroll', sombra, { passive: true }); sombra();
+    document.querySelectorAll('.cnt').forEach(el => {
+      const fin = Number(el.dataset.n || el.textContent) || 0, t0 = performance.now(), dur = 900;
+      const paso = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(fin * e); if (k < 1) requestAnimationFrame(paso); };
+      requestAnimationFrame(paso);
+    });
+  }
+
   function shell(section, opts) {
     opts = opts || {};
     document.body.insertAdjacentHTML('afterbegin', header(section, !!opts.dir));
@@ -303,6 +335,7 @@ window.ML = (function () {
     main.innerHTML = (opts.dir ? sidebarDir(opts.sector, A.items.slice(4)) : sidebar(A.items.slice(4))) + `<div class="ml-main" id="content"></div>` + aside(A);
     document.body.insertAdjacentHTML('beforeend', footer());
     R.header(); R.dropdowns();
+    efectos();
     // El lateral nace cerrado en móvil y sin su summary en escritorio: al crecer la ventana hay que abrirlo.
     matchMedia('(max-width: 800px)').addEventListener('change', e => { if (!e.matches) document.querySelectorAll('.ml-side details').forEach(d => { d.open = true; }); });
     /* La cabecera se pinta antes de que /api/auth conteste: el botón de cuenta

@@ -389,3 +389,42 @@ a.tag { min-height: 24px; }
 /* Enlaces dentro de texto corrido: el área pulsable sube a 24 px sin mover el texto (el relleno vertical de un
    elemento en línea no cambia la altura de la línea). */
 p a, span a, li a, dd a, figcaption a, label a, b a, h3 a { padding-top: 5px; padding-bottom: 5px; }
+
+/* ===== Efectos (10-10). Sobrios: nada se mueve si el sistema pide reducir movimiento. ===== */
+@media (prefers-reduced-motion: no-preference) {
+  /* Aparición escalonada: solo los elementos que marca efectos() (data-reveal); el retardo es su posición en la fila. */
+  .js [data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity .6s cubic-bezier(.2,.7,.2,1) var(--d, 0ms), transform .6s cubic-bezier(.2,.7,.2,1) var(--d, 0ms); }
+  .js [data-reveal].is-in { opacity: 1; transform: none; }
+  /* Entrada de página */
+  .js #main { animation: page-in .5s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes page-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  /* Hero: zoom lento de la foto; el cuadrito rojo del texto aparece */
+  .hero-photo img { animation: hero-zoom 22s cubic-bezier(.2,.6,.2,1) both; transform-origin: 60% 40%; }
+  @keyframes hero-zoom { from { transform: scale(1.08); } to { transform: scale(1); } }
+  .js .section-head .label .sq, .js .hero-photo .kicker .sq, .js .label .sq { animation: sq-in .6s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes sq-in { from { transform: scale(0); } to { transform: none; } }
+  /* Portada de sector: se descubre de izquierda a derecha */
+  .sector-cover img { animation: cover-in .9s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes cover-in { from { clip-path: inset(0 100% 0 0); transform: scale(1.04); } to { clip-path: inset(0); transform: none; } }
+  /* Hover: la foto se acerca despacio, la tarjeta se eleva */
+  .acard .media img, .vend-plate .cover img, .banner img, .pcard-media img, .gcard .cover img { transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+  .acard:hover .media img, .vend-plate:hover .cover img, .banner:hover img, .pcard:hover .pcard-media img, .gcard:hover .cover img { transform: scale(1.045); }
+  .acard { transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+  .acard:hover { transform: translateY(-3px); }
+  .acard:hover .media { box-shadow: var(--sh-2); }
+  .pack { transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s; }
+  .pack:hover { transform: translateY(-3px); box-shadow: var(--sh-2); border-color: var(--stone); }
+  .dtile { transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+  .dtile:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
+  /* «Ver todas →»: subrayado con barrido en vez de aparecer de golpe */
+  .link { text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 0 1.5px; transition: background-size .35s cubic-bezier(.2,.7,.2,1); padding-bottom: 1px; }
+  .link:hover { text-decoration: none; background-size: 100% 1.5px; }
+  /* Botones: respuesta al pulsar */
+  .btn:active { transform: translateY(1px); }
+  /* Cabecera: sombra cuando la página ya ha bajado */
+  .site-header { transition: box-shadow .3s var(--ease); }
+  .site-header.is-scrolled { box-shadow: 0 8px 28px rgba(0,0,0,.28); }
+}
+.hero-photo .kicker .cnt { font-weight: 600; font-variant-numeric: tabular-nums; }
+.pcard-media { overflow: hidden; }
+.vend-plate .cover, .banner, .acard .media { overflow: hidden; }

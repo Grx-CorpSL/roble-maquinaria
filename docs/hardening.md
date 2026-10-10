@@ -1159,3 +1159,24 @@ dos opciones al pulsar, nada se sale de la tarjeta, sin errores; QA 113/113.
   dos vías, WhatsApp y Gmail, desde el propio paquete.
 - Las comprobaciones que entran como administración (33 de §22, E2E, páginas privadas de la pasada visual) siguen sin
   poder pasarse: la contraseña de administración cambió el 09-10 y no está en ningún sitio al alcance de las pruebas.
+
+## 37. Efectos visuales (10 de octubre de 2026)
+
+El cliente pidió «efectos o cosas visuales orientadas a la estética». Sobrios, sin librerías (la CSP solo permite
+scripts propios) y sin tocar la paleta:
+- Aparición escalonada al entrar en pantalla de tarjetas y losetas (anuncios, sectores, vendedores, productos,
+  paquetes, guías, créditos, placa del anuncio): `efectos()` en `assets/ml.js`, al final de `shell()`, marca los
+  elementos con `data-reveal` y un retardo según su posición en la fila; un IntersectionObserver añade `is-in`; un
+  MutationObserver sobre `#main` cubre lo que las páginas pintan después (filtros, paginación). Al terminar la
+  transición se quita la marca para que el hover no herede el retardo.
+- Hover: la foto se acerca despacio (anuncios, vendedores, banners, productos, guías), la tarjeta se eleva, y los
+  enlaces «Ver todas» subrayan con barrido. Botones con respuesta al pulsar.
+- Portada: zoom lento de la foto del hero (22 s) y los tres números del hero cuentan desde cero. Página de sector:
+  la portada se descubre de izquierda a derecha. Cuadritos rojos de los rótulos aparecen escalando. Entrada suave de
+  cada página. Cabecera con sombra cuando se ha bajado.
+- Todo dentro de `@media (prefers-reduced-motion: no-preference)` y colgando de `html.js`: con «reducir movimiento»
+  no se mueve nada y sin JavaScript no se oculta nada.
+Comprobado en producción (`scratchpad/efectos_check.py`, 11 páginas × 1280/390 px): lo que está en pantalla se ve al
+momento, tras recorrer la página no queda nada oculto, los resultados tras filtrar aparecen, los contadores terminan en
+el valor real, la cabecera cambia al bajar, con reducir movimiento no hay marcas y todo está visible, sin errores de
+consola ni desbordes. Suites públicas (paquetes, nombres, fotos, rejilla) sin fallos.
