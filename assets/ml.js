@@ -113,9 +113,9 @@ window.ML = (function () {
   const elegirEmpresa = id => fetch('/api/auth?empresa=' + encodeURIComponent(id), { method: 'POST', credentials: 'same-origin' })
     .then(r => r.ok).catch(() => false);
 
-  /* Paquetes y banners se piden por WhatsApp. Sin número configurado, el enlace lleva a la página de contacto. */
-  const wa = texto => D.whatsapp ? `https://wa.me/${D.whatsapp}?text=${encodeURIComponent(texto)}` : 'contacto.html?asunto=planes';
-  const waAttrs = () => D.whatsapp ? ' target="_blank" rel="noopener"' : '';
+  /* Siempre a WhatsApp. Con número, al chat de ROBLE; sin él, WhatsApp abre con el mensaje escrito y se elige el contacto. */
+  const wa = texto => `https://wa.me/${D.whatsapp || ''}?text=${encodeURIComponent(texto)}`;
+  const waAttrs = () => ' target="_blank" rel="noopener"';
   /* Un paquete se pide por WhatsApp o por Gmail: el botón «Pedir» del paquete abre las dos opciones. */
   const gmail = (asunto, texto) => `https://mail.google.com/mail/?view=cm&fs=1${D.correo ? '&to=' + encodeURIComponent(D.correo) : ''}&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(texto)}`;
   const pedirPaquete = (n, quien, destacado) => {
