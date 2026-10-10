@@ -299,14 +299,26 @@ window.ML = (function () {
      (las reglas CSS cuelgan de html.js y de [data-reveal], que solo pone este código). */
   function efectos() {
     document.documentElement.classList.add('js');
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const SEL = '.acard, .ctile, .vend-plate, .pcard, .banner, .pack, .gcard, .paso, .razon, .plan, .dtile, .sector-row, .stile, .cred, .plate, .result';
+    const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;   // con «reducir movimiento»: solo fundidos (CSS), sin contadores ni título por palabras
+    const SEL = '.section-head, .banner-cta, .acard, .ctile, .vend-plate, .pcard, .banner, .pack, .gcard, .paso, .razon, .plan, .dtile, .sector-row, .stile, .cred, .plate, .result';
     const io = new IntersectionObserver(es => es.forEach(e => {
       if (!e.isIntersecting) return;
       const el = e.target; io.unobserve(el); el.classList.add('is-in');
       el.addEventListener('transitionend', ev => { if (ev.target === el && ev.propertyName === 'opacity') { el.removeAttribute('data-reveal'); el.style.removeProperty('--d'); } }, { once: true });
     }), { rootMargin: '0px 0px -4% 0px', threshold: 0.05 });
+    /* Hero: título palabra a palabra y contadores. Se pintan después de shell(), así que se adornan al aparecer. */
+    const adorna = root => {
+      if (quieto || !root.querySelectorAll) return;
+      root.querySelectorAll('.hero-photo .h1').forEach(h => { if (h.querySelector('.w')) return; h.innerHTML = h.textContent.trim().split(/\s+/).map((w, i) => `<span class="w" style="--i:${i}">${esc(w)}</span>`).join(' '); });
+      root.querySelectorAll('.cnt:not([data-contado])').forEach(el => {
+        el.dataset.contado = '1';
+        const fin = Number(el.dataset.n || el.textContent) || 0, t0 = performance.now(), dur = 1100;
+        const paso = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(fin * e); if (k < 1) requestAnimationFrame(paso); else el.dataset.contado = 'fin'; };
+        requestAnimationFrame(paso);
+      });
+    };
     const marca = root => {
+      adorna(root);
       const lista = root.matches && root.matches(SEL) ? [root] : [];
       lista.push(...root.querySelectorAll(SEL));
       lista.forEach(el => {
@@ -319,11 +331,6 @@ window.ML = (function () {
     new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) marca(n); }))).observe(document.getElementById('main'), { childList: true, subtree: true });
     const h = document.querySelector('.site-header'); const sombra = () => h && h.classList.toggle('is-scrolled', scrollY > 8);
     addEventListener('scroll', sombra, { passive: true }); sombra();
-    document.querySelectorAll('.cnt').forEach(el => {
-      const fin = Number(el.dataset.n || el.textContent) || 0, t0 = performance.now(), dur = 900;
-      const paso = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(fin * e); if (k < 1) requestAnimationFrame(paso); };
-      requestAnimationFrame(paso);
-    });
   }
 
   function shell(section, opts) {

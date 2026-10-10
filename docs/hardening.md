@@ -1180,3 +1180,11 @@ Comprobado en producción (`scratchpad/efectos_check.py`, 11 páginas × 1280/39
 momento, tras recorrer la página no queda nada oculto, los resultados tras filtrar aparecen, los contadores terminan en
 el valor real, la cabecera cambia al bajar, con reducir movimiento no hay marcas y todo está visible, sin errores de
 consola ni desbordes. Suites públicas (paquetes, nombres, fotos, rejilla) sin fallos.
+
+**v2 (10-10, tarde).** El cliente no notaba la primera versión («no veo los cambios»; el servidor servía todo).
+Ahora se ve: entrada de 34 px con escala desde .96, hover con elevación de 6 px, sombra larga y foto al 108 %;
+hero con zoom del 116 %, barrido de luz y título palabra a palabra, buscador después; raya roja que crece bajo el
+título de cada sección; subrayado rojo en el menú; «Destacado» con latido; botones primarios con sombra roja al
+pasar. Con «reducir movimiento» queda solo el fundido de aparición. El hero y los contadores se adornan cuando la
+página los pinta (MutationObserver), no solo al arrancar: la v1 no los animaba nunca. `efectos_check.py` ahora exige
+que el contador haya corrido (`data-contado=fin`), el título por palabras y la raya bajo el título.

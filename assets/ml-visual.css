@@ -390,41 +390,53 @@ a.tag { min-height: 24px; }
    elemento en línea no cambia la altura de la línea). */
 p a, span a, li a, dd a, figcaption a, label a, b a, h3 a { padding-top: 5px; padding-bottom: 5px; }
 
-/* ===== Efectos (10-10). Sobrios: nada se mueve si el sistema pide reducir movimiento. ===== */
-@media (prefers-reduced-motion: no-preference) {
-  /* Aparición escalonada: solo los elementos que marca efectos() (data-reveal); el retardo es su posición en la fila. */
-  .js [data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity .6s cubic-bezier(.2,.7,.2,1) var(--d, 0ms), transform .6s cubic-bezier(.2,.7,.2,1) var(--d, 0ms); }
-  .js [data-reveal].is-in { opacity: 1; transform: none; }
-  /* Entrada de página */
-  .js #main { animation: page-in .5s cubic-bezier(.2,.7,.2,1) both; }
-  @keyframes page-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  /* Hero: zoom lento de la foto; el cuadrito rojo del texto aparece */
-  .hero-photo img { animation: hero-zoom 22s cubic-bezier(.2,.6,.2,1) both; transform-origin: 60% 40%; }
-  @keyframes hero-zoom { from { transform: scale(1.08); } to { transform: scale(1); } }
-  .js .section-head .label .sq, .js .hero-photo .kicker .sq, .js .label .sq { animation: sq-in .6s cubic-bezier(.2,.7,.2,1) both; }
-  @keyframes sq-in { from { transform: scale(0); } to { transform: none; } }
-  /* Portada de sector: se descubre de izquierda a derecha */
-  .sector-cover img { animation: cover-in .9s cubic-bezier(.2,.7,.2,1) both; }
-  @keyframes cover-in { from { clip-path: inset(0 100% 0 0); transform: scale(1.04); } to { clip-path: inset(0); transform: none; } }
-  /* Hover: la foto se acerca despacio, la tarjeta se eleva */
-  .acard .media img, .vend-plate .cover img, .banner img, .pcard-media img, .gcard .cover img { transition: transform .7s cubic-bezier(.2,.7,.2,1); }
-  .acard:hover .media img, .vend-plate:hover .cover img, .banner:hover img, .pcard:hover .pcard-media img, .gcard:hover .cover img { transform: scale(1.045); }
-  .acard { transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
-  .acard:hover { transform: translateY(-3px); }
-  .acard:hover .media { box-shadow: var(--sh-2); }
-  .pack { transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s; }
-  .pack:hover { transform: translateY(-3px); box-shadow: var(--sh-2); border-color: var(--stone); }
-  .dtile { transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
-  .dtile:hover { transform: translateY(-2px); box-shadow: var(--sh-2); }
-  /* «Ver todas →»: subrayado con barrido en vez de aparecer de golpe */
-  .link { text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 0 1.5px; transition: background-size .35s cubic-bezier(.2,.7,.2,1); padding-bottom: 1px; }
-  .link:hover { text-decoration: none; background-size: 100% 1.5px; }
-  /* Botones: respuesta al pulsar */
-  .btn:active { transform: translateY(1px); }
-  /* Cabecera: sombra cuando la página ya ha bajado */
-  .site-header { transition: box-shadow .3s var(--ease); }
-  .site-header.is-scrolled { box-shadow: 0 8px 28px rgba(0,0,0,.28); }
-}
+/* ===== Efectos (10-10, v2: visibles). Con «reducir movimiento» solo quedan fundidos sin desplazamiento. ===== */
 .hero-photo .kicker .cnt { font-weight: 600; font-variant-numeric: tabular-nums; }
-.pcard-media { overflow: hidden; }
-.vend-plate .cover, .banner, .acard .media { overflow: hidden; }
+.pcard-media, .vend-plate .cover, .banner, .acard .media, .gcard .cover { overflow: hidden; }
+.js [data-reveal] { opacity: 0; transition: opacity .7s cubic-bezier(.2,.7,.2,1) var(--d, 0ms), transform .7s cubic-bezier(.2,.7,.2,1) var(--d, 0ms); }
+.js [data-reveal].is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] { transform: translateY(34px) scale(.96); }
+  .js [data-reveal].is-in { transform: none; }
+  .js #main { animation: page-in .6s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes page-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  /* Hero: zoom de la foto, barrido de luz, título palabra a palabra, buscador después */
+  .hero-photo img { animation: hero-zoom 14s cubic-bezier(.2,.6,.2,1) both; transform-origin: 60% 40%; }
+  @keyframes hero-zoom { from { transform: scale(1.16); } to { transform: scale(1); } }
+  .hero-photo::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.22) 50%, transparent 62%); background-size: 260% 100%; animation: hero-luz 2.2s cubic-bezier(.4,0,.2,1) .5s both; }
+  @keyframes hero-luz { from { background-position: 130% 0; } to { background-position: -130% 0; } }
+  .js .hero-photo .h1 .w { display: inline-block; animation: w-in .75s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i) * 65ms + 120ms); }
+  @keyframes w-in { from { opacity: 0; transform: translateY(28px) rotate(1.5deg); } to { opacity: 1; transform: none; } }
+  .js .hero-photo .search { animation: w-in .75s cubic-bezier(.2,.7,.2,1) .75s both; }
+  /* Rótulos: el cuadrito gira al aparecer y una raya roja crece bajo el título de cada sección */
+  .js .label .sq, .js .kicker .sq { animation: sq-in .7s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes sq-in { from { transform: scale(0) rotate(90deg); } to { transform: none; } }
+  .section-head .h2 { position: relative; display: inline-block; padding-bottom: 8px; }
+  .section-head .h2::after { content: ""; position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: var(--red); transition: width .8s cubic-bezier(.2,.7,.2,1) .2s; }
+  .section-head.is-in .h2::after, .section-head:not([data-reveal]) .h2::after { width: 56px; }
+  /* Portada de sector: se descubre de izquierda a derecha */
+  .sector-cover img { animation: cover-in 1s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes cover-in { from { clip-path: inset(0 100% 0 0); transform: scale(1.06); } to { clip-path: inset(0); transform: none; } }
+  /* Hover: la foto se acerca, la tarjeta se eleva con sombra larga */
+  .acard .media img, .vend-plate .cover img, .banner img, .pcard-media img, .gcard .cover img, .ctile img { transition: transform .8s cubic-bezier(.2,.7,.2,1); }
+  .acard:hover .media img, .vend-plate:hover .cover img, .banner:hover img, .pcard:hover .pcard-media img, .gcard:hover .cover img, .ctile:hover img { transform: scale(1.08); }
+  .acard, .pack, .dtile, .vend-plate, .pcard, .gcard, .ctile { transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s cubic-bezier(.2,.7,.2,1), border-color .3s; }
+  .acard:hover, .pack:hover, .dtile:hover, .vend-plate:hover, .pcard:hover, .gcard:hover { transform: translateY(-6px); box-shadow: 0 22px 40px -18px rgba(18,18,18,.45), var(--sh-2); }
+  .ctile:hover { transform: translateY(-5px); box-shadow: 0 22px 40px -18px rgba(18,18,18,.55); }
+  .ctile b { transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+  .ctile:hover b { transform: translateY(-4px); }
+  .banner:hover { transform: translateY(-5px) scale(1.01); }
+  /* Enlaces, menú y botones */
+  .link { text-decoration: none; background-image: linear-gradient(var(--red), var(--red)); background-repeat: no-repeat; background-position: 0 100%; background-size: 0 2px; transition: background-size .35s cubic-bezier(.2,.7,.2,1), color .2s; padding-bottom: 2px; }
+  .link:hover { text-decoration: none; background-size: 100% 2px; color: var(--red); }
+  .cab-oscura .wrap > .nav a { position: relative; }
+  .cab-oscura .wrap > .nav a::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 5px; height: 2px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+  .cab-oscura .wrap > .nav a:hover::after { transform: scaleX(1); }
+  .btn { transition: transform .15s, box-shadow .25s, background .2s, border-color .2s; }
+  .btn:active { transform: translateY(1px) scale(.99); }
+  .btn-primary:hover, .banner-cta:hover { box-shadow: 0 12px 26px -10px rgba(212,39,27,.75); transform: translateY(-1px); }
+  .featured { animation: brillo 3.2s ease-in-out infinite; }
+  @keyframes brillo { 0%, 100% { box-shadow: 0 0 0 0 rgba(212,39,27,0); } 50% { box-shadow: 0 0 0 5px rgba(212,39,27,.2); } }
+  .site-header { transition: box-shadow .3s var(--ease); }
+  .site-header.is-scrolled { box-shadow: 0 8px 28px rgba(0,0,0,.35); }
+}
