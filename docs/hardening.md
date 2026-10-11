@@ -1204,3 +1204,29 @@ que el contador haya corrido (`data-contado=fin`), el título por palabras y la 
 - Escape: ciudad y región en la tarjeta de vendedor (`vendCard`) y el nombre del administrador en su panel. Un tipo
   de vendedor desconocido ya no pinta «undefined». Rastreo automático de campos sin escapar en todas las plantillas:
   el resto son títulos de documento, `textContent` o toasts, que no interpretan HTML.
+
+## 39. Bucle de revisión, iteración 2: páginas públicas y API línea a línea (11 de octubre de 2026)
+
+Revisadas las páginas públicas (`buscar`, `vendedor`, `empresa`, `producto`, `sector`, `solicitudes`, `empresas`,
+`productos`, `vendedores`, `favoritos`, `anuncio`, `guia(s)`, `para-empresas`, `creditos`, `404`, `acceso`) y la API
+(`empresa`, `productos`, `contactos`, `guardadas`, `subir`, `password`, `_permisos`, `_contacto`): la API no tenía
+nada que corregir. Lo arreglado:
+
+- **Enlaces a la web de la empresa.** La web la escribe la propia empresa y las fichas la enlazaban tal cual
+  (`href="${esc(web)}"`): escapada contra HTML pero no contra `javascript:` ni texto suelto, y la API solo valida
+  http(s) en las ediciones nuevas. `ROBLE.webHref()` enlaza solo http(s), pone `https://` a un dominio a secas y
+  descarta lo demás; `webTexto()` lo pinta sin esquema. Lo usan `empresa.html` (incluido el `url` del ld+json) y
+  `vendedor.html`. Hoy las 122 webs de la base llevan esquema: no cambia nada visible, cierra la puerta.
+- **vendedor.html** se caía con un tipo de vendedor desconocido (`ML.TIPO[t].toLowerCase()`): tipos filtrados; país
+  con reserva; año máximo del filtro = año actual en vez de `2026` fijo. En la primera versión la constante `tipos`
+  quedó declarada después de usarse («Cannot access before initialization», la página entera en blanco): lo cazó
+  `revision2_check.py` en producción y se corrigió en el mismo tick.
+- **anuncio.html**: tipos del vendedor sin «undefined». **buscar.html**: el selector «Vendedor» lista solo los que
+  tienen anuncios publicados (antes, 150 nombres de los que la mayoría devolvía cero). **404.html**: dos enlaces iban
+  al mismo `directorio.html`; el segundo va ahora a `empresas.html`.
+- **para-empresas.html**: la ficha de alta se guardaba en `localStorage` (`roble_altas`) y decía «la revisamos en 48
+  horas»: nunca llegaba a nadie. Ahora lleva a `acceso.html?crear` con nombre y correo puestos (la pestaña «crear»
+  los lee de la URL); la cuenta queda pendiente de autorización (§34) y la ficha se completa desde el panel.
+
+Comprobado en producción con `revision2_check.py` (10 OK), `local_check.py`, `efectos_check.py`, `pedir_check.py`,
+`fotos_check.py`, `nombres_check.py`, `packs_check.py` y `visual.py` (público): 0 fallos. QA local 113/113.

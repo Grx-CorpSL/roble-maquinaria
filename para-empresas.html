@@ -224,11 +224,10 @@
       form.addEventListener('submit', e => {
         e.preventDefault(); if (!R.validate(form)) return;
         if (!document.getElementById('a-acepto').checked) { R.toast('Necesitamos que aceptes el aviso legal para enviar la ficha.', 'error'); document.getElementById('a-acepto').focus(); return; }
-        const alta = { id: Date.now(), fecha: new Date().toISOString(), nombre: form.nombre.value.trim(), sector: form.sector.value, sub: '', desc: form.desc.value.trim(), ciudad: form.ciudad.value.trim(), pais: form.pais.value, web: form.web.value.trim(), email: form.email.value.trim(), estado: 'pendiente', tipo: 'empresa' };
-        try { const A = JSON.parse(localStorage.getItem('roble_altas') || '[]'); A.unshift(alta); localStorage.setItem('roble_altas', JSON.stringify(A)); } catch (err) {}
-        form.innerHTML = `<div class="plate"><div class="plate-head"><span class="label">Ficha enviada</span><span class="status status-pending">Pendiente</span></div><div class="plate-body"><p class="h3">Gracias, ${R.esc(alta.nombre)}.</p><p class="muted" style="margin-top:8px">La revisamos en 48 horas y te avisamos en <strong>${R.esc(alta.email)}</strong>. Mientras, puedes crear tu cuenta para completar la ficha cuando esté publicada.</p><div class="row" style="margin-top:20px"><a class="btn btn-ink" href="acceso.html?crear">Crear mi cuenta</a><a class="btn" href="buscar.html?sector=${alta.sector}">Ver mi sector</a></div></div></div>`;
-        form.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-        R.toast('Ficha enviada. La revisamos en 48 horas.');
+        /* La ficha de alta es la cuenta de empresa: se crea en acceso.html con el nombre y el correo ya puestos y
+           queda pendiente de autorización; el resto de la ficha se completa desde el panel al autorizarla. */
+        const u = new URLSearchParams({ crear: '', empresa: form.nombre.value.trim(), email: form.email.value.trim() });
+        location.href = 'acceso.html?' + u;
       });
     });
   </script>

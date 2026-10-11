@@ -129,6 +129,10 @@ window.ROBLE = (function () {
   const zona = e => [e.ciudad, e.region].filter(Boolean).join(', ');
   const iniciales = n => (String(n).match(/[\p{L}\p{N}]+/gu) || []).slice(0, 2).map(w => w[0]).join('').toUpperCase();
   const pais = { ES: 'España', PT: 'Portugal', IT: 'Italia', FR: 'Francia' };
+  /* La web de una empresa viene de la base (la escribió ella): solo se enlaza si es http(s); un dominio a secas
+     («www.x.com») recibe https://; cualquier otra cosa (javascript:, texto suelto) no se enlaza. */
+  const webHref = w => { w = String(w || '').trim(); if (/^https?:\/\/\S+$/i.test(w)) return w; if (/^[\w.-]+\.[a-z]{2,}(\/\S*)?$/i.test(w)) return 'https://' + w; return ''; };
+  const webTexto = w => webHref(w).replace(/^https?:\/\//, '').replace(/\/$/, '');
 
   function scoreText(hay, q) {
     const h = norm(hay); if (!h) return 0;
@@ -358,5 +362,5 @@ window.ROBLE = (function () {
   const canon = q => { const u = location.origin + location.pathname + q; const l = document.querySelector('link[rel=canonical]'); if (l) l.href = u; const m = document.querySelector('meta[property="og:url"]'); if (m) m.content = u; const t = document.querySelector('meta[property="og:title"]'); if (t) t.content = document.title; };
   const noindex = () => { const m = document.querySelector('meta[name=robots]'); if (m) m.content = 'noindex, follow'; };
 
-  return { D, icon, norm, esc, pad2, plural, fmtNum, sector, empresa, producto, productosDe, empresasDe, ref, zona, iniciales, pais, buscar, sugerencias, tpl, suggest, dropdowns, header, confirmDialog, toast, drawer, validate, qs, trap, tabs, canon, noindex };
+  return { D, icon, norm, esc, pad2, plural, fmtNum, sector, empresa, producto, productosDe, empresasDe, ref, zona, iniciales, pais, webHref, webTexto, buscar, sugerencias, tpl, suggest, dropdowns, header, confirmDialog, toast, drawer, validate, qs, trap, tabs, canon, noindex };
 })();

@@ -37,13 +37,13 @@
       const c = ML.shell('directorio', { dir: true, sector: e ? e.sector : null, excluir: e ? e.id : null });
       if (!e) { document.title = 'Empresa no encontrada — ROBLE'; R.noindex(); c.innerHTML = `<div class="empty">${R.icon('building')}<h1 class="empty-title">Esa empresa ya no está en el directorio</h1><p>Puede que haya cambiado de ficha o se haya dado de baja.</p><a class="btn" href="empresas.html">Buscar empresas</a></div>`; return; }
       const s = R.sector(e.sector), z = R.zona(e), prods = R.productosDe(e.id), prem = e.plan === 'premium', v = ML.vend(e.id), ads = v ? ML.anunciosDe(v.id) : [];
-      const web = e.web ? e.web.replace(/^https?:\/\//, '').replace(/\/$/, '') : '';
+      const webUrl = R.webHref(e.web), web = R.webTexto(e.web);
       document.title = `${e.nombre} — ${s ? s.corto : 'Empresa'} — ROBLE`; R.canon('?id=' + e.id);
       document.querySelector('meta[name=description]').content = (e.desc || `${e.nombre}, empresa de ${s ? s.nombre.toLowerCase() : 'la madera'}${z ? ' en ' + z : ''}. Ficha, productos y contacto directo en ROBLE.`).slice(0, 158);
       const dato = (k, val) => `<div class="spec"><dt>${k}</dt><dd>${val}</dd></div>`;
       c.innerHTML = `
         <nav class="crumbs" aria-label="Migas"><a href="index.html">Inicio</a>${R.icon('chevron-right', 'sep')}<a href="directorio.html">Directorio</a>${R.icon('chevron-right', 'sep')}${s ? `<a href="sector.html?s=${s.id}">${R.esc(s.corto)}</a>${R.icon('chevron-right', 'sep')}` : ''}<span aria-current="page">${R.esc(e.nombre)}</span></nav>
-        <header class="vhead emp">${R.tpl.logoTile(e, 'logo-tile-lg')}<div><h1 class="h1">${R.esc(e.nombre)}</h1><div class="meta">${e.sectores.map(id => { const x = R.sector(id); return x ? `<a class="tag" href="sector.html?s=${x.id}">${R.esc(x.corto)}</a>` : ''; }).join('')}${prem ? '<span class="featured">Destacada</span>' : ''}<span class="label">${R.esc(z || ML.pais[e.pais] || '')}</span></div></div><div class="actions"><button class="btn btn-primary" type="button" id="btn-contact">Contactar</button>${e.web ? `<a class="btn" href="${R.esc(e.web)}" target="_blank" rel="noopener">Ver web ${R.icon('external', 'i-16')}</a>` : ''}</div></header>
+        <header class="vhead emp">${R.tpl.logoTile(e, 'logo-tile-lg')}<div><h1 class="h1">${R.esc(e.nombre)}</h1><div class="meta">${e.sectores.map(id => { const x = R.sector(id); return x ? `<a class="tag" href="sector.html?s=${x.id}">${R.esc(x.corto)}</a>` : ''; }).join('')}${prem ? '<span class="featured">Destacada</span>' : ''}<span class="label">${R.esc(z || ML.pais[e.pais] || '')}</span></div></div><div class="actions"><button class="btn btn-primary" type="button" id="btn-contact">Contactar</button>${webUrl ? `<a class="btn" href="${R.esc(webUrl)}" target="_blank" rel="noopener">Ver web ${R.icon('external', 'i-16')}</a>` : ''}</div></header>
         <div class="vsplit emp">
           <div>
             <h2 class="h3" style="margin-bottom:8px">Actividad</h2>
@@ -55,7 +55,7 @@
               ${z ? dato('Zona', R.esc(z)) : ''}
               ${dato('País', ML.pais[e.pais] || R.esc(e.pais))}
               ${e.anio ? dato('Fundada', `<span class="mono">${e.anio}</span>`) : ''}
-              ${web ? dato('Web', `<a href="${R.esc(e.web)}" target="_blank" rel="noopener">${R.esc(web)}</a>`) : ''}
+              ${webUrl ? dato('Web', `<a href="${R.esc(webUrl)}" target="_blank" rel="noopener">${R.esc(web)}</a>`) : ''}
               ${e.telefono ? dato('Teléfono', `<a href="tel:${R.esc(e.telefono)}">${R.esc(e.telefono)}</a>`) : ''}
               ${dato('Productos', `<span class="mono">${prods.length}</span>`)}
               ${ads.length ? dato("Máquinas", `<a href="vendedor.html?id=${v.id}">${ads.length} ${ads.length === 1 ? "anunciada" : "anunciadas"}</a>`) : ''}
@@ -71,7 +71,7 @@
       const abrir = () => ML.contacto({ empresa_id: e.id, empresa: e.nombre, origen: 'directorio', intro: `Escribe a ${e.nombre}. Te responden ellos directamente.`, mensaje: '' });
       c.querySelectorAll('#btn-contact,#btn-contact2').forEach(b => b.addEventListener('click', abrir));
       ML.barraMovil({ label: 'Contactar', onClick: abrir, watch: document.getElementById('btn-contact') });
-      const ld = { '@context': 'https://schema.org', '@type': 'Organization', name: e.nombre, description: e.desc || undefined, url: e.web || undefined, foundingDate: e.anio ? String(e.anio) : undefined, address: { '@type': 'PostalAddress', addressLocality: e.ciudad || undefined, addressRegion: e.region || undefined, addressCountry: e.pais } };
+      const ld = { '@context': 'https://schema.org', '@type': 'Organization', name: e.nombre, description: e.desc || undefined, url: webUrl || undefined, foundingDate: e.anio ? String(e.anio) : undefined, address: { '@type': 'PostalAddress', addressLocality: e.ciudad || undefined, addressRegion: e.region || undefined, addressCountry: e.pais } };
       const sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.textContent = JSON.stringify(ld); document.head.appendChild(sc);
     });
   </script>

@@ -205,6 +205,7 @@
       else fetch('/api/auth', { credentials: 'same-origin', cache: 'no-store' }).then(r => r.ok ? r.json() : null)
         .then(j => { if (j && j.user) location.replace(j.user.isAdmin ? '/admin' : 'panel/index.html'); }).catch(() => {});
       const p = R.qs().get('crear'); if (p !== null) document.getElementById('tab-crear').click();
+      ['empresa', 'email'].forEach(k => { const v = R.qs().get(k); if (v) document.getElementById('c-' + k).value = v; });
     });
   </script>
 </body>
