@@ -1301,9 +1301,18 @@ firma falsa → 400; permiso sin sesión → 401; cuenta eliminada → 401; cont
 de cuenta activa con cookie; CSV); en Chromium, moderación con una alta `javascript:` (sin enlace) y otra con
 dominio a secas (`https://`), y el aviso en `acceso.html`, sin errores de JavaScript.
 
+- **SEO: canonical doble en las fichas.** `anuncio`, `empresa`, `sector`, `producto`, `vendedor` y `guia` llevaban en el
+  HTML un canonical fijo SIN `?id` y `R.canon()` lo cambiaba después: para quien no ejecuta JavaScript (Bing, rastreadores
+  de IA) y para Google si se queda con el del HTML, las 671 fichas del sitemap apuntaban a una sola URL. Fuera el fijo;
+  `R.canon()` crea la etiqueta si no existe. Comprobado en Chromium: un solo canonical, con su `?id`, en las seis.
+
 **Sigue abierto (no se arregla aquí):**
 - Los límites de intentos (entrar, alta, contraseña, contacto, subida) viven en memoria por instancia: frenan lo
   casual, no un ataque repartido. Lo de verdad es un contador en base (tabla nueva, se crea a mano como el esquema).
+- **Rendimiento móvil** (Lighthouse 13, producción, 13-10): portada 81, anuncio 76, empresa 85, sector 64 (LCP 3,4-4,8 s,
+  TBT hasta 730 ms en sector); accesibilidad, buenas prácticas y SEO 100. La causa es que cada página baja y procesa el
+  directorio entero (`/api/datos.js`, 230 KB) y pinta en el navegador. Lo de verdad es la decisión pendiente de
+  `contexto.md` §7: generar el HTML antes (o un endpoint por ficha).
 - `script-src 'unsafe-inline'`: las páginas llevan su script en línea; la defensa contra XSS es el escape. Sacar los
   scripts a archivos permitiría quitarlo.
 - La cuenta de pruebas 178 está pendiente y desde §34 no puede entrar: `e2e-subir.py` ya no pasa con ella. Hace
