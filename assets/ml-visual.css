@@ -450,8 +450,11 @@ p a, span a, li a, dd a, figcaption a, label a, b a, h3 a { padding-top: 5px; pa
   .btn { transition: transform .15s, box-shadow .25s, background .2s, border-color .2s; }
   .btn:active { transform: translateY(1px) scale(.99); }
   .btn-primary:hover, .banner-cta:hover { box-shadow: 0 12px 26px -10px rgba(212,39,27,.75); transform: translateY(-1px); }
-  .featured { animation: brillo 3.2s ease-in-out infinite; }
-  @keyframes brillo { 0%, 100% { box-shadow: 0 0 0 0 rgba(212,39,27,0); } 50% { box-shadow: 0 0 0 5px rgba(212,39,27,.2); } }
+  /* El latido anima la opacidad de un anillo fijo (::after) y no la sombra: animar box-shadow obligaba a repintar en cada
+     fotograma mientras la página estuviera abierta (~25 % del hilo principal en reposo). Mismo aspecto. */
+  .featured { position: relative; }
+  .featured::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 0 0 5px rgba(212,39,27,.2); opacity: 0; pointer-events: none; animation: brillo 3.2s ease-in-out infinite; }
+  @keyframes brillo { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
   .site-header { transition: box-shadow .3s var(--ease); }
   .site-header.is-scrolled { box-shadow: 0 8px 28px rgba(0,0,0,.35); }
 }

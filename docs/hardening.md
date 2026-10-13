@@ -1328,6 +1328,20 @@ dominio a secas (`https://`), y el aviso en `acceso.html`, sin errores de JavaSc
 - Medida A/B de las tipografías propias (Lighthouse móvil en local, 2 pasadas, commit anterior frente a este):
   primer pintado 0,4-0,6 s antes en portada, directorio y ficha; la nota de rendimiento no se mueve fuera del ruido.
 
+- **El latido de «Destacado» repintaba la página sin parar.** `.featured` animaba `box-shadow` en bucle infinito: con la
+  página quieta, 1.000-1.400 ms de cada 5 s del hilo principal (~25 %) y ~60 recálculos de estilo por segundo, en
+  escritorio y sin límite de tiempo (en móvil, batería y respuesta al toque). Ahora anima la opacidad de un anillo
+  fijo en `::after`, que va por la tarjeta gráfica: 7-11 ms por 5 s y 0 recálculos. Mismo aspecto (capturas en el
+  punto álgido idénticas a producción; posición de las 29 etiquetas de 4 páginas idéntica). Carga con efectos en
+  móvil simulado (CPU ×4): trabajo del hilo principal en sector 3,0 → 1,8 s, directorio 2,6 → 1,9 s.
+- **SEO, detalles:** portada con `WebSite` + `SearchAction` (`buscar.html?q=`, comprobado: devuelve resultados);
+  `paquetes.html` sin `og:image` ni `twitter:card` (es la que se comparte por WhatsApp): añadidos. Las fichas de
+  anuncio y producto declaran `Product` sin `offers`: Search Console lo marcará «no válido para resultados
+  enriquecidos». Es inofensivo y rellenarlo exigiría inventar precios: se deja.
+- Páginas privadas con sesión simulada: panel de empresa (6) y administración (13) a 390 y 1280 px sin desbordes ni
+  errores, todas con `noindex`; axe sin fallos graves ni críticos (solo `region`, moderado: el aviso «Solo en este
+  navegador» queda fuera de los puntos de referencia).
+
 **Sigue abierto (no se arregla aquí):**
 - Los límites de intentos (entrar, alta, contraseña, contacto, subida) viven en memoria por instancia: frenan lo
   casual, no un ataque repartido. Lo de verdad es un contador en base (tabla nueva, se crea a mano como el esquema).
