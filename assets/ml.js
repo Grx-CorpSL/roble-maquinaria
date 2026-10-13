@@ -123,7 +123,7 @@ window.ML = (function () {
         <div class="header-actions"><a class="btn btn-ghost btn-icon" href="favoritos.html" aria-label="Máquinas guardadas" title="Guardadas">${icon('star')}</a><a class="btn" id="cuenta-btn" data-cuenta href="acceso.html">Acceder</a></div>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-panel" aria-label="Abrir menú"><svg class="i i-24" aria-hidden="true"><use href="#i-menu"/></svg></button>
       </div></header>
-      <div class="sponsors"><div class="wrap"><span class="label">Vendedores destacados</span>${feat.map(v => `<a class="sponsor" href="vendedor.html?id=${v.id}">${R.tpl.logoTile(v)}${esc(v.nombre)}${v.destacado ? '<span class="featured"></span>' : ''}</a>`).join('')}<a class="sponsor" href="vendedores.html" style="border-style:dashed">Ver todos ${icon('arrow-right', 'i-16')}</a></div></div>
+      <div class="sponsors"><div class="wrap"><span class="label">${feat.some(v => v.destacado) ? 'Vendedores destacados' : 'Vendedores'}</span>${feat.map(v => `<a class="sponsor" href="vendedor.html?id=${v.id}">${R.tpl.logoTile(v)}${esc(v.nombre)}${v.destacado ? '<span class="featured"></span>' : ''}</a>`).join('')}<a class="sponsor" href="vendedores.html" style="border-style:dashed">Ver todos ${icon('arrow-right', 'i-16')}</a></div></div>
     </div>`;
   }
   function sidebarDir(current, ads) {
@@ -178,7 +178,7 @@ window.ML = (function () {
     acard(a) {
       const c = cat(a.cat); const v = vend(a.vendedor_id);
       const fc = a.fotos[0] || fotoCat(a.cat, a.id);
-      return `<article class="acard"><div class="media ${fc ? 'has-photo' : ''}">${icon('s-maquinaria')}<span class="label">${esc(c ? c.nombre : '')}</span>${a.destacado ? '<span class="featured">Destacado</span>' : ''}${a.estado ? `<span class="tag estado">${ESTADO[a.estado]}</span>` : ''}${fc ? `<img src="${esc(a.fotos[0] ? fc : sm(fc))}" alt="" loading="lazy" width="640" height="480">${a.fotos[0] ? '' : '<span class="orient">Imagen orientativa</span>'}` : ''}<button type="button" class="fav ${store.esFav(a.id) ? 'is-on' : ''}" data-fav="${a.id}" aria-label="${store.esFav(a.id) ? 'Quitar de guardadas' : 'Guardar máquina'}" aria-pressed="${store.esFav(a.id)}">${icon('star')}</button></div>
+      return `<article class="acard"><div class="media ${fc ? 'has-photo' : ''}">${icon('s-maquinaria')}<span class="label">${esc(c ? c.nombre : '')}</span>${a.destacado ? '<span class="featured">Destacado</span>' : ''}${a.estado && ESTADO[a.estado] ? `<span class="tag estado">${ESTADO[a.estado]}</span>` : ''}${fc ? `<img src="${esc(a.fotos[0] ? fc : sm(fc))}" alt="" loading="lazy" width="640" height="480">${a.fotos[0] ? '' : '<span class="orient">Imagen orientativa</span>'}` : ''}<button type="button" class="fav ${store.esFav(a.id) ? 'is-on' : ''}" data-fav="${a.id}" aria-label="${store.esFav(a.id) ? 'Quitar de guardadas' : 'Guardar máquina'}" aria-pressed="${store.esFav(a.id)}">${icon('star')}</button></div>
         <div class="body"><h2 class="title"><a href="anuncio.html?id=${a.id}">${esc(a.titulo)}</a></h2><div class="meta">${a.marca ? `<span>${esc(a.marca)}</span>` : ''}${a.anio ? `<span>${a.anio}</span>` : ''}<span>${esc(a.zona || pais[a.pais] || '')}</span></div>${a.desc ? `<p class="desc">${esc(a.desc)}</p>` : ''}
         <div class="foot"><span class="seller">${v ? R.tpl.logoTile(v) : ''}<span>${esc(a.vendedor)}</span></span><span class="price ${a.precio ? '' : 'ask'}">${fmtPrecio(a)}</span></div></div></article>`;
     },

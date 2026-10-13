@@ -1250,3 +1250,21 @@ Lección: al borrar un método hay que buscar sus llamadas en las tres zonas (p�
 archivos que se están tocando. Las páginas de administración no se pueden probar en producción sin la contraseña
 nueva de administrador: comprobación por sintaxis, por rastreo de llamadas y cargando las páginas sin sesión (sin
 errores JS).
+
+## 41. Bucle de revisión, iteración 4 y cierre: `ml.js` entero y la API de identidad (13 de octubre de 2026)
+
+Revisados `assets/ml.js` línea a línea (almacén, identidad, cabecera, columnas, plantillas, galería, barra móvil,
+contacto, efectos, shell) y `api/auth.js`, `sesion.js`, `registro.js`, `_invitaciones.js`. La API de identidad no
+tenía nada que corregir (`_invitaciones.js` no lo usa ningún endpoint: es módulo interno, no cuenta como función).
+En `ml.js` y `anuncio.html`:
+
+- Un estado de máquina que no sea `nueva`/`usada`/vacío pintaba «undefined» en la tarjeta, la ficha y la meta
+  descripción. Guardado con `a.estado && ESTADO[a.estado]` (el vacío sigue sin pintarse: la API manda `''`).
+- La tira de la cabecera decía «Vendedores destacados» aunque rellenara con vendedores sin destacar; ahora dice
+  «Vendedores» cuando ninguno lo es.
+
+**Cierre del bucle (iteraciones 1–4, §38–§41).** Revisado todo lo que se sirve: `roble.js`, `ml.js`, las 24 páginas
+públicas, el panel, los dos admins y los 22 archivos de `api/`. Fallos reales encontrados y corregidos: 14 (tres
+de ellos tiraban una página entera: `vendedor.html` con tipo desconocido, `admin/index.html` y el interruptor de
+destacado). Mejoras: 9. Todo desplegado y comprobado en producción con las suites del scratchpad; QA local 113/113.
+Queda sin probar en producción lo que necesita sesión de administración (contraseña nueva pendiente).
