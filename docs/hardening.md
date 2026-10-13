@@ -1306,6 +1306,17 @@ dominio a secas (`https://`), y el aviso en `acceso.html`, sin errores de JavaSc
   de IA) y para Google si se queda con el del HTML, las 671 fichas del sitemap apuntaban a una sola URL. Fuera el fijo;
   `R.canon()` crea la etiqueta si no existe. Comprobado en Chromium: un solo canonical, con su `?id`, en las seis.
 
+- **Tipografías desde el propio dominio.** Las 44 páginas cargaban Archivo e IBM Plex Mono de Google Fonts: cada visita
+  mandaba la IP a Google (EE. UU.) y el aviso de privacidad no lo decía (riesgo RGPD, hay sentencias en la UE por
+  esto), y eran dos orígenes de terceros más en la carga. Ahora `assets/fonts/` (woff2, latin y latin-ext, licencia
+  OFL), declaradas al principio de `roble.css`, con precarga de la Archivo latina; fuera `fonts.googleapis.com` y
+  `fonts.gstatic.com` de la CSP. Comprobado en Chromium en portada, ficha, acceso, panel y admin (con `<base>`): las
+  dos familias cargadas, cero peticiones a Google, sin errores.
+- **«Ver una ficha de ejemplo»** (`para-empresas.html`) iba a `empresa.html?id=15`, que ya no existe («Esa empresa ya
+  no está»). Ahora apunta a la misma empresa que la página enseña de ejemplo; sin datos, al listado.
+- Rastreo de producción (13-10): 23 páginas renderizadas a 390 px sin errores ni desbordes; 698 URL (enlaces y
+  sitemap) en 200; las 683 del sitemap con id existente; ese era el único enlace a un id inexistente.
+
 **Sigue abierto (no se arregla aquí):**
 - Los límites de intentos (entrar, alta, contraseña, contacto, subida) viven en memoria por instancia: frenan lo
   casual, no un ataque repartido. Lo de verdad es un contador en base (tabla nueva, se crea a mano como el esquema).
@@ -1313,6 +1324,15 @@ dominio a secas (`https://`), y el aviso en `acceso.html`, sin errores de JavaSc
   TBT hasta 730 ms en sector); accesibilidad, buenas prácticas y SEO 100. La causa es que cada página baja y procesa el
   directorio entero (`/api/datos.js`, 230 KB) y pinta en el navegador. Lo de verdad es la decisión pendiente de
   `contexto.md` §7: generar el HTML antes (o un endpoint por ficha).
+- **Correo saliente, por comprobar en Vercel.** `RESEND_API_KEY` está puesta (`olvide` responde 200), pero si
+  `REMITENTE_EMAIL` no es de un dominio verificado en Resend, el remitente por defecto `onboarding@resend.dev` solo
+  puede escribir a la cuenta dueña de Resend: códigos de contraseña, avisos de contacto y de moderación no llegarían
+  a nadie más (falla en silencio, queda `correo_fallo` en los logs). `vercel.app` no se puede verificar: hace falta
+  dominio propio. Las plantillas de correo (`_correo.js`) aún usan la paleta verde y crema de la web antigua.
+- Textos pendientes del propietario visibles en producción: `[RAZÓN SOCIAL]` y `[DOMICILIO]` en `legal.html`
+  (obligatorios por la LSSI antes de abrir), `[CORREO DE CONTACTO]` en contacto y paquetes, `[NÚMERO POR RELLENAR]`
+  (WhatsApp) en paquetes.
+- Sin `/llms.txt` (en MaqDeMad se decidió tenerlo para que la IA cite el directorio).
 - `script-src 'unsafe-inline'`: las páginas llevan su script en línea; la defensa contra XSS es el escape. Sacar los
   scripts a archivos permitiría quitarlo.
 - La cuenta de pruebas 178 está pendiente y desde §34 no puede entrar: `e2e-subir.py` ya no pasa con ella. Hace

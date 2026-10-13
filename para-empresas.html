@@ -17,9 +17,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="robots" content="index, follow">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" href="/assets/fonts/archivo-100-900-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="assets/roble.css">
   <link rel="stylesheet" href="assets/ml.css">
   <link rel="stylesheet" href="assets/ml-visual.css">
@@ -92,7 +90,7 @@
         <p class="label" style="margin-bottom:16px">Para empresas</p>
         <h1 class="display" id="t">Tu empresa, donde el sector busca.</h1>
         <p class="lead">Carpinteros, fabricantes y compradores entran en ROBLE a buscar proveedores. Una ficha verificada te pone delante de ellos con los datos que importan.</p>
-        <div class="row"><a class="btn btn-primary btn-lg" href="#alta">Dar de alta mi empresa <svg class="i"><use href="#i-arrow-right"/></svg></a><a class="btn btn-lg" href="empresa.html?id=15">Ver una ficha de ejemplo</a></div>
+        <div class="row"><a class="btn btn-primary btn-lg" href="#alta">Dar de alta mi empresa <svg class="i"><use href="#i-arrow-right"/></svg></a><a class="btn btn-lg" id="ver-ejemplo" href="empresas.html">Ver una ficha de ejemplo</a></div>
       </div>
       <div class="hero-demo"><p class="label">Así se ve tu empresa en los resultados</p><div class="results" id="demo"></div></div>
     </section>
@@ -217,7 +215,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       ML.shell('directorio', { dir: true }).appendChild(document.getElementById('src').content);
       const R = ROBLE, D = R.D;
-      const demo = R.D.empresas.find(e => e.plan === 'premium' && e.desc) || R.D.empresas[0]; if (demo) document.getElementById('demo').innerHTML = R.tpl.empresaRow(demo);
+      const demo = R.D.empresas.find(e => e.plan === 'premium' && e.desc) || R.D.empresas[0]; if (demo) { document.getElementById('demo').innerHTML = R.tpl.empresaRow(demo); document.getElementById('ver-ejemplo').href = 'empresa.html?id=' + demo.id; }
       const sec = document.getElementById('a-sector');
       D.sectores.forEach(s => sec.add(new Option(s.corto, s.id)));
       const form = document.getElementById('alta-form');
