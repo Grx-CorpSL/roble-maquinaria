@@ -90,17 +90,23 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const usuario = await usuarioDeSesion(req);
-    if (!usuario) { res.status(401).json({ error: 'Tienes que haber iniciado sesión.' }); return; }
-    if (demasiadas(String(usuario.id))) {
+    // Vercel entrega el cuerpo como objeto, string o Buffer; la librería espera
+    // un objeto con `type`, así que se normaliza como en el resto de la API.
+    const body = cuerpo(req);
+    /* El aviso de «subida terminada» lo manda el almacén, no el navegador: llega
+       sin cookie y lo autentica la firma x-vercel-signature, que comprueba la
+       librería antes de llamar a alTerminar. Pedirle sesión lo rechazaba con 401
+       y la subida nunca quedaba en auditoría. */
+    const aviso = body.type === 'blob.upload-completed';
+    const usuario = aviso ? null : await usuarioDeSesion(req);
+    if (!aviso && !usuario) { res.status(401).json({ error: 'Tienes que haber iniciado sesión.' }); return; }
+    if (!aviso && demasiadas(String(usuario.id))) {
       res.status(429).json({ error: 'Has subido muchas fotos seguidas. Inténtalo dentro de un rato.' });
       return;
     }
 
     const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || null;
-    // Vercel entrega el cuerpo como objeto, string o Buffer; la librería espera
-    // un objeto con `type`, así que se normaliza como en el resto de la API.
-    const comun = { request: req, body: cuerpo(req), onUploadCompleted: alTerminar(ip) };
+    const comun = { request: req, body, onUploadCompleted: alTerminar(ip) };
 
     // Con OIDC el permiso se pide al almacén firmado por la identidad de la
     // función; el token de lectura/escritura solo se usa si no hay OIDC.

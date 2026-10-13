@@ -1268,3 +1268,45 @@ públicas, el panel, los dos admins y los 22 archivos de `api/`. Fallos reales e
 de ellos tiraban una página entera: `vendedor.html` con tipo desconocido, `admin/index.html` y el interruptor de
 destacado). Mejoras: 9. Todo desplegado y comprobado en producción con las suites del scratchpad; QA local 113/113.
 Queda sin probar en producción lo que necesita sesión de administración (contraseña nueva pendiente).
+## 42. Revisión técnica final (13 de octubre de 2026)
+
+Repaso de lo que las iteraciones 1 y 2 no cubrieron: `auth`, `sesion`, `registro`, `admin`, `datos`, `maquinaria`,
+`_esquema`, `_invitaciones`, `_correo`, los paneles privados (`panel/`, `admin/`, `admin-directorio/`), `vercel.json`
+y lo que el despliegue sirve. Las plantillas de los paneles escapan todo lo que llega del servidor (tablas, cajones,
+avisos); la autorización sigue decidiéndose en servidor contra la membresía. Arreglado:
+
+- **El aviso de «subida terminada» del almacén recibía 401.** Lo manda Vercel Blob, sin cookie, firmado con
+  `x-vercel-signature`; `/api/subir` pedía sesión antes de dárselo a la librería, así que `onUploadCompleted` no se
+  ejecutaba nunca y ninguna foto subida quedaba en auditoría (`foto.subida`). Comprobado en producción: un aviso sin
+  firma devolvía «Tienes que haber iniciado sesión». Ahora ese evento pasa sin sesión y lo autentica la firma (la
+  comprueba `handleUpload`); pedir permiso de subida sigue exigiendo sesión, membresía y el límite por hora.
+- **Se servían en público `scripts/`, `backup.ps1` y `auditar.ps1`** (200 en producción). Sin secretos, pero
+  describen la base, el rol `roble_app` y sus privilegios. Fuera del despliegue en `.vercelignore`; ninguna función
+  los usa.
+- **Cuentas eliminadas** (`usuarios.eliminada`): entrar y recuperar la contraseña no las filtraban. Entrar abría una
+  sesión que `usuarioDeSesion` ya no aceptaba (el panel decía «Entra»); ahora 401 como cualquier fallo.
+- **Cambio de contraseña de una cuenta pendiente, rechazada o suspendida** abría sesión y mandaba al panel, que la
+  rechazaba (§34). Ahora cambia la contraseña, no abre sesión y responde `{ ok, aviso }`; `acceso.html` enseña el
+  aviso y vuelve a «Entrar».
+- **Exportación CSV del admin** (empresas y contactos): nombre, empresa y mensaje los escribe cualquiera desde el
+  formulario público; una celda que empezara por `=`, `+`, `-` o `@` la ejecutaba Excel como fórmula. Se antepone
+  un apóstrofo.
+- **Moderación**: el enlace «Web» del cajón usaba la web tal cual; ahora `ROBLE.webHref()` como las fichas públicas
+  (§39): un `javascript:` sale como texto, un dominio a secas lleva `https://`.
+- Subida de fotos en el admin: un error llamaba a `status()` (el pintor de etiquetas) en vez de `R.toast()` y no
+  avisaba. CSP: fuera `formsubmit.co` de `form-action` (no se usa desde §34).
+
+Comprobado: QA local 113/113; banco simulado de los cambios 10/10 (aviso firmado → 200 y auditoría; sin firma o
+firma falsa → 400; permiso sin sesión → 401; cuenta eliminada → 401; contraseña de cuenta pendiente sin cookie y
+de cuenta activa con cookie; CSV); en Chromium, moderación con una alta `javascript:` (sin enlace) y otra con
+dominio a secas (`https://`), y el aviso en `acceso.html`, sin errores de JavaScript.
+
+**Sigue abierto (no se arregla aquí):**
+- Los límites de intentos (entrar, alta, contraseña, contacto, subida) viven en memoria por instancia: frenan lo
+  casual, no un ataque repartido. Lo de verdad es un contador en base (tabla nueva, se crea a mano como el esquema).
+- `script-src 'unsafe-inline'`: las páginas llevan su script en línea; la defensa contra XSS es el escape. Sacar los
+  scripts a archivos permitiría quitarlo.
+- La cuenta de pruebas 178 está pendiente y desde §34 no puede entrar: `e2e-subir.py` ya no pasa con ella. Hace
+  falta una cuenta de pruebas autorizada.
+- Categorías, usuarios, contenidos, configuración, solicitudes, vendedores y pedidos del admin siguen siendo solo
+  del navegador (lo avisa la propia página).

@@ -192,6 +192,7 @@
             const r = await fetch('/api/password?a=nueva', { method: 'POST', credentials: 'same-origin', headers: cabeceras, body: JSON.stringify({ email, codigo: document.getElementById('r-codigo').value.trim(), nueva: document.getElementById('r-nueva').value }) });
             const j = await r.json().catch(() => ({}));
             if (!r.ok) { R.toast(j.error || 'No se ha podido cambiar la contraseña.', 'error'); return; }
+            if (j.aviso) { R.toast('Contraseña cambiada. ' + j.aviso); modoCodigo(false); muestraPanel('entrar'); return; }
             R.toast('Contraseña cambiada');
             setTimeout(() => { location.href = 'panel/index.html'; }, 400);
           }
