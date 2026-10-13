@@ -1317,6 +1317,17 @@ dominio a secas (`https://`), y el aviso en `acceso.html`, sin errores de JavaSc
 - Rastreo de producción (13-10): 23 páginas renderizadas a 390 px sin errores ni desbordes; 698 URL (enlaces y
   sitemap) en 200; las 683 del sitemap con id existente; ese era el único enlace a un id inexistente.
 
+- **Desbordes horizontales que ya estaban en producción.** (1) La barra oscura de maquinaria no cabe entera hasta
+  ~1180 px: entre 870 y 1170 «Acceder» quedaba fuera de la pantalla (iPad en horizontal, portátiles pequeños). En
+  ese tramo usa ahora el menú desplegable del móvil (`ml-visual.css`, solo `.cab-oscura`); a 1181 vuelve la barra
+  completa. (2) Portada, rejilla «Quién vende» (`.dgrid`, 4 × `1fr`) entre 820 y 940 px: `minmax(0, 1fr)` y 2
+  columnas hasta 960. (3) `panel/paquetes.html` a 390 px: `.packs` a 3 columnas sin condición en `ml-visual.css`
+  pisaba las reglas de móvil de `ml.css` fuera de `.ml-main`; las 3 columnas, solo desde 901 px.
+  Barrido después: 23 páginas públicas × 35 anchos (360-1920) sin desbordes ni errores; panel de empresa (6
+  páginas, sesión simulada) a 390 y 1280 sin desbordes ni errores; menú desplegable a 1024 con buscador y «Acceder».
+- Medida A/B de las tipografías propias (Lighthouse móvil en local, 2 pasadas, commit anterior frente a este):
+  primer pintado 0,4-0,6 s antes en portada, directorio y ficha; la nota de rendimiento no se mueve fuera del ruido.
+
 **Sigue abierto (no se arregla aquí):**
 - Los límites de intentos (entrar, alta, contraseña, contacto, subida) viven en memoria por instancia: frenan lo
   casual, no un ataque repartido. Lo de verdad es un contador en base (tabla nueva, se crea a mano como el esquema).
