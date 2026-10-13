@@ -967,7 +967,7 @@ desplegar.
 
 ## 25. 7 de octubre: la carpeta de C: se borró y el repositorio se reconstruyó
 
-A las 20:49 otra sesión de Claude Code, encargada desde el 30-09 de mover `C:\Users\hidra\SIMBAI` al NVMe
+A las 20:49 otra sesión de Claude Code, encargada desde el 30-09 de mover `C:\Users\<usuario>\SIMBAI` al NVMe
 (`D:\SIMBAI`), ejecutó `rmdir /s /q` sobre C: dando por hecho que la copia de D: estaba al día. La copia de D: era
 un espejo del 4 de octubre a las 20:14. Todo lo cambiado en C: entre esa hora y el 7-10 se perdió sin papelera,
 incluido este repositorio con sus commits del 5 y 6 de octubre (el remoto de GitHub se quedó en `b01b5d7`).
@@ -983,7 +983,7 @@ Reconstrucción, en `D:\SIMBAI\Proyecto Carpinteria\MaqDeMad\roble-ml` (rama `re
    §21 (fuera la redirección de `buscar.html?q=`; CSP con `img-src https:` y `form-action` para formsubmit).
 4. `docs/`: §23 se recuperó entero de una copia en el scratchpad; §21, §22 y §24 se reescribieron de memoria.
 
-A las 21:25 la otra sesión volvió a copiar `D:\SIMBAI` a `C:\Users\hidra\SIMBAI` (los 393 ficheros de roble-ml son
+A las 21:25 la otra sesión volvió a copiar `D:\SIMBAI` a `C:\Users\<usuario>\SIMBAI` (los 393 ficheros de roble-ml son
 idénticos en los dos sitios, comprobado con `robocopy /L`). Desde entonces se trabaja otra vez en C: y D: queda de respaldo.
 
 Pendiente para dar la reconstrucción por exacta: bajar del panel de Vercel el código fuente del último despliegue

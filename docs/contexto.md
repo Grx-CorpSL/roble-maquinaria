@@ -26,7 +26,7 @@ pagos los lleva otra persona: fuera de este trabajo.** Aquí solo estética y fu
 ## 2. Dónde está cada cosa
 
 Repositorio: `https://github.com/kdl177/roble-web` (privado, cuenta `kdl177`). Raíz local:
-`c:\Users\hidra\SIMBAI\Proyecto Carpinteria\MaqDeMad\`.
+`C:\Users\<usuario>\SIMBAI\Proyecto Carpinteria\MaqDeMad\`.
 
 | Carpeta | Qué es | Estado |
 |---|---|---|
