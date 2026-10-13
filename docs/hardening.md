@@ -967,7 +967,7 @@ desplegar.
 
 ## 25. 7 de octubre: la carpeta de C: se borró y el repositorio se reconstruyó
 
-A las 20:49 otra sesión de Claude Code, encargada desde el 30-09 de mover `C:\Users\<usuario>\SIMBAI` al NVMe
+A las 20:49 otra sesión de Claude Code, encargada desde el 30-09 de mover `C:\Users\hidra\SIMBAI` al NVMe
 (`D:\SIMBAI`), ejecutó `rmdir /s /q` sobre C: dando por hecho que la copia de D: estaba al día. La copia de D: era
 un espejo del 4 de octubre a las 20:14. Todo lo cambiado en C: entre esa hora y el 7-10 se perdió sin papelera,
 incluido este repositorio con sus commits del 5 y 6 de octubre (el remoto de GitHub se quedó en `b01b5d7`).
@@ -983,7 +983,7 @@ Reconstrucción, en `D:\SIMBAI\Proyecto Carpinteria\MaqDeMad\roble-ml` (rama `re
    §21 (fuera la redirección de `buscar.html?q=`; CSP con `img-src https:` y `form-action` para formsubmit).
 4. `docs/`: §23 se recuperó entero de una copia en el scratchpad; §21, §22 y §24 se reescribieron de memoria.
 
-A las 21:25 la otra sesión volvió a copiar `D:\SIMBAI` a `C:\Users\<usuario>\SIMBAI` (los 393 ficheros de roble-ml son
+A las 21:25 la otra sesión volvió a copiar `D:\SIMBAI` a `C:\Users\hidra\SIMBAI` (los 393 ficheros de roble-ml son
 idénticos en los dos sitios, comprobado con `robocopy /L`). Desde entonces se trabaja otra vez en C: y D: queda de respaldo.
 
 Pendiente para dar la reconstrucción por exacta: bajar del panel de Vercel el código fuente del último despliegue
@@ -1230,3 +1230,23 @@ nada que corregir. Lo arreglado:
 
 Comprobado en producción con `revision2_check.py` (10 OK), `local_check.py`, `efectos_check.py`, `pedir_check.py`,
 `fotos_check.py`, `nombres_check.py`, `packs_check.py` y `visual.py` (público): 0 fallos. QA local 113/113.
+
+## 40. Bucle de revisión, iteración 3: panel, admin y resto de la API (13 de octubre de 2026)
+
+Revisados `panel/*.html`, `panel/panel.js`, `admin/*.html`, `admin/admin.js`, `admin/ml-admin.js`, los nueve
+`admin-directorio/*.html` (métodos de `Admin.Store` cotejados uno a uno) y `api/admin.js`, `_esquema.js`,
+`_correo.js`. La API y el panel de empresa no tenían nada que corregir. En el admin de maquinaria:
+
+- **La portada del admin (`admin/index.html`) se caía entera**: llamaba a `S.alertas()`, que la iteración 1 quitó
+  del almacén local (§38) junto con `setVendedor`. Al administrador le salía la cabecera y nada más. Fuera la tarjeta
+  «Demanda sin oferta» y el contador de alertas: nunca hubo alertas en la base, eran del prototipo.
+- **`admin/vendedores.html`**: el interruptor «Destacado» llamaba a `S.setVendedor` (error en consola y nada
+  guardado). El destacado lo gestiona pagos: el interruptor avisa y vuelve a lo que hay, como ya hacían plan y
+  destacado en el admin del directorio (`dePagos`). Tipos de vendedor sin «undefined».
+- **`admin/leads.html`**: la columna «Máquina» enlazaba a `anuncio.html?id=undefined` (el contacto no trae
+  `producto_id`); ahora es texto.
+
+Lección: al borrar un método hay que buscar sus llamadas en las tres zonas (público, panel, admin), no solo en los
+archivos que se están tocando. Las páginas de administración no se pueden probar en producción sin la contraseña
+nueva de administrador: comprobación por sintaxis, por rastreo de llamadas y cargando las páginas sin sesión (sin
+errores JS).

@@ -35,7 +35,7 @@
           { key: 'fecha', label: 'Fecha', cls: 'mono muted', render: l => MLA.fecha(l.fecha) },
           { key: 'nombre', label: 'Comprador', render: l => `<b>${R.esc(l.nombre)}</b><div class="muted" style="font-size:11px">${R.esc(l.email)}${l.contacto_empresa ? ' · ' + R.esc(l.contacto_empresa) : ''}</div>` },
           { key: 'empresa', label: 'Vendedor', render: l => `<a href="vendedor.html?id=${l.empresa_id}">${R.esc(l.empresa)}</a>` },
-          { key: 'producto', label: 'Máquina', cls: 'col-opt', render: l => l.producto ? `<a href="anuncio.html?id=${l.producto_id}">${R.esc(l.producto)}</a>` : '<span class="muted">General</span>' },
+          { key: 'producto', label: 'Máquina', cls: 'col-opt', render: l => l.producto ? R.esc(l.producto) : '<span class="muted">General</span>' },
           { key: 'mensaje', label: 'Mensaje', cls: 'col-opt muted', render: l => R.esc(l.mensaje.length > 50 ? l.mensaje.slice(0, 50) + '…' : l.mensaje) },
           { key: 'estado', label: 'Estado', render: l => MLA.status(l.estado) },
         ],

@@ -39,7 +39,7 @@
         Admin.table($('#table'), {
           rows: () => [...D.vendedores].sort((a, b) => b.destacado - a.destacado || a.nombre.localeCompare(b.nombre, 'es')), per: 20,
           cols: [
-            { key: 'nombre', label: 'Vendedor', render: v => `<div class="cell-main">${R.tpl.logoTile(v)}<div><a href="vendedor.html?id=${v.id}" target="_blank" rel="noopener"><b>${R.esc(v.nombre)}</b></a><span>${v.tipos.map(t => ML.TIPO[t]).join(' · ')}${v.region ? ' · ' + R.esc(v.region) : ''}</span></div></div>` },
+            { key: 'nombre', label: 'Vendedor', render: v => `<div class="cell-main">${R.tpl.logoTile(v)}<div><a href="vendedor.html?id=${v.id}" target="_blank" rel="noopener"><b>${R.esc(v.nombre)}</b></a><span>${v.tipos.map(t => ML.TIPO[t]).filter(Boolean).join(' · ')}${v.region ? ' · ' + R.esc(v.region) : ''}</span></div></div>` },
             { key: 'n', label: 'Anuncios', cls: 'num', render: v => ML.anunciosDe(v.id).length },
             { key: 'saldo', label: 'Saldo', cls: 'num col-opt', render: v => S.saldo(v.id).disponibles },
             { key: 'destacado', label: 'Destacado', render: v => Admin.sw(v.destacado, `data-feat="${v.id}" aria-label="Destacar ${R.esc(v.nombre)}"`) },
@@ -50,7 +50,7 @@
         $('#add').addEventListener('submit', e => { e.preventDefault(); const id = Number($('#add-sel').value); if (!id) return; const ids2 = banners(); if (ids2.length >= 5) return; ids2.push(id); saveBanners(ids2); S.log(`Banner añadido: ${ML.vend(id).nombre}`, 'ok'); R.toast('Banner añadido'); render(); });
       }
       render();
-      document.addEventListener('click', ev => { const b = ev.target.closest('[data-feat]'); if (!b) return; const on = b.getAttribute('aria-checked') === 'true'; S.setVendedor(Number(b.dataset.feat), { destacado: on }); S.log(`${ML.vend(b.dataset.feat).nombre}: ${on ? 'destacado' : 'sin destacar'}`); R.toast(on ? 'Destacado' : 'Sin destacar'); });
+      document.addEventListener('click', ev => { const b = ev.target.closest('[data-feat]'); if (!b) return; R.toast('El destacado lo gestiona pagos: no se cambia desde aquí.', 'error'); render(); });
     });
   </script>
 </body>
