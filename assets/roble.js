@@ -359,7 +359,7 @@ window.ROBLE = (function () {
   });
 
   /* Las páginas con ?id= comparten HTML: cada ficha declara su propia URL canónica. */
-  const canon = q => { const u = location.origin + location.pathname + q; const l = document.querySelector('link[rel=canonical]'); if (l) l.href = u; const m = document.querySelector('meta[property="og:url"]'); if (m) m.content = u; const t = document.querySelector('meta[property="og:title"]'); if (t) t.content = document.title; };
+  const canon = q => { const u = location.origin + location.pathname + q; const l = document.querySelector('link[rel=canonical]') || document.head.appendChild(Object.assign(document.createElement('link'), { rel: 'canonical' })); l.href = u; const m = document.querySelector('meta[property="og:url"]'); if (m) m.content = u; const t = document.querySelector('meta[property="og:title"]'); if (t) t.content = document.title; };
   const noindex = () => { const m = document.querySelector('meta[name=robots]'); if (m) m.content = 'noindex, follow'; };
 
   return { D, icon, norm, esc, pad2, plural, fmtNum, sector, empresa, producto, productosDe, empresasDe, ref, zona, iniciales, pais, webHref, webTexto, buscar, sugerencias, tpl, suggest, dropdowns, header, confirmDialog, toast, drawer, validate, qs, trap, tabs, canon, noindex };

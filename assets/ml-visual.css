@@ -351,6 +351,21 @@
   .cab-oscura .wrap > .nav a { padding: 0 9px; font-size: var(--fs-sm); }
   .cab-oscura .wrap > .hsearch { min-width: 210px; }
 }
+/* La barra oscura no cabe entera hasta ~1180 px: entre 861 y 1180 «Acceder» quedaba fuera de la pantalla (iPad en
+   horizontal, portátiles pequeños). En ese tramo usa el menú desplegable, igual que en móvil. */
+@media (min-width: 861px) and (max-width: 1180px) {
+  .cab-oscura .wrap { gap: var(--s3); }
+  .cab-oscura .wrap > .nav, .cab-oscura .wrap > .hsearch, .cab-oscura .wrap > .header-actions { display: none; }
+  .cab-oscura .nav-toggle { display: inline-flex; margin-left: auto; }
+  .cab-oscura .nav-panel { position: absolute; left: 0; right: 0; top: var(--header-h); max-height: calc(100dvh - var(--header-h)); overflow-y: auto; overscroll-behavior: contain; background: var(--warm); border-bottom: 1px solid var(--border); box-shadow: var(--sh-3); padding: var(--s4) var(--gutter) var(--s6); }
+  .site-header.cab-oscura.is-open .nav-panel { display: block; animation: drop var(--t2) var(--ease); }
+  .cab-oscura .nav-panel .hsearch { display: block; max-width: none; margin: 0 0 var(--s4); }
+  .cab-oscura .nav-panel .nav { display: flex; flex-direction: column; align-items: stretch; gap: 0; border-top: 1px solid var(--border); }
+  .cab-oscura .nav-panel .nav a { height: 48px; padding: 0 4px; border-bottom: 1px solid var(--border); border-radius: 0; font-size: var(--fs-base); }
+  .cab-oscura .nav-panel .header-actions { display: flex; margin-top: var(--s4); gap: var(--s3); }
+  .cab-oscura .nav-panel .header-actions .btn { flex: 1; }
+  .cab-oscura .nav-panel .header-actions .btn-ghost { display: inline-flex; }
+}
 /* El crédito de la portada de sector se perdía sobre fotos claras (Sofás): pastilla oscura detrás. */
 .sector-cover .credit { background: rgba(18,18,18,.62); padding: 2px 8px; border-radius: var(--r1); text-shadow: none; }
 /* Móvil a una columna: un producto sin foto ya no deja un hueco de 270 px. */
@@ -372,7 +387,7 @@ a.tag { min-height: 24px; }
 .pend { font-family: var(--mono); font-size: var(--fs-xs); background: var(--wood-tint); color: #8A5E2E; padding: 1px 5px; border-radius: var(--r1); white-space: nowrap; }
 /* Paquetes dentro de la columna central: tres columnas solo cuando el centro es ancho; las tarjetas no pueden
    crecer por su contenido (minmax(0, 1fr)), que es lo que las metía debajo del lateral derecho a 1280 px. */
-.packs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (min-width: 901px) { .packs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .ml-main .packs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 1500px) { .ml-main .packs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 480px) { .ml-main .packs { grid-template-columns: 1fr; } }
@@ -435,8 +450,11 @@ p a, span a, li a, dd a, figcaption a, label a, b a, h3 a { padding-top: 5px; pa
   .btn { transition: transform .15s, box-shadow .25s, background .2s, border-color .2s; }
   .btn:active { transform: translateY(1px) scale(.99); }
   .btn-primary:hover, .banner-cta:hover { box-shadow: 0 12px 26px -10px rgba(212,39,27,.75); transform: translateY(-1px); }
-  .featured { animation: brillo 3.2s ease-in-out infinite; }
-  @keyframes brillo { 0%, 100% { box-shadow: 0 0 0 0 rgba(212,39,27,0); } 50% { box-shadow: 0 0 0 5px rgba(212,39,27,.2); } }
+  /* El latido anima la opacidad de un anillo fijo (::after) y no la sombra: animar box-shadow obligaba a repintar en cada
+     fotograma mientras la página estuviera abierta (~25 % del hilo principal en reposo). Mismo aspecto. */
+  .featured { position: relative; }
+  .featured::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 0 0 5px rgba(212,39,27,.2); opacity: 0; pointer-events: none; animation: brillo 3.2s ease-in-out infinite; }
+  @keyframes brillo { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
   .site-header { transition: box-shadow .3s var(--ease); }
   .site-header.is-scrolled { box-shadow: 0 8px 28px rgba(0,0,0,.35); }
 }

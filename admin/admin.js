@@ -284,7 +284,7 @@ window.Admin = (function () {
             hechas++;
           } catch (e) {
             estado.textContent = e.message;
-            status(e.message, 'error');
+            R.toast(e.message, 'error');
             break;
           }
         }
@@ -298,7 +298,9 @@ window.Admin = (function () {
   }
 
   function csv(rows, cols) {
-    const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    // Nombre y mensaje los escribe cualquiera desde el formulario público: una celda que empiece por
+    // = + - @ la ejecutaría Excel como fórmula al abrir la exportación. Se neutraliza con un apóstrofo.
+    const q = v => { const s = String(v == null ? '' : v); return '"' + (/^[=+\-@\t\r]/.test(s) ? "'" + s : s).replace(/"/g, '""') + '"'; };
     const txt = [cols.map(c => q(c[0])).join(';'), ...rows.map(r => cols.map(c => q(typeof c[1] === 'function' ? c[1](r) : r[c[1]])).join(';'))].join('\n');
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + txt], { type: 'text/csv;charset=utf-8' })); a.download = 'roble-export.csv'; a.click();
   }

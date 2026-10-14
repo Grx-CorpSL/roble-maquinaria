@@ -15,6 +15,7 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { db, init, registra } = require('./_esquema');
 const { abreSesion, cookieSesion, cuerpo } = require('./sesion');
+const { puertaCerrada } = require('./auth');
 const { hayCorreo, enviaCodigo } = require('./_correo');
 
 const COSTE_BCRYPT = 10;   // el mismo que producción
@@ -45,7 +46,7 @@ async function olvide(req, res, ip) {
 
   await init();
   const sql = db();
-  const filas = await sql`SELECT id FROM usuarios WHERE email = ${email}`;
+  const filas = await sql`SELECT id FROM usuarios WHERE email = ${email} AND eliminada IS NULL`;
   // Misma respuesta exista o no la cuenta: el formulario no revela correos.
   if (filas.length) {
     const codigo = crypto.randomBytes(5).toString('hex').toUpperCase();
@@ -75,7 +76,7 @@ async function nueva(req, res, ip) {
   await init();
   const sql = db();
   const generico = { error: 'El código no es válido o ha caducado.' };
-  const usuarios = await sql`SELECT id FROM usuarios WHERE email = ${email}`;
+  const usuarios = await sql`SELECT id FROM usuarios WHERE email = ${email} AND eliminada IS NULL`;
   if (!usuarios.length) { res.status(400).json(generico); return; }
 
   const pendientes = await sql`
@@ -94,6 +95,10 @@ async function nueva(req, res, ip) {
   // Quien tuviera la cuenta abierta con la contraseña vieja queda fuera.
   await sql`DELETE FROM sesiones WHERE user_id = ${usuarios[0].id}`;
   await registra({ user_id: usuarios[0].id, accion: 'password.cambiada', ip });
+
+  // Una cuenta pendiente, rechazada o suspendida cambia la contraseña pero no entra (§34).
+  const cierre = await puertaCerrada(usuarios[0].id, email);
+  if (cierre) { res.status(200).json({ ok: true, aviso: cierre }); return; }
 
   const { token, expira } = await abreSesion(usuarios[0].id);
   res.setHeader('Set-Cookie', cookieSesion(token, expira));

@@ -79,7 +79,8 @@ async function entra(req, res) {
 
   await init();
   const sql = db();
-  const filas = await sql`SELECT id, password_hash FROM usuarios WHERE email = ${email}`;
+  // Una cuenta borrada (eliminada) no entra: antes abría sesión y el panel la daba por no iniciada.
+  const filas = await sql`SELECT id, password_hash FROM usuarios WHERE email = ${email} AND eliminada IS NULL`;
   const ok = await bcrypt.compare(clave, filas[0]?.password_hash || HASH_FALSO);
 
   if (!filas.length || !ok) {

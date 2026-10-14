@@ -1268,3 +1268,99 @@ públicas, el panel, los dos admins y los 22 archivos de `api/`. Fallos reales e
 de ellos tiraban una página entera: `vendedor.html` con tipo desconocido, `admin/index.html` y el interruptor de
 destacado). Mejoras: 9. Todo desplegado y comprobado en producción con las suites del scratchpad; QA local 113/113.
 Queda sin probar en producción lo que necesita sesión de administración (contraseña nueva pendiente).
+## 42. Revisión técnica final (13 de octubre de 2026)
+
+Repaso de lo que las iteraciones 1 y 2 no cubrieron: `auth`, `sesion`, `registro`, `admin`, `datos`, `maquinaria`,
+`_esquema`, `_invitaciones`, `_correo`, los paneles privados (`panel/`, `admin/`, `admin-directorio/`), `vercel.json`
+y lo que el despliegue sirve. Las plantillas de los paneles escapan todo lo que llega del servidor (tablas, cajones,
+avisos); la autorización sigue decidiéndose en servidor contra la membresía. Arreglado:
+
+- **El aviso de «subida terminada» del almacén recibía 401.** Lo manda Vercel Blob, sin cookie, firmado con
+  `x-vercel-signature`; `/api/subir` pedía sesión antes de dárselo a la librería, así que `onUploadCompleted` no se
+  ejecutaba nunca y ninguna foto subida quedaba en auditoría (`foto.subida`). Comprobado en producción: un aviso sin
+  firma devolvía «Tienes que haber iniciado sesión». Ahora ese evento pasa sin sesión y lo autentica la firma (la
+  comprueba `handleUpload`); pedir permiso de subida sigue exigiendo sesión, membresía y el límite por hora.
+- **Se servían en público `scripts/`, `backup.ps1` y `auditar.ps1`** (200 en producción). Sin secretos, pero
+  describen la base, el rol `roble_app` y sus privilegios. Fuera del despliegue en `.vercelignore`; ninguna función
+  los usa.
+- **Cuentas eliminadas** (`usuarios.eliminada`): entrar y recuperar la contraseña no las filtraban. Entrar abría una
+  sesión que `usuarioDeSesion` ya no aceptaba (el panel decía «Entra»); ahora 401 como cualquier fallo.
+- **Cambio de contraseña de una cuenta pendiente, rechazada o suspendida** abría sesión y mandaba al panel, que la
+  rechazaba (§34). Ahora cambia la contraseña, no abre sesión y responde `{ ok, aviso }`; `acceso.html` enseña el
+  aviso y vuelve a «Entrar».
+- **Exportación CSV del admin** (empresas y contactos): nombre, empresa y mensaje los escribe cualquiera desde el
+  formulario público; una celda que empezara por `=`, `+`, `-` o `@` la ejecutaba Excel como fórmula. Se antepone
+  un apóstrofo.
+- **Moderación**: el enlace «Web» del cajón usaba la web tal cual; ahora `ROBLE.webHref()` como las fichas públicas
+  (§39): un `javascript:` sale como texto, un dominio a secas lleva `https://`.
+- Subida de fotos en el admin: un error llamaba a `status()` (el pintor de etiquetas) en vez de `R.toast()` y no
+  avisaba. CSP: fuera `formsubmit.co` de `form-action` (no se usa desde §34).
+
+Comprobado: QA local 113/113; banco simulado de los cambios 10/10 (aviso firmado → 200 y auditoría; sin firma o
+firma falsa → 400; permiso sin sesión → 401; cuenta eliminada → 401; contraseña de cuenta pendiente sin cookie y
+de cuenta activa con cookie; CSV); en Chromium, moderación con una alta `javascript:` (sin enlace) y otra con
+dominio a secas (`https://`), y el aviso en `acceso.html`, sin errores de JavaScript.
+
+- **SEO: canonical doble en las fichas.** `anuncio`, `empresa`, `sector`, `producto`, `vendedor` y `guia` llevaban en el
+  HTML un canonical fijo SIN `?id` y `R.canon()` lo cambiaba después: para quien no ejecuta JavaScript (Bing, rastreadores
+  de IA) y para Google si se queda con el del HTML, las 671 fichas del sitemap apuntaban a una sola URL. Fuera el fijo;
+  `R.canon()` crea la etiqueta si no existe. Comprobado en Chromium: un solo canonical, con su `?id`, en las seis.
+
+- **Tipografías desde el propio dominio.** Las 44 páginas cargaban Archivo e IBM Plex Mono de Google Fonts: cada visita
+  mandaba la IP a Google (EE. UU.) y el aviso de privacidad no lo decía (riesgo RGPD, hay sentencias en la UE por
+  esto), y eran dos orígenes de terceros más en la carga. Ahora `assets/fonts/` (woff2, latin y latin-ext, licencia
+  OFL), declaradas al principio de `roble.css`, con precarga de la Archivo latina; fuera `fonts.googleapis.com` y
+  `fonts.gstatic.com` de la CSP. Comprobado en Chromium en portada, ficha, acceso, panel y admin (con `<base>`): las
+  dos familias cargadas, cero peticiones a Google, sin errores.
+- **«Ver una ficha de ejemplo»** (`para-empresas.html`) iba a `empresa.html?id=15`, que ya no existe («Esa empresa ya
+  no está»). Ahora apunta a la misma empresa que la página enseña de ejemplo; sin datos, al listado.
+- Rastreo de producción (13-10): 23 páginas renderizadas a 390 px sin errores ni desbordes; 698 URL (enlaces y
+  sitemap) en 200; las 683 del sitemap con id existente; ese era el único enlace a un id inexistente.
+
+- **Desbordes horizontales que ya estaban en producción.** (1) La barra oscura de maquinaria no cabe entera hasta
+  ~1180 px: entre 870 y 1170 «Acceder» quedaba fuera de la pantalla (iPad en horizontal, portátiles pequeños). En
+  ese tramo usa ahora el menú desplegable del móvil (`ml-visual.css`, solo `.cab-oscura`); a 1181 vuelve la barra
+  completa. (2) Portada, rejilla «Quién vende» (`.dgrid`, 4 × `1fr`) entre 820 y 940 px: `minmax(0, 1fr)` y 2
+  columnas hasta 960. (3) `panel/paquetes.html` a 390 px: `.packs` a 3 columnas sin condición en `ml-visual.css`
+  pisaba las reglas de móvil de `ml.css` fuera de `.ml-main`; las 3 columnas, solo desde 901 px.
+  Barrido después: 23 páginas públicas × 35 anchos (360-1920) sin desbordes ni errores; panel de empresa (6
+  páginas, sesión simulada) a 390 y 1280 sin desbordes ni errores; menú desplegable a 1024 con buscador y «Acceder».
+- Medida A/B de las tipografías propias (Lighthouse móvil en local, 2 pasadas, commit anterior frente a este):
+  primer pintado 0,4-0,6 s antes en portada, directorio y ficha; la nota de rendimiento no se mueve fuera del ruido.
+
+- **El latido de «Destacado» repintaba la página sin parar.** `.featured` animaba `box-shadow` en bucle infinito: con la
+  página quieta, 1.000-1.400 ms de cada 5 s del hilo principal (~25 %) y ~60 recálculos de estilo por segundo, en
+  escritorio y sin límite de tiempo (en móvil, batería y respuesta al toque). Ahora anima la opacidad de un anillo
+  fijo en `::after`, que va por la tarjeta gráfica: 7-11 ms por 5 s y 0 recálculos. Mismo aspecto (capturas en el
+  punto álgido idénticas a producción; posición de las 29 etiquetas de 4 páginas idéntica). Carga con efectos en
+  móvil simulado (CPU ×4): trabajo del hilo principal en sector 3,0 → 1,8 s, directorio 2,6 → 1,9 s.
+- **SEO, detalles:** portada con `WebSite` + `SearchAction` (`buscar.html?q=`, comprobado: devuelve resultados);
+  `paquetes.html` sin `og:image` ni `twitter:card` (es la que se comparte por WhatsApp): añadidos. Las fichas de
+  anuncio y producto declaran `Product` sin `offers`: Search Console lo marcará «no válido para resultados
+  enriquecidos». Es inofensivo y rellenarlo exigiría inventar precios: se deja.
+- Páginas privadas con sesión simulada: panel de empresa (6) y administración (13) a 390 y 1280 px sin desbordes ni
+  errores, todas con `noindex`; axe sin fallos graves ni críticos (solo `region`, moderado: el aviso «Solo en este
+  navegador» queda fuera de los puntos de referencia).
+
+**Sigue abierto (no se arregla aquí):**
+- Los límites de intentos (entrar, alta, contraseña, contacto, subida) viven en memoria por instancia: frenan lo
+  casual, no un ataque repartido. Lo de verdad es un contador en base (tabla nueva, se crea a mano como el esquema).
+- **Rendimiento móvil** (Lighthouse 13, producción, 13-10): portada 81, anuncio 76, empresa 85, sector 64 (LCP 3,4-4,8 s,
+  TBT hasta 730 ms en sector); accesibilidad, buenas prácticas y SEO 100. La causa es que cada página baja y procesa el
+  directorio entero (`/api/datos.js`, 230 KB) y pinta en el navegador. Lo de verdad es la decisión pendiente de
+  `contexto.md` §7: generar el HTML antes (o un endpoint por ficha).
+- **Correo saliente, por comprobar en Vercel.** `RESEND_API_KEY` está puesta (`olvide` responde 200), pero si
+  `REMITENTE_EMAIL` no es de un dominio verificado en Resend, el remitente por defecto `onboarding@resend.dev` solo
+  puede escribir a la cuenta dueña de Resend: códigos de contraseña, avisos de contacto y de moderación no llegarían
+  a nadie más (falla en silencio, queda `correo_fallo` en los logs). `vercel.app` no se puede verificar: hace falta
+  dominio propio. Las plantillas de correo (`_correo.js`) aún usan la paleta verde y crema de la web antigua.
+- Textos pendientes del propietario visibles en producción: `[RAZÓN SOCIAL]` y `[DOMICILIO]` en `legal.html`
+  (obligatorios por la LSSI antes de abrir), `[CORREO DE CONTACTO]` en contacto y paquetes, `[NÚMERO POR RELLENAR]`
+  (WhatsApp) en paquetes.
+- Sin `/llms.txt` (en MaqDeMad se decidió tenerlo para que la IA cite el directorio).
+- `script-src 'unsafe-inline'`: las páginas llevan su script en línea; la defensa contra XSS es el escape. Sacar los
+  scripts a archivos permitiría quitarlo.
+- La cuenta de pruebas 178 está pendiente y desde §34 no puede entrar: `e2e-subir.py` ya no pasa con ella. Hace
+  falta una cuenta de pruebas autorizada.
+- Categorías, usuarios, contenidos, configuración, solicitudes, vendedores y pedidos del admin siguen siendo solo
+  del navegador (lo avisa la propia página).
