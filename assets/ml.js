@@ -306,6 +306,10 @@ window.ML = (function () {
     };
     const marca = root => {
       adorna(root);
+      /* Las primeras fotos de cada bloque pintado (las que caen en el primer pantallazo) no se difieren: el elemento
+         más grande del directorio era una foto lazy y Lighthouse lo penaliza (LCP 3,7 s). El observador corre antes
+         del primer pintado, así que cambiar loading aquí llega a tiempo. */
+      if (root.querySelectorAll) [...root.querySelectorAll('img[loading="lazy"]')].slice(0, 6).forEach(i => { i.loading = 'eager'; });
       const lista = root.matches && root.matches(SEL) ? [root] : [];
       lista.push(...root.querySelectorAll(SEL));
       lista.forEach(el => {

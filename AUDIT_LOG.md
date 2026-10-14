@@ -23,3 +23,13 @@ Pendiente:
 - LCP de la ficha de anuncio (3,5 s): la imagen se descubre cuando el JS pinta la ficha (retardo de carga 300 ms en la traza). No se puede precargar: depende del `?id`. La salida es la misma que la del hero: HTML generado antes (contexto.md §7).
 - Falta medir buscar, empresas y directorio en la siguiente iteración.
 ESTADO: SEGUIR
+
+## Iteración 2026-10-14 01:10
+Antes:   buscar 99 · empresas 98 · vendedores 97 · directorio 89 (LCP 3,7 s, el elemento era una foto de sector con loading="lazy") | A11y 100 | BP 100 | SEO 100 en todas
+Después: directorio 88–89 (LCP 3,5–3,6 s). Sin cambio real: el tiempo lo manda la espera del JS, no la carga diferida.
+Hecho:
+- Las seis primeras fotos de cada bloque que pinta el JS ya no van con `loading="lazy"` (el elemento más grande de la página no debe diferirse). Se hace en `marca()` de `ml.js`, antes del primer pintado; en directorio 7 fotos pasan a eager, 32 siguen lazy. Sin errores JS, efectos 0 fallos.
+Pendiente:
+- Todas las páginas medidas: portada 98, buscar 99, empresas 98, vendedores 97, sector 95, directorio 89, anuncio 90. Las dos que no llegan a 95 comparten causa: pintan en el navegador tras cargar los datos, y Lighthouse (móvil, CPU ×4) lo cuenta como LCP. La salida es generar el HTML antes (contexto.md §7), decisión pendiente del propietario; no es una edición pequeña.
+- Fotos `sm/` de sectores de 65–88 KB (materias primas, mesas, carpintería): ya van a calidad 72 progresiva; bajar más tocaría el aspecto.
+ESTADO: SEGUIR solo si se decide generar el HTML antes; sin esa decisión no quedan mejoras pequeñas.
