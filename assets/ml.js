@@ -354,5 +354,5 @@ window.ML = (function () {
     return document.getElementById('content');
   }
 
-  return { contacto, galeria, barraMovil, D, cat, vend, anuncio, anunciosDe, publicados, TIPO, ESTADO, pais, fmtPrecio, catsAZ, tpl, buscar, shell, solicitudes, addSolicitud, foto, fotoCat, fotoVend, fotoSm, FOTOS, store, extras, saveExtras, auth, salir, elegirEmpresa, wa, waAttrs, gmail };
+  return { contacto, galeria, barraMovil, D, cat, vend, anuncio, anunciosDe, publicados, TIPO, ESTADO, pais, fmtPrecio, catsAZ, tpl, buscar, shell, solicitudes, addSolicitud, foto, fotoCat, fotoVend, fotoSm, sm, FOTOS, store, extras, saveExtras, auth, salir, elegirEmpresa, wa, waAttrs, gmail };
 })();
